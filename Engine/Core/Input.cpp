@@ -63,7 +63,7 @@ void Input::PollEvents() {
 }
 
 
-void Input::MousePositionCallback(GLFWwindow* window, const double newX, const double newY) {
+void Input::MousePositionCallback(GLFWwindow* /*window*/, const double newX, const double newY) {
     if (!mouseHasMoved) {
         mousePosition = Position{newX, newY};
         mouseHasMoved = true;
@@ -74,7 +74,7 @@ void Input::MousePositionCallback(GLFWwindow* window, const double newX, const d
 }
 
 
-void Input::MouseButtonCallback(GLFWwindow* window, const int button, const int action, int mods) {
+void Input::MouseButtonCallback(GLFWwindow* /*window*/, const int button, const int action, int /*mods*/) {
     if (action == GLFW_PRESS) {
         mouseButtonStates[button] = true;
     } else if (action == GLFW_RELEASE) {
@@ -86,7 +86,7 @@ void Input::MouseButtonCallback(GLFWwindow* window, const int button, const int 
 }
 
 
-void Input::KeyCallback(GLFWwindow* window, const int key, int scancode, const int action, int mods) {
+void Input::KeyCallback(GLFWwindow* window, const int key, int /*scancode*/, const int action, int /*mods*/) {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, GL_TRUE);
     }

@@ -7,7 +7,7 @@ VertexData::VertexData(): vertexCount(0) {}
 
 
 void VertexData::SetAttribute(const VertexAttribute attribute, const AttributeData& data) {
-    int dataSize;
+    uint dataSize;
     visit([&](const auto& attributeData) { dataSize = attributeData.size(); }, data);
     if (attribute == POSITION) {
         vertexCount = dataSize;
