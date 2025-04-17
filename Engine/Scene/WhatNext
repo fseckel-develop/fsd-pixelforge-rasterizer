@@ -1,0 +1,67 @@
+Scene/Components
+    ├── TransformComponent
+    ├── MeshComponent
+    ├── LightComponent
+    ├── CameraComponent
+    └── ScriptComponent
+maybe if moving towards an Entity-Component System aka ECS
+
+
+Scene/Cameras
+    ├── PerspectiveCamera
+    ├── OrthographicCamera
+    ├── ArcBallCamera
+    └── FreeCamera
+
+
+Scene/Animations
+    ├── TransformAnimator
+    ├── SceneNodeAnimator
+    ├── AnimationTrack
+    └── AnimationTimeline
+If SceneNodes can be animated (transform animations, visibility, skeletal animations).
+SceneNode animations typically deal with how the scene nodes themselves are animated.
+This includes:
+    1.  Transform Animations:
+        Moving, rotating, or scaling the entire object or node.
+    2.  Visibility Animations:
+        Making an object appear/disappear or fade in/out.
+    3.  Skeletal Animations:
+        Animating bones in a model, typically for characters (more complex).
+
+
+Scene/Scripting
+    ├── Script
+    ├── ScriptManager
+    ├── ScriptComponent (if ECS)
+    └── Integration with Lua / Python / custom scripting
+To support user-defined behavior like Unity-style MonoBehaviours or Lua/Python integration.
+
+
+Scene/SceneLoading
+    ├── SceneLoader
+    ├── SceneSerializer
+    └── SceneImporter
+for supporting scene files, serialization, or importing from formats like glTF, Assimp, or my own.
+
+
+Scene/Environment
+    ├── Skybox
+    ├── EnvironmentProbe
+    ├── IBLSettings
+    └── FogSettings
+
+
+Scene/Culling
+    ├── FrustumCuller
+    ├── OcclusionQuery
+    ├── BoundingVolume
+    └── LODManager
+
+
+Optional Others (if useful later):
+    ├── Navigation/     – for nav-meshes, pathfinding
+    ├── Physics/        – to attach colliders and rigid bodies to scene nodes
+    ├── UI/             – if scene contains GUI nodes or HUD
+    ├── Prefabs/        – reusable scene structures
+    └── SceneEditor/    – tools/UI for editing scene contents
