@@ -3,15 +3,14 @@ project(PixelForge)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-
 # Setting Header Files
 set(HEADER_FILES
         Engine/Core.h
         Engine/Geometry.h
         Engine/Graphics.h
+        Engine/Scene.h
         Engine/Utilities.h
 )
-
 
 # Setting Source Files
 set(SOURCE_FILES
@@ -19,6 +18,8 @@ set(SOURCE_FILES
         Engine/Core/Application.cpp
         Engine/Core/Camera.cpp
         Engine/Core/Input.cpp
+        Engine/Core/Menu.cpp
+        Engine/Core/Renderer.cpp
         Engine/Core/Window.cpp
 
         # Geometry/Curves
@@ -62,8 +63,34 @@ set(SOURCE_FILES
         Engine/Graphics/Texturing/Material.cpp
         Engine/Graphics/Texturing/Texture.cpp
         Engine/Graphics/Texturing/TextureUnitManager.cpp
-)
 
+        # Scene
+        Engine/Scene/Scene.cpp
+        # Scene/Animations
+        Engine/Scene/Animations/Animation.cpp
+        Engine/Scene/Animations/CurveAnimation.cpp
+        Engine/Scene/Animations/Easing.cpp
+        Engine/Scene/Animations/KeyframeAnimation.cpp
+        Engine/Scene/Animations/Orbiting.cpp
+        Engine/Scene/Animations/Rotation.cpp
+        Engine/Scene/Animations/Scaling.cpp
+        Engine/Scene/Animations/Translation.cpp
+        # Scene/Lights
+        Engine/Scene/Lights/AmbientLight.cpp
+        Engine/Scene/Lights/DirectionalLight.cpp
+        Engine/Scene/Lights/PositionalLight.cpp
+        Engine/Scene/Lights/SpotLight.cpp
+        # Scene/SceneNodes
+        Engine/Scene/SceneNodes/Light.cpp
+        Engine/Scene/SceneNodes/Model.cpp
+        Engine/Scene/SceneNodes/Renderable.cpp
+        Engine/Scene/SceneNodes/SceneNode.cpp
+        # Scene/Transforms
+        Engine/Scene/Transforms/Rotate.cpp
+        Engine/Scene/Transforms/Scale.cpp
+        Engine/Scene/Transforms/Transform.cpp
+        Engine/Scene/Transforms/Translate.cpp
+)
 
 # Adding main Executable
 add_executable(PixelForge
@@ -71,7 +98,6 @@ add_executable(PixelForge
         ${HEADER_FILES}
         ${SOURCE_FILES}
 )
-
 
 # Including Directories for Dependencies
 target_include_directories(PixelForge PRIVATE
@@ -83,18 +109,15 @@ target_include_directories(PixelForge PRIVATE
         ${CMAKE_SOURCE_DIR}/dependencies/SOIL2/include
 )
 
-
 # Defining Paths for Libraries
 set(GLEW_LIB ${CMAKE_SOURCE_DIR}/dependencies/GLEW/lib/libGLEW.a)
 set(GLFW_LIB ${CMAKE_SOURCE_DIR}/dependencies/GLFW/lib/libglfw3.a)
 set(SOIL2_LIB ${CMAKE_SOURCE_DIR}/dependencies/SOIL2/lib/libsoil2.a)
 
-
 # Debugging Messages
 message(STATUS "GLEW Library: ${GLEW_LIB}")
 message(STATUS "GLFW Library: ${GLFW_LIB}")
 message(STATUS "SOIL2 Library: ${SOIL2_LIB}")
-
 
 # Linking Libraries
 find_package(OpenGL REQUIRED)
@@ -105,10 +128,8 @@ target_link_libraries(PixelForge PRIVATE
         OpenGL::GL
 )
 
-
 # Pedantic compilation
 target_compile_options(PixelForge PRIVATE -Wall -Wextra -pedantic)
-
 
 # Platform-specific Setup
 if (APPLE)

@@ -18,7 +18,7 @@ public:
     static void InitializeGLFW();
     static void InitializeGLEW();
 
-    static const char* UniformArrayName(const char*, int, const char*);
+    static const char* ArrayElement(const char*, size_t, const char*);
 
     static vector<vec3> ScaledCopy(const vector<vec3>&, vec3);
     static vector<vec3> TranslatedCopy(const vector<vec3>&, vec3);
@@ -99,9 +99,9 @@ inline void Utilities::InitializeGLEW() {
 }
 
 
-inline const char* ArrayElement(const char* base, const int index, const char* attribute) {
+inline const char* ArrayElement(const char* base, const size_t index, const char* attribute) {
     static char buffer[1024];
-    snprintf(buffer, sizeof(buffer), "%s[%d].%s", base, index, attribute);
+    snprintf(buffer, sizeof(buffer), "%s[%lu].%s", base, index, attribute);
     return buffer;
 }
 
