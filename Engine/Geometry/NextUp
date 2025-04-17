@@ -1,0 +1,64 @@
+Geometry/Animations or Geometry/Deformations
+    ├── MorphTarget
+    ├── MeshDeformer        // e.g. wave animation, noise, physics-based
+    ├── CurveDeformer
+    └── Skeleton            // eventually rigged models
+Geometry-specific animations refer to animations that manipulate the form or
+shape of a geometry (like a mesh, curve, or surface) over time. These types
+of animations are typically more focused on how the geometry itself changes,
+rather than how it is positioned, oriented, or transformed within a scene.
+Examples of geometry-specific animations include:
+    1.  Vertex Manipulation:
+        Deforming a mesh, such as bending, stretching, or applying morph targets.
+    2.  Curve Animation:
+        Changing the shape or parameters of a curve, such as moving control points
+        along a spline to alter its shape.
+    3.  Material Animations:
+        Animating material properties like color, transparency, or texture coordinates
+        (though this could technically fall under Texturing).
+
+
+Geometry/Converters
+    ├── CurveToMesh         // tube mesh, swept surface, ribbon, etc.
+    ├── MeshToCurve         // edge loops, silhouette extraction
+    └── CurveSampler
+
+
+Geometry/Surfaces
+    ├── Surface
+    ├── ImplicitSurface
+    ├── ParametricSurface
+    ├── BezierSurface
+    └── NURBSSurface
+
+
+Geometry/Volumes
+    ├── VoxelGrid
+    ├── SignedDistanceField
+    └── VolumeMesh
+
+
+Geometry/Procedural
+    ├── TerrainGenerator
+    ├── NoiseFunctions
+    ├── LSystemGenerator
+    ├── FractalGeometry
+    └── ParametricGenerator
+Great for terrains, vegetation, cities, or abstract forms.
+
+
+Geometry/Utilities
+    ├── Subdivision             // Catmull-Clark, Loop, etc.
+    ├── BooleanOperations       // Mesh cutting/CSG
+    ├── Intersections           // ray-mesh, mesh-mesh
+    ├── MeshSimplifier
+    └── GeometryUtils
+
+
+Geometry/Attributes
+    ├── Material
+    ├── VertexColor
+    ├── TextureCoordinates
+    ├── CustomAttribute
+    └── ProceduralMaterial
+Attaching more than just geometry: surface properties, metadata, procedural textures, UVs.

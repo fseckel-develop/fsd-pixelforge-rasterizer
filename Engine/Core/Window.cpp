@@ -71,13 +71,13 @@ void Window::Close() {
 }
 
 
-void Window::WindowSizeCallback(GLFWwindow* window, const int newWidth, const int newHeight) {
+void Window::WindowSizeCallback(GLFWwindow* /*window*/, const int newWidth, const int newHeight) {
     windowWidth = newWidth;
     windowHeight = newHeight;
 }
 
 
-void Window::FramebufferSizeCallback(GLFWwindow* window, const int newBufferWidth, const int newBufferHeight) {
+void Window::FramebufferSizeCallback(GLFWwindow* /*window*/, const int newBufferWidth, const int newBufferHeight) {
     bufferWidth = newBufferWidth;
     bufferHeight = newBufferHeight;
     SetViewport();

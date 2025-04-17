@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Setting Header Files
 set(HEADER_FILES
         Engine/Core.h
+        Engine/Geometry.h
         Engine/Graphics.h
         Engine/Utilities.h
 )
@@ -19,6 +20,33 @@ set(SOURCE_FILES
         Engine/Core/Camera.cpp
         Engine/Core/Input.cpp
         Engine/Core/Window.cpp
+
+        # Geometry/Curves
+        Engine/Geometry/Curves/BezierCurve.cpp
+        Engine/Geometry/Curves/BSpline.cpp
+        Engine/Geometry/Curves/Curve.cpp
+        Engine/Geometry/Curves/FunctionCurve.cpp
+        Engine/Geometry/Curves/HermiteSpline.cpp
+        Engine/Geometry/Curves/LagrangeCurve.cpp
+        Engine/Geometry/Curves/NURBS.cpp
+        # Geometry/Meshes
+        Engine/Geometry/Meshes/Arrow.cpp
+        Engine/Geometry/Meshes/Cone.cpp
+        Engine/Geometry/Meshes/Cube.cpp
+        Engine/Geometry/Meshes/Cuboid.cpp
+        Engine/Geometry/Meshes/Cylinder.cpp
+        Engine/Geometry/Meshes/Frustum.cpp
+        Engine/Geometry/Meshes/Mesh.cpp
+        Engine/Geometry/Meshes/Points.cpp
+        Engine/Geometry/Meshes/Polygon.cpp
+        Engine/Geometry/Meshes/RoundedCube.cpp
+        Engine/Geometry/Meshes/Shell.cpp
+        Engine/Geometry/Meshes/Sphere.cpp
+        Engine/Geometry/Meshes/SphereSector.cpp
+        Engine/Geometry/Meshes/SphereSegment.cpp
+        Engine/Geometry/Meshes/SphereWedge.cpp
+        Engine/Geometry/Meshes/Torus.cpp
+        Engine/Geometry/Meshes/Tube.cpp
 
         # Graphics/Pipeline
         Engine/Graphics/Pipeline/IndexBuffer.cpp
@@ -76,6 +104,10 @@ target_link_libraries(PixelForge PRIVATE
         ${SOIL2_LIB}
         OpenGL::GL
 )
+
+
+# Pedantic compilation
+target_compile_options(PixelForge PRIVATE -Wall -Wextra -pedantic)
 
 
 # Platform-specific Setup

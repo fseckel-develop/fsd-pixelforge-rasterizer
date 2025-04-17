@@ -33,7 +33,7 @@ Texture::Texture(const vector<string>& faces) {
     glGenTextures(1, &textureID);
     glBindTexture(textureType, textureID);
     int width, height;
-    for (int i = 0; i < faces.size(); i++) {
+    for (size_t i = 0; i < faces.size(); i++) {
         if (unsigned char* data = SOIL_load_image(faces[i].c_str(), &width, &height, nullptr, SOIL_LOAD_RGBA)) {
             glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
             SOIL_free_image_data(data);
