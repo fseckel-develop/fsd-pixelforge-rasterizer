@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Setting Header Files
 set(HEADER_FILES
         Engine/Core.h
+        Engine/Graphics.h
         Engine/Utilities.h
 )
 
@@ -18,6 +19,21 @@ set(SOURCE_FILES
         Engine/Core/Camera.cpp
         Engine/Core/Input.cpp
         Engine/Core/Window.cpp
+
+        # Graphics/Pipeline
+        Engine/Graphics/Pipeline/IndexBuffer.cpp
+        Engine/Graphics/Pipeline/ShaderProgram.cpp
+        Engine/Graphics/Pipeline/ShaderStorageBuffer.cpp
+        Engine/Graphics/Pipeline/UniformBuffer.cpp
+        Engine/Graphics/Pipeline/VertexArray.cpp
+        Engine/Graphics/Pipeline/VertexBuffer.cpp
+        Engine/Graphics/Pipeline/VertexBufferLayout.cpp
+        Engine/Graphics/Pipeline/VertexData.cpp
+        # Graphics/Texturing
+        Engine/Graphics/Texturing/CubeMap.cpp
+        Engine/Graphics/Texturing/Material.cpp
+        Engine/Graphics/Texturing/Texture.cpp
+        Engine/Graphics/Texturing/TextureUnitManager.cpp
 )
 
 

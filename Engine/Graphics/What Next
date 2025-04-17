@@ -1,0 +1,24 @@
+Graphics/PostProcessing
+    ├── Bloom
+    ├── HDR
+    ├── Tone-mapping
+    ├── FXAA / TAA
+    ├── Depth of Field
+    └── Motion Blur
+
+
+Graphics/Framebuffers
+    ├── Framebuffer
+    ├── RenderTexture
+    ├── DepthBuffer
+    ├── ShadowMap
+    ├── GeometryBuffer
+    └── ReflectionBuffer
+
+
+Graphics/Debug
+    ├── Wireframe rendering
+    ├── Bounding boxes
+    ├── Normals/tangents visualization
+    ├── ImGui overlays
+    └── Debug geometry rendering
