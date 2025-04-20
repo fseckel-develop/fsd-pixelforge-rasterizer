@@ -33,13 +33,13 @@ public:
     [[nodiscard]] virtual vec3 GetCurrentPosition() const;
     [[nodiscard]] virtual vec3 GetCurrentDirection() const;
     [[nodiscard]] bool ToBeRendered() const;
-    void Render(ShaderProgram&, const Transform& = Transform()) const;
+    [[nodiscard]] shared_ptr<Mesh>& GetMesh();
 
 protected:
     LightType type;
     LightAttribute ambient = LightAttribute(vec3(1.0f), 1.0f);
     LightAttribute diffuse = LightAttribute(vec3(1.0f), 1.0f);
     LightAttribute specular = LightAttribute(vec3(1.0f), 1.0f);
-    Mesh* mesh = nullptr;
+    shared_ptr<Mesh> mesh = nullptr;
     bool toBeRendered = false;
 };

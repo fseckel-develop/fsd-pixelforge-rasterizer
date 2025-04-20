@@ -24,6 +24,5 @@ protected:
     bool isPlaying = true;
     bool isPaused = false;
     // TODO: EasingFunction ...
-
     [[nodiscard]] float GetProgress() const;
 };

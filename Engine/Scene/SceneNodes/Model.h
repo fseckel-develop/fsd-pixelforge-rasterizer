@@ -1,7 +1,8 @@
 #pragma once
 #include "SceneNode.h"
 #include <unordered_map>
-class Light; class Renderable; class Mesh;
+#include <string>
+class Light; class RenderUnit;
 using namespace std;
 
 
@@ -9,24 +10,50 @@ class Model final : public SceneNode {
 public:
     explicit Model(const string&);
     void AddLight(Light*, const string& = "");
-    void AddRenderable(Renderable*, const string& = "");
-    void AddRenderable(const string&, Mesh*, const string& = "");
-    [[nodiscard]] Light* GetLight(const string&) const;
-    [[nodiscard]] Renderable* GetRenderable(const string&) const;
-    [[nodiscard]] unordered_map<string, Light*>& GetLights();
-    [[nodiscard]] unordered_map<string, Renderable*>& GetRenderables();
-    [[nodiscard]] SceneNode* LastAdded() const;
+    void AddRenderUnit(RenderUnit*, const string& = "");
+    template <typename T> shared_ptr<T> LastAddedAs() const;
+    [[nodiscard]] shared_ptr<Light> GetLightByName(const string&) const;
+    [[nodiscard]] shared_ptr<RenderUnit> GetRenderUnitByName(const string&) const;
+    [[nodiscard]] vector<shared_ptr<Light>>& GetLights();
+    [[nodiscard]] vector<shared_ptr<RenderUnit>>& GetRenderUnits();
     void Update(float) override;
 
 private:
-    unordered_map<string, Renderable*> renderables;
-    unordered_map<string, Light*> lights;
-    SceneNode* lastAdded = nullptr;
-
-    template <typename T> void AddSceneNode(T*, const string&, unordered_map<string, T*>&);
+    shared_ptr<SceneNode> lastAdded = nullptr;
+    vector<shared_ptr<Light>> lights;
+    vector<shared_ptr<RenderUnit>> renderUnits;
+    template <typename T> void AddSceneNode(const shared_ptr<T>&, const string&, vector<shared_ptr<T>>&);
+    shared_ptr<SceneNode> FindSceneNodeByName(const string&) const;
 };
 
 
+template <typename T>
+shared_ptr<T> Model::LastAddedAs() const {
+    return dynamic_pointer_cast<T>(lastAdded);
+}
+
+
+template<typename T>
+void Model::AddSceneNode(const shared_ptr<T>& node, const string& parentName, vector<shared_ptr<T>>& container) {
+    if (!node) return;
+    const string& nodeName = node->GetName();
+    for (const auto& existing : container) {
+        if (existing && existing->GetName() == nodeName) {
+            throw runtime_error("Node '" + nodeName + "' already exists in model '" + this->name + "'.");
+        }
+    }
+    container.push_back(node);
+    if (!parentName.empty()) {
+        auto parent = FindSceneNodeByName(parentName);
+        if (!parent) {
+            throw runtime_error("Parent '" + parentName + "' for node '" + nodeName + "' not found in model '" + this->name + "'.");
+        }
+        node->SetParent(parent);
+    } else {
+        node->SetParent(shared_from_this());
+    }
+    lastAdded = node;
+}
 
 
 // inline Model SolarSystem() {

@@ -12,7 +12,7 @@ Points::Points(const vector<vec3>& points, const float pointSize):
 }
 
 
-Points::Points(Mesh& mesh, const float pointSize):
+Points::Points(const Mesh& mesh, const float pointSize):
     Mesh(VertexData(), vector<GLuint>()) {
     this->vertexData = mesh.GetVertexData();
     this->pointSize = pointSize;

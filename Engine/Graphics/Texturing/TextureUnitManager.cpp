@@ -15,7 +15,7 @@ void TextureUnitManager::Initialize() {
 
 
 GLenum TextureUnitManager::GetFreeUnit() {
-    for (auto& textureUnit : textureUnits) {
+    for (auto& textureUnit : textureUnits) { // NOLINT
         if (!textureUnit.isOccupied) {
             textureUnit.isOccupied = true;
             return textureUnit.spot;
@@ -26,7 +26,7 @@ GLenum TextureUnitManager::GetFreeUnit() {
 
 
 void TextureUnitManager::ReleaseUnit(const GLenum spot) {
-    for (auto& textureUnit : textureUnits) {
+    for (auto& textureUnit : textureUnits) { // NOLINT
         if (textureUnit.spot == spot) {
             textureUnit.isOccupied = false;
             return;

@@ -83,7 +83,7 @@ set(SOURCE_FILES
         # Scene/SceneNodes
         Engine/Scene/SceneNodes/Light.cpp
         Engine/Scene/SceneNodes/Model.cpp
-        Engine/Scene/SceneNodes/Renderable.cpp
+        Engine/Scene/SceneNodes/RenderUnit.cpp
         Engine/Scene/SceneNodes/SceneNode.cpp
         # Scene/Transforms
         Engine/Scene/Transforms/Rotate.cpp

@@ -5,6 +5,7 @@ Scene/Components
     ├── CameraComponent
     └── ScriptComponent
 maybe if moving towards an Entity-Component System aka ECS
+-> basically implementing Scene Graph
 
 
 Scene/Cameras

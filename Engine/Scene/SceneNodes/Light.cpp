@@ -10,27 +10,27 @@ Light::Light(const string& name, const LightType type):
 
 
 void Light::SetAmbient(const vec3& color, const float intensity) {
-    this->ambient = LightAttribute(color, intensity);
+    ambient = LightAttribute(color, intensity);
 }
 
 
 void Light::SetDiffuse(const vec3& color, const float intensity) {
-    this->diffuse = LightAttribute(color, intensity);
+    diffuse = LightAttribute(color, intensity);
 }
 
 
 void Light::SetSpecular(const vec3& color, const float intensity) {
-    this->specular = LightAttribute(color, intensity);
+    specular = LightAttribute(color, intensity);
 }
 
 
 void Light::SetMesh(Mesh* mesh) {
     if (mesh) {
-        this->mesh = mesh;
-        this->toBeRendered = true;
+        this->mesh = shared_ptr<Mesh>(mesh);
+        toBeRendered = true;
     }
     else {
-        this->toBeRendered = false;
+        toBeRendered = false;
     }
 }
 
@@ -42,17 +42,17 @@ LightType Light::GetType() const {
 
 
 LightAttribute Light::GetAmbient() const {
-    return this->ambient;
+    return ambient;
 }
 
 
 LightAttribute Light::GetDiffuse() const {
-    return this->diffuse;
+    return diffuse;
 }
 
 
 LightAttribute Light::GetSpecular() const {
-    return this->specular;
+    return specular;
 }
 
 
@@ -67,15 +67,10 @@ vec3 Light::GetCurrentDirection() const {
 
 
 bool Light::ToBeRendered() const {
-    return this->toBeRendered;
+    return toBeRendered;
 }
 
 
-// TODO: Own ShaderProgram to render lights!
-void Light::Render(ShaderProgram& program, const Transform& globalTransform) const {
-    if (mesh && toBeRendered) {
-        program.SetUniform("modelMatrix", globalTransform.ToMatrix() * GetModelMatrix());
-        program.UseProgram();
-        mesh->Render();
-    }
+shared_ptr<Mesh>& Light::GetMesh() {
+    return mesh;
 }

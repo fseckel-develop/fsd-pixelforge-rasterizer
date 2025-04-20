@@ -23,5 +23,5 @@
 
 #include "Scene/SceneNodes/Light.h"
 #include "Scene/SceneNodes/Model.h"
-#include "Scene/SceneNodes/Renderable.h"
+#include "Scene/SceneNodes/RenderUnit.h"
 #include "Scene/SceneNodes/SceneNode.h"

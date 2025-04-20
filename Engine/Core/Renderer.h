@@ -1,20 +1,23 @@
 #pragma once
+#include "../Scene/Transforms/Transform.h"
 #include <unordered_map>
-class Scene; class ShaderProgram; class Mesh;
-class Light; class Renderable; class Material;
+#include <string>
+class Scene; class ShaderProgram; class Light;
+class Material; class Mesh; class Model;
 using namespace std;
 
 
 class Renderer {
 public:
-    Renderer() = default;
+    Renderer();
     void Render(const Scene&) const;
+    static void Render(const shared_ptr<Mesh>&);
 
 private:
-    unordered_map<string, ShaderProgram> programs;
-    void DrawMesh(const Mesh&) const;
-    void RenderLight(const Light&) const;
-    void RenderRenderable(const Renderable&) const;
-    void UploadLightsToShader(const vector<Light*>&, ShaderProgram&) const;
-    void UploadMaterialToShader(const Material&, ShaderProgram&) const;
+    unordered_map<string, ShaderProgram*> programs;
+    void InitializeShaderProgram(const string&);
+    static void SetLighting(ShaderProgram*, const vector<shared_ptr<Light>>&);
+    static void SetMaterial(ShaderProgram*, const shared_ptr<Material>&);
+    void RenderLights(const vector<shared_ptr<Light>>&) const;
+    void RenderObjects(const shared_ptr<Model>&, const Transform& = Transform()) const;
 };

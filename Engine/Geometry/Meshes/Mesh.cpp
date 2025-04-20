@@ -20,12 +20,12 @@ Mesh::Mesh(const string& filePath, const bool invertY) {
 }
 
 
-const VertexData& Mesh::GetVertexData() {
+const VertexData& Mesh::GetVertexData() const {
     return vertexData;
 }
 
 
-const vector<GLuint>& Mesh::GetIndices() {
+const vector<GLuint>& Mesh::GetIndices() const {
     return indices;
 }
 
@@ -74,12 +74,14 @@ Mesh::~Mesh() {
 }
 
 
-void Mesh::ParseOBJ(const string& filePath, const bool invertY) {
-    string line;
-    ifstream fileStream(filePath, ios::in);
+const filesystem::path modelDirectory = "../Resources/Models";
+void Mesh::ParseOBJ(const string& modelFileName, const bool invertY) {
+    const auto modelFilePath = modelDirectory / modelFileName;
+    ifstream fileStream(modelFilePath, ios::in);
     vector<vec3> positions, pos;
     vector<vec2> textureCoordinates, tex;
     vector<vec3> normals, nor;
+    string line;
     while (!fileStream.eof()) {
         getline(fileStream, line);
         if (line.compare(0, 2, "v ") == 0) {
