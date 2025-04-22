@@ -57,13 +57,13 @@ inline void Utilities::PrintProgramInfoLog(const GLuint programID) {
 
 inline const char* Utilities::PrintShaderType(const GLenum shaderType) {
     switch (shaderType) {
-        case GL_VERTEX_SHADER: return "Vertex Shader";
-        case GL_FRAGMENT_SHADER: return "Fragment Shader";
-        case GL_GEOMETRY_SHADER: return "Geometry Shader";
-        case GL_COMPUTE_SHADER: return "Compute Shader";
-        case GL_TESS_CONTROL_SHADER: return "Tesselation Control Shader";
-        case GL_TESS_EVALUATION_SHADER: return "Tesselation Evaluation Shader";
-        default: return "Shader of Unknown Type";
+        case GL_VERTEX_SHADER: return "vertex shader";
+        case GL_FRAGMENT_SHADER: return "fragment shader";
+        case GL_GEOMETRY_SHADER: return "geometry shader";
+        case GL_COMPUTE_SHADER: return "compute shader";
+        case GL_TESS_CONTROL_SHADER: return "tesselation control shader";
+        case GL_TESS_EVALUATION_SHADER: return "tesselation evaluation shader";
+        default: return "shader of unknown type";
     }
 }
 

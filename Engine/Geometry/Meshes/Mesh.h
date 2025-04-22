@@ -12,16 +12,18 @@ class Mesh {
 public:
     Mesh(VertexData, const vector<GLuint>&);
     explicit Mesh(const string&, bool = true);
-    const VertexData& GetVertexData();
-    const vector<GLuint>& GetIndices();
+    [[nodiscard]] const VertexArray* GetVAO() const;
+    [[nodiscard]] const VertexData& GetVertexData() const;
+    [[nodiscard]] const vector<GLuint>& GetIndices() const;
+    [[nodiscard]] GLsizei GetVertexCount() const;
     virtual void Render() const;
     virtual ~Mesh();
 
 protected:
+    VertexArray* VAO = nullptr;
     VertexData vertexData;
     vector<GLuint> indices;
     GLsizei vertexCount = 0;
-    VertexArray* VAO = nullptr;
 
     void GenerateMeshData();
     virtual void CalculatePositions() {}

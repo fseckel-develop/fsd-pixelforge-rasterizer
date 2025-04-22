@@ -1,6 +1,6 @@
 #include "Model.h"
-#include "../../Scene/SceneNodes/Renderable.h"
 #include "../../Scene/SceneNodes/Light.h"
+#include "../../Scene/SceneNodes/RenderUnit.h"
 
 
 Model::Model(const string& name):
@@ -8,82 +8,60 @@ Model::Model(const string& name):
 }
 
 
-void Model::AddLight(Light* light, const string& parent) {
-    AddSceneNode(light, parent, lights);
+void Model::AddLight(Light* light, const string& parentName) {
+    AddSceneNode(shared_ptr<Light>(light), parentName, lights);
 }
 
 
-void Model::AddRenderable(Renderable* renderable, const string& parent) {
-    AddSceneNode(renderable, parent, renderables);
+void Model::AddRenderUnit(RenderUnit* renderUnit, const string& parentName) {
+    AddSceneNode(shared_ptr<RenderUnit>(renderUnit), parentName, renderUnits);
 }
 
 
-void Model::AddRenderable(const string& name, Mesh* mesh, const string& parent) {
-    const auto renderable = new Renderable(name, mesh);
-    AddRenderable(renderable, parent);
-}
-
-
-Light* Model::GetLight(const string& name) const {
-    const auto it = lights.find(name);
-    if (it != lights.end()) {
-        return it->second;
+shared_ptr<Light> Model::GetLightByName(const string& name) const {
+    for (const auto& light : lights) {
+        if (light && light->GetName() == name) return light;
     }
     return nullptr;
 }
 
 
-Renderable* Model::GetRenderable(const string& name) const {
-    const auto it = renderables.find(name);
-    if (it != renderables.end()) {
-        return it->second;
+shared_ptr<RenderUnit> Model::GetRenderUnitByName(const string& name) const {
+    for (const auto& renderUnit : renderUnits) {
+        if (renderUnit && renderUnit->GetName() == name) return renderUnit;
     }
     return nullptr;
 }
 
 
-unordered_map<string, Light*>& Model::GetLights() {
+vector<shared_ptr<Light>>& Model::GetLights() {
     return lights;
 }
 
 
-unordered_map<string, Renderable*>& Model::GetRenderables() {
-    return renderables;
-}
-
-
-SceneNode* Model::LastAdded() const {
-    return lastAdded;
+vector<shared_ptr<RenderUnit>>& Model::GetRenderUnits() {
+    return renderUnits;
 }
 
 
 void Model::Update(const float deltaTime) {
     SceneNode::Update(deltaTime);
-    for (auto& [_, renderable] : renderables) {
-        renderable->Update(deltaTime);
+    for (const auto& renderUnit : renderUnits) {
+        renderUnit->Update(deltaTime);
     }
-    for (auto& [_, light] : lights) {
+    for (const auto& light : lights) {
         light->Update(deltaTime);
     }
 }
 
 
-template<typename T>
-void Model::AddSceneNode(T* node, const string& parent, unordered_map<string, T*>& container) {
-    if (!node) return;
-    const string& nodeName = node->GetName();
-    if (container.contains(nodeName)) {
-        throw runtime_error("Node '" + nodeName + "' already exists in model '" + this->name + "'.");
+shared_ptr<SceneNode> Model::FindSceneNodeByName(const string& name) const {
+    for (const auto& light : lights) {
+        if (light && light->GetName() == name) return light;
     }
-    container[nodeName] = node;
-    if (!parent.empty()) {
-        const auto it = container.find(parent);
-        if (it == container.end()) {
-            throw runtime_error("Parent '" + parent + "' for node '" + nodeName + "' not found in model '" + this->name + "'.");
-        }
-        it->second->AddChild(node);
-    } else {
-        AddChild(node);
+    for (const auto& unit : renderUnits) {
+        if (unit && unit->GetName() == name) return unit;
     }
-    lastAdded = node;
+    return nullptr;
 }
+

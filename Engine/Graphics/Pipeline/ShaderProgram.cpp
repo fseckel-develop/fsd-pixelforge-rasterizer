@@ -5,8 +5,8 @@
 
 
 ShaderProgram::ShaderProgram() {
-    programID = glCreateProgram();
-    if (!programID) {
+    shaderProgramID = glCreateProgram();
+    if (!shaderProgramID) {
         cerr << "Failed to create shader program." << endl;
     }
 }
@@ -23,11 +23,11 @@ void ShaderProgram::AddShader(const GLenum shaderType, const char* shaderFileNam
     glCompileShader(shaderID);
     glGetShaderiv(shaderID, GL_COMPILE_STATUS, &success);
     if (success == GL_FALSE) {
-        cerr << "Failed to compile " << Utilities::PrintShaderType(shaderType) << "." << endl;
+        cerr << "Failed to compile " << Utilities::PrintShaderType(shaderType) << " '" << shaderFileName << "'." << endl;
         Utilities::PrintShaderInfoLog(shaderID);
         glDeleteShader(shaderID);
     }
-    glAttachShader(programID, shaderID);
+    glAttachShader(shaderProgramID, shaderID);
     glDeleteShader(shaderID);
 }
 
@@ -39,7 +39,7 @@ void ShaderProgram::ActivateProgram() const {
 
 
 void ShaderProgram::UseProgram() const {
-    glUseProgram(programID);
+    glUseProgram(shaderProgramID);
 }
 
 
@@ -49,10 +49,10 @@ void ShaderProgram::UnuseProgram() {
 
 
 void ShaderProgram::DeleteProgram() {
-    if (programID != 0) {
+    if (shaderProgramID != 0) {
         UnuseProgram();
-        glDeleteProgram(programID);
-        programID = 0;
+        glDeleteProgram(shaderProgramID);
+        shaderProgramID = 0;
     }
 }
 
@@ -64,11 +64,11 @@ ShaderProgram::~ShaderProgram() {
 
 void ShaderProgram::LinkProgram() const {
     GLint success;
-    glLinkProgram(programID);
-    glGetProgramiv(programID, GL_LINK_STATUS, &success);
+    glLinkProgram(shaderProgramID);
+    glGetProgramiv(shaderProgramID, GL_LINK_STATUS, &success);
     if (success == GL_FALSE) {
         cerr << "Failed to link shader program." << endl;
-        Utilities::PrintShaderInfoLog(programID);
+        Utilities::PrintShaderInfoLog(shaderProgramID);
     }
 }
 
@@ -78,11 +78,11 @@ void ShaderProgram::ValidateProgram() const {
     GLuint testVAO;
     glGenVertexArrays(1, &testVAO);
     glBindVertexArray(testVAO);
-    glValidateProgram(programID);
-    glGetProgramiv(programID, GL_VALIDATE_STATUS, &success);
+    glValidateProgram(shaderProgramID);
+    glGetProgramiv(shaderProgramID, GL_VALIDATE_STATUS, &success);
     if (success == GL_FALSE) {
         cerr << "Failed to validate shader program." << endl;
-        Utilities::PrintShaderInfoLog(programID);
+        Utilities::PrintShaderInfoLog(shaderProgramID);
     }
     glBindVertexArray(0);
     glDeleteVertexArrays(1, &testVAO);
@@ -94,7 +94,7 @@ GLint ShaderProgram::GetUniformLocation(const char* name) {
     if (uniformLocations.contains(key)) {
         return uniformLocations[key];
     }
-    const GLint location = glGetUniformLocation(programID, name);
+    const GLint location = glGetUniformLocation(shaderProgramID, name);
     if (location == -1) {
         cerr << "Failed to get uniform location " << name << "." << endl;
     }
@@ -136,7 +136,7 @@ void ShaderProgram::ParseIncludes(string& shaderSource) {
         }
         if (line.find("#include") == 0) {
             size_t firstQuote = line.find('\"');
-            size_t lastQuote = line.find('\"', firstQuote + 1);
+            size_t lastQuote = line.find('\"', firstQuote + 1); // NOLINT
             if (firstQuote != string::npos && lastQuote != string::npos) {
                 string includeFileName = line.substr(firstQuote + 1, lastQuote - firstQuote - 1);
                 filesystem::path includePath = shaderDirectory / includeFileName;
@@ -144,8 +144,7 @@ void ShaderProgram::ParseIncludes(string& shaderSource) {
                     cerr << "Warning: Shader include loop detected for " << includePath << endl;
                     continue;
                 }
-                ifstream includeFile(includePath);
-                if (includeFile) {
+                if (ifstream includeFile(includePath); includeFile) {
                     stringstream includeContent;
                     includeContent << includeFile.rdbuf();
                     string includedShaderCode = includeContent.str();

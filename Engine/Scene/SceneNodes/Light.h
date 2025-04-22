@@ -21,7 +21,9 @@ typedef struct LightAttribute {
 
 class Light : public SceneNode {
 public:
-    explicit Light(const string&, LightType);
+    explicit Light(const string&, LightType, const vec3& = vec3(1.0f), float = 1.0f);
+    void SetColor(const vec3&);
+    void SetIntensity(float);
     void SetAmbient(const vec3&, float);
     virtual void SetDiffuse(const vec3&, float);
     virtual void SetSpecular(const vec3&, float);
@@ -33,13 +35,13 @@ public:
     [[nodiscard]] virtual vec3 GetCurrentPosition() const;
     [[nodiscard]] virtual vec3 GetCurrentDirection() const;
     [[nodiscard]] bool ToBeRendered() const;
-    void Render(ShaderProgram&, const Transform& = Transform()) const;
+    [[nodiscard]] shared_ptr<Mesh>& GetMesh();
 
 protected:
     LightType type;
     LightAttribute ambient = LightAttribute(vec3(1.0f), 1.0f);
     LightAttribute diffuse = LightAttribute(vec3(1.0f), 1.0f);
     LightAttribute specular = LightAttribute(vec3(1.0f), 1.0f);
-    Mesh* mesh = nullptr;
+    shared_ptr<Mesh> mesh = nullptr;
     bool toBeRendered = false;
 };

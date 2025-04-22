@@ -13,14 +13,14 @@ public:
     ShaderProgram();
     void AddShader(GLenum, const char*) const;
     void ActivateProgram() const;
-    template<typename T> void SetUniform(const char* name, const T& value);
+    template<typename T> void SetUniform(const char*, const T&);
     void UseProgram() const;
     static void UnuseProgram();
     void DeleteProgram();
     ~ShaderProgram();
 
 private:
-    GLuint programID;
+    GLuint shaderProgramID;
     unordered_map<string, GLint> uniformLocations;
     void LinkProgram() const;
     void ValidateProgram() const;
@@ -33,8 +33,7 @@ private:
 template<typename T> inline constexpr bool alwaysFalse = false;
 template<typename T> void ShaderProgram::SetUniform(const char* name, const T& value) {
     UseProgram();
-    const GLint location = GetUniformLocation(name);
-    if (location != -1) {
+    if (const GLint location = GetUniformLocation(name); location != -1) {
         if constexpr (is_same_v<T, int> || is_same_v<T, bool>) {
             glUniform1i(location, value);
         } else if constexpr (is_same_v<T, float>) {

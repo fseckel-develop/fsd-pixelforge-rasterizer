@@ -2,9 +2,6 @@
 #include <GLM/gtc/quaternion.hpp>
 
 
-Transform::Transform() = default;
-
-
 Transform::Transform(const vec3& translation, const quat& rotation, const vec3& scaling) {
     this->translation = translation;
     this->rotation = rotation;

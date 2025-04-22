@@ -1,3 +1,8 @@
+IDEA: Reflecting active Uniforms in Shader Program
+-> saving them in class ShaderLayout etc.
+-> automating setup of Uniforms based on the layout of the Shader
+
+
 Graphics/PostProcessing
     ├── Bloom
     ├── HDR
