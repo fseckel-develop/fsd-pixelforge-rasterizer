@@ -30,7 +30,7 @@ const vector<shared_ptr<Light>>& Scene::GetGlobalLights() const {
 
 vector<shared_ptr<Light>> Scene::GetAllLights() const {
     vector<shared_ptr<Light>> allLights;
-    allLights.reserve(globalLights.size() + models.size() * 4); // rough guess
+    allLights.reserve(globalLights.size() + models.size() * 4);
     allLights.insert(allLights.end(), globalLights.begin(), globalLights.end());
     for (const auto& model : models) {
         for (const auto& light : model->GetLights()) {

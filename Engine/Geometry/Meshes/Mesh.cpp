@@ -20,6 +20,11 @@ Mesh::Mesh(const string& filePath, const bool invertY) {
 }
 
 
+const VertexArray* Mesh::GetVAO() const {
+    return VAO;
+}
+
+
 const VertexData& Mesh::GetVertexData() const {
     return vertexData;
 }
@@ -30,12 +35,16 @@ const vector<GLuint>& Mesh::GetIndices() const {
 }
 
 
+GLsizei Mesh::GetVertexCount() const {
+    return vertexCount;
+}
+
+
 void Mesh::Render() const {
     VAO->BindVAO();
     if (indices.empty()) {
         glDrawArrays(GL_TRIANGLES, 0, vertexCount);
-    }
-    else {
+    } else {
         glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, nullptr);
     }
     VertexArray::UnbindVAO();

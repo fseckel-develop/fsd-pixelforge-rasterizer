@@ -21,7 +21,9 @@ typedef struct LightAttribute {
 
 class Light : public SceneNode {
 public:
-    explicit Light(const string&, LightType);
+    explicit Light(const string&, LightType, const vec3& = vec3(1.0f), float = 1.0f);
+    void SetColor(const vec3&);
+    void SetIntensity(float);
     void SetAmbient(const vec3&, float);
     virtual void SetDiffuse(const vec3&, float);
     virtual void SetSpecular(const vec3&, float);

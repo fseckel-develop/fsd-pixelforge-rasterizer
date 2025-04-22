@@ -1,4 +1,6 @@
 #define GLEW_STATIC
+#include <memory>
+
 #include "../Core.h"
 #include "../Geometry.h"
 #include "../Graphics.h"
@@ -11,8 +13,9 @@ void Application::Initialize() {
     Window::Create(1400, 900, "PixelForge");
     Utilities::InitializeGLEW();
     Camera::TurnOn(vec3(0.0f, 0.0f, 5.0f));
-    TextureUnitManager::Initialize();
     Input::Enable();
+    TextureUnitManager::Initialize();
+    Renderer::Initialize();
 }
 
 
@@ -31,21 +34,24 @@ void Application::Run() {
     model->AddRenderUnit(new RenderUnit("Cube", new Mesh("Cube.obj")), "Sphere");
         model->LastAddedAs<RenderUnit>()->SetMaterial(new Silver());
         model->LastAddedAs<RenderUnit>()->SetTransform(Scale(vec3(0.5f)));
-        model->LastAddedAs<RenderUnit>()->AddAnimation(new Orbiting(1.0f, vec3(0.5, 1.5f, -2.0f), 180.0f, 4.0, Animation::BOUNCE));
+        model->LastAddedAs<RenderUnit>()->AddAnimation(new Orbiting(2.0f, vec3(0.5, 1.5f, -2.0f), 360.0f, 4.0));
     model->AddRenderUnit(new RenderUnit("Cylinder", new Mesh("Cylinder.obj")), "Cube");
-        model->LastAddedAs<RenderUnit>()->SetMaterial(new Pearl());
+        model->LastAddedAs<RenderUnit>()->SetMaterial(new Bronze());
         model->LastAddedAs<RenderUnit>()->SetNodeScale(vec3(0.5f));
-        model->LastAddedAs<RenderUnit>()->AddAnimation(new Orbiting(1.0f, vec3(0.5, -1.5f, 2.0f), 360.0f, 6.0));
-    model->AddLight(new DirectionalLight("Sun", vec3(1.0f, -2.0f, 1.0f)));
+        model->LastAddedAs<RenderUnit>()->AddAnimation(new Orbiting(1.5f, vec3(0.5, -1.5f, 2.0f), 360.0f, 6.0));
+    model->AddLight(new AmbientLight("Ambient", vec3(1.0f), 0.5f));
 
-    Scene scene;
-    scene.AddModel(model);
-    Renderer renderer; // NOLINT
+    shared_ptr<Scene> scene;
+    scene->AddModel(model);
+
+    const auto renderUnit = make_shared<RenderUnit>("Sphere", new Sphere());
+    renderUnit->SetTransform(Translate(vec3(0.5f)));
+    renderUnit->SetMaterial(new Gold());
 
     while (!Window::ShouldClose()) {
         Input::TimeStep();
         Camera::Update();
-        renderer.Render(scene);
+        Renderer::Render(scene);
         Window::SwapBuffers();
         Input::PollEvents();
     }
