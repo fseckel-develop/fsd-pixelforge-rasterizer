@@ -3,9 +3,16 @@
 using namespace glm;
 
 
-Animation::Animation(const Mode mode) {
+Animation::Animation(const float duration, const Mode mode) {
+    SetDuration(duration);
     this->mode = mode;
 }
+
+
+void Animation::SetDuration(const float duration) {
+    this->duration = duration >= 0.1f ? duration : 0.1f;
+}
+
 
 
 void Animation::Play() {
@@ -42,6 +49,13 @@ void Animation::Reset() {
 }
 
 
+void Animation::Update(const float deltaTime) {
+    if (isPlaying) {
+        elapsedTime += deltaTime;
+    }
+}
+
+
 bool Animation::IsPlaying() const {
     if (!isPlaying || isPaused) return false;
     if (mode == LOOP || mode == BOUNCE) return true;
@@ -55,17 +69,11 @@ bool Animation::IsPaused() const {
 
 
 float Animation::GetProgress() const {
-    if (mode == ONCE) {
-        return clamp(elapsedTime / duration, 0.0f, 1.0f);
-    }
-    if (mode == LOOP) {
-        return fmod(elapsedTime / duration, 1.0f);
-    }
+    if (mode == ONCE) return clamp(elapsedTime / duration, 0.0f, 1.0f);
+    if (mode == LOOP) return fmod(elapsedTime / duration, 1.0f);
     if (mode == BOUNCE) {
         const float progress = fmod(elapsedTime / duration, 2.0f);
-        if (progress > 1.0f) {
-            return 2.0f - progress;
-        }
+        if (progress > 1.0f) return 2.0f - progress;
         return progress;
     }
     return 0.0f;

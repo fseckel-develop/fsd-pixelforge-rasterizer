@@ -8,8 +8,8 @@ using namespace glm;
 
 class CurveAnimation final : public Animation {
 public:
-    CurveAnimation(Curve*, float, Mode);
-    Transform GetOffset(float) override;
+    explicit CurveAnimation(Curve*, float = 4.0, Mode = BOUNCE);
+    Transform GetOffset() override;
 
 private:
     Curve* curve;

@@ -43,28 +43,28 @@ void Renderer::Render(const shared_ptr<Mesh>& mesh, const RenderMode mode) {
 
 
 void Renderer::Render(const shared_ptr<Light>& light, const RenderMode mode) {
-    light->Update(Input::GetDeltaTime());
+    light->UpdateSelfAndChildren(Input::GetDeltaTime());
     PrepareFrameGL(mode);
     DrawLight(light);
 }
 
 
 void Renderer::Render(const shared_ptr<RenderUnit>& renderUnit, const Lighting lighting, const RenderMode mode) {
-    renderUnit->Update(Input::GetDeltaTime());
+    renderUnit->UpdateSelfAndChildren(Input::GetDeltaTime());
     PrepareFrameGL(mode);
     DrawRenderUnit(renderUnit, lighting);
 }
 
 
 void Renderer::Render(const shared_ptr<Model>& model, const RenderMode mode) {
-    model->Update(Input::GetDeltaTime());
+    model->UpdateSelfAndChildren(Input::GetDeltaTime());
     PrepareFrameGL(mode);
     DrawModel(model);
 }
 
 
 void Renderer::Render(const shared_ptr<Scene>& scene, const RenderMode mode) {
-    scene->Update(Input::GetDeltaTime());
+    scene->UpdateSelfAndChildren(Input::GetDeltaTime());
     PrepareFrameGL(mode);
     DrawScene(scene);
 }

@@ -2,7 +2,7 @@
 
 
 KeyframeAnimation::KeyframeAnimation(const Mode mode):
-    Animation(mode) {
+    Animation(0.0f, mode) {
 }
 
 
@@ -17,13 +17,8 @@ void KeyframeAnimation::AddKeyframe(const float timeStamp, const Transform& tran
 }
 
 
-Transform KeyframeAnimation::GetOffset(const float deltaTime) {
-    Transform offset;
-    if (IsPlaying() && !keyframes.empty()) {
-        elapsedTime += deltaTime;
-        offset = Interpolate(GetProgress());
-    }
-    return offset;
+Transform KeyframeAnimation::GetOffset() {
+    return Interpolate(GetProgress());
 }
 
 

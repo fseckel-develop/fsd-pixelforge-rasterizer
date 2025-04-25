@@ -3,20 +3,16 @@
 
 
 Translation::Translation(const float distance, const vec3 direction, const float duration, const Mode mode):
-    Animation(mode) {
+    Animation(duration, mode) {
     this->totalDistance = distance;
     if (length(direction) != 0.0f) {
         this->direction = normalize(direction);
     }
-    this->duration = duration;
 }
 
 
-Transform Translation::GetOffset(const float deltaTime) {
+Transform Translation::GetOffset() {
     Transform offset;
-    if (IsPlaying()) {
-        elapsedTime += deltaTime;
-        offset.translation = GetProgress() * totalDistance * direction;
-    }
+    offset.translation = GetProgress() * totalDistance * direction;
     return offset;
 }

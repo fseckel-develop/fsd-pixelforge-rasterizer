@@ -1,12 +1,12 @@
 #pragma once
-#include "SceneNode.h"
+#include "TransformNode.h"
 #include <unordered_map>
 #include <string>
 class Light; class RenderUnit;
 using namespace std;
 
 
-class Model final : public SceneNode {
+class Model final : public TransformNode {
 public:
     explicit Model(const string&);
     void AddLight(Light*, const string& = "");
@@ -16,7 +16,7 @@ public:
     [[nodiscard]] shared_ptr<RenderUnit> GetRenderUnitByName(const string&) const;
     [[nodiscard]] vector<shared_ptr<Light>>& GetLights();
     [[nodiscard]] vector<shared_ptr<RenderUnit>>& GetRenderUnits();
-    void Update(float) override;
+    void UpdateSelf(float) override {}
 
 private:
     shared_ptr<SceneNode> lastAdded = nullptr;
@@ -48,9 +48,9 @@ void Model::AddSceneNode(const shared_ptr<T>& node, const string& parentName, ve
         if (!parent) {
             throw runtime_error("Parent '" + parentName + "' for node '" + nodeName + "' not found in model '" + this->name + "'.");
         }
-        node->SetParent(parent);
+        parent->AddChild(node);
     } else {
-        node->SetParent(shared_from_this());
+        AddChild(node);
     }
     lastAdded = node;
 }

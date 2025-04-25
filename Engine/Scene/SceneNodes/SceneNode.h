@@ -1,41 +1,31 @@
 #pragma once
-#include "../Transforms/Transform.h"
-#include "../Transforms/Scale.h"
-#include <GLM/glm.hpp>
 #include <vector>
-class Animation;
-using namespace std; using namespace glm;
+using namespace std;
 
 
 class SceneNode : public enable_shared_from_this<SceneNode> {
 public:
     explicit SceneNode(const string&);
     void SetName(const string&);
-    void SetParent(const shared_ptr<SceneNode>&);
-    void SetTransform(const Transform&);
-    void SetNodeScale(const vec3&);
-    void AddAnimation(Animation*);
+    void AddChild(const shared_ptr<SceneNode>&);
+    void RemoveChild(const shared_ptr<SceneNode>&);
+    void InsertNodeAbove(const shared_ptr<SceneNode>&);
+    [[nodiscard]] int GetID() const;
     [[nodiscard]] string GetName() const;
-    [[nodiscard]] mat4 GetModelMatrix() const;
-    virtual void Update(float);
+    [[nodiscard]] shared_ptr<SceneNode> GetParent() const;
+    [[nodiscard]] vector<shared_ptr<SceneNode>> GetChildren() const;
+    void UpdateSelfAndChildren(float);
     virtual ~SceneNode() = default;
 
 protected:
     int id; string name;
+    int ancestorCount = 0;
     weak_ptr<SceneNode> parent;
     vector<shared_ptr<SceneNode>> children;
-    int ancestorCount = 0;
-    Transform initialTransform;
-    Transform localTransform;
-    Scale scale;
-    vector<shared_ptr<Animation>> animations;
-    mutable mat4 modelMatrix = mat4(1.0f);
-    mutable bool transformDirty = true;
+    virtual void UpdateSelf(float) = 0;
 
 private:
     inline static int nextID = 0;
-    [[nodiscard]] string GenerateUniqueName() const;
-    void AddChild(const shared_ptr<SceneNode>&);
-    void RemoveChild(const shared_ptr<SceneNode>&);
-    void MarkTransformDirty();
+    void SetParent(const shared_ptr<SceneNode>&);
+    bool IsAncestorOf(const shared_ptr<SceneNode>&) const;
 };

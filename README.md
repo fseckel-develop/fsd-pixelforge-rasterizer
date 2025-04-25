@@ -1,3 +1,2 @@
 # PixelForge
-
-Self-made graphics engine using C++ with OpenGL
+Graphics engine built on OpenGL with C++

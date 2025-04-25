@@ -8,7 +8,7 @@ using namespace glm;
 class Rotation : public Animation {
 public:
     explicit Rotation(vec3, float = 360.0f, float = 4.0f, Mode = LOOP);
-    Transform GetOffset(float) override;
+    Transform GetOffset() override;
 
 protected:
     float totalAngle;

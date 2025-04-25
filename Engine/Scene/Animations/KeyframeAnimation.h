@@ -15,7 +15,7 @@ class KeyframeAnimation final : public Animation {
 public:
     explicit KeyframeAnimation(Mode = ONCE);
     void AddKeyframe(float, const Transform&);
-    Transform GetOffset(float) override;
+    Transform GetOffset() override;
 
 private:
     vector<Keyframe> keyframes;

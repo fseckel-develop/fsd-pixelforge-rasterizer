@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Scene/Scene.h"
-
 #include "Scene/Animations/Animation.h"
 #include "Scene/Animations/CurveAnimation.h"
 #include "Scene/Animations/Easing.h"
@@ -21,7 +19,11 @@
 #include "Scene/Transforms/Transform.h"
 #include "Scene/Transforms/Translate.h"
 
+#include "Scene/SceneNodes/AnimationNode.h"
+#include "Scene/SceneNodes/Group.h"
 #include "Scene/SceneNodes/Light.h"
 #include "Scene/SceneNodes/Model.h"
 #include "Scene/SceneNodes/RenderUnit.h"
+#include "Scene/SceneNodes/Scene.h"
 #include "Scene/SceneNodes/SceneNode.h"
+#include "Scene/SceneNodes/TransformNode.h"

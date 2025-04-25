@@ -1,7 +1,5 @@
 TODO: Connecting Light Types with default Meshes
 
-TODO: Default ShaderProgram for unlit objects (-> light sources completely white)
-
 What are Shader Storage Buffer Objects (SSBO)?
 
 What are Uniform Buffer Objects (UBO)?
@@ -9,7 +7,6 @@ What are Uniform Buffer Objects (UBO)?
 What is SSAO (Screen Space Ambient Occlusion)?
 
 What is the Cook-Torrance model in lighting?
-
 
 
 Idea: "Chaining" Setter Methods by having the object type as return type

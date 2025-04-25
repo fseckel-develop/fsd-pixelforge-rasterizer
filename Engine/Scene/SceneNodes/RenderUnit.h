@@ -1,10 +1,10 @@
 #pragma once
-#include "SceneNode.h"
+#include "TransformNode.h"
 class Mesh; class Material;
 using namespace std;
 
 
-class RenderUnit final : public SceneNode {
+class RenderUnit final : public TransformNode {
 public:
     explicit RenderUnit(const string&, Mesh*);
     void SetMaterial(Material*);

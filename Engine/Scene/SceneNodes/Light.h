@@ -1,5 +1,5 @@
 #pragma once
-#include "SceneNode.h"
+#include "TransformNode.h"
 #include <GLM/glm.hpp>
 class ShaderProgram; class Mesh;
 using namespace glm;
@@ -19,7 +19,7 @@ typedef struct LightAttribute {
 } LightAttribute;
 
 
-class Light : public SceneNode {
+class Light : public TransformNode {
 public:
     explicit Light(const string&, LightType, const vec3& = vec3(1.0f), float = 1.0f);
     void SetColor(const vec3&);

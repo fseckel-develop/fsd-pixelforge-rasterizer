@@ -39,7 +39,7 @@ void Application::Run() {
         model->LastAddedAs<RenderUnit>()->AddAnimation(new Orbiting(1.5f, vec3(0.5, -1.5f, 2.0f), 360.0f, 6.0));
     model->AddLight(new AmbientLight("Ambient", vec3(1.0f), 0.5f));
 
-    const auto scene = make_shared<Scene>();
+    const auto scene = make_shared<Scene>("Scene");
     scene->AddModel(model);
 
     while (!Window::ShouldClose()) {

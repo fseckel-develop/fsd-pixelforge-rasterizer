@@ -65,7 +65,6 @@ set(SOURCE_FILES
         Engine/Graphics/Texturing/TextureUnitManager.cpp
 
         # Scene
-        Engine/Scene/Scene.cpp
         # Scene/Animations
         Engine/Scene/Animations/Animation.cpp
         Engine/Scene/Animations/CurveAnimation.cpp
@@ -81,10 +80,14 @@ set(SOURCE_FILES
         Engine/Scene/Lights/PositionalLight.cpp
         Engine/Scene/Lights/SpotLight.cpp
         # Scene/SceneNodes
+        Engine/Scene/SceneNodes/AnimationNode.cpp
+        Engine/Scene/SceneNodes/Group.cpp
         Engine/Scene/SceneNodes/Light.cpp
         Engine/Scene/SceneNodes/Model.cpp
         Engine/Scene/SceneNodes/RenderUnit.cpp
+        Engine/Scene/SceneNodes/Scene.cpp
         Engine/Scene/SceneNodes/SceneNode.cpp
+        Engine/Scene/SceneNodes/TransformNode.cpp
         # Scene/Transforms
         Engine/Scene/Transforms/Rotate.cpp
         Engine/Scene/Transforms/Scale.cpp

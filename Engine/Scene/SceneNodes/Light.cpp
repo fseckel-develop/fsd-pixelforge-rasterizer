@@ -4,7 +4,7 @@
 
 
 Light::Light(const string& name, const LightType type, const vec3& color, const float intensity):
-    SceneNode(name) {
+    TransformNode(name) {
     this->type = type;
     SetColor(color);
     SetIntensity(intensity);

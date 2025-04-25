@@ -4,7 +4,7 @@
 
 
 Model::Model(const string& name):
-    SceneNode(name) {
+    TransformNode(name) {
 }
 
 
@@ -44,17 +44,6 @@ vector<shared_ptr<RenderUnit>>& Model::GetRenderUnits() {
 }
 
 
-void Model::Update(const float deltaTime) {
-    SceneNode::Update(deltaTime);
-    for (const auto& renderUnit : renderUnits) {
-        renderUnit->Update(deltaTime);
-    }
-    for (const auto& light : lights) {
-        light->Update(deltaTime);
-    }
-}
-
-
 shared_ptr<SceneNode> Model::FindSceneNodeByName(const string& name) const {
     for (const auto& light : lights) {
         if (light && light->GetName() == name) return light;
@@ -64,4 +53,3 @@ shared_ptr<SceneNode> Model::FindSceneNodeByName(const string& name) const {
     }
     return nullptr;
 }
-

@@ -3,9 +3,8 @@
 #include "../../Graphics/Texturing/Material.h"
 
 
-
 RenderUnit::RenderUnit(const string& name, Mesh* mesh):
-    SceneNode(name),
+    TransformNode(name),
     mesh(shared_ptr<Mesh>(mesh)) {
 }
 

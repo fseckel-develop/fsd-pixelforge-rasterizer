@@ -1,6 +1,6 @@
 #include "SceneNode.h"
-#include "../Animations/Animation.h"
 #include <iostream>
+#include <ranges>
 
 
 SceneNode::SceneNode(const string& name) {
@@ -14,36 +14,39 @@ void SceneNode::SetName(const string& name) {
 }
 
 
-void SceneNode::SetParent(const shared_ptr<SceneNode>& parent) {
-    if (const auto currentParent = this->parent.lock()) {
-        currentParent->RemoveChild(shared_from_this());
+void SceneNode::AddChild(const shared_ptr<SceneNode>& child) {
+    if (!child or child.get() == this) return;
+    if (ranges::find(children, child) != children.end()) return;
+    if (child->IsAncestorOf(shared_from_this())) return;
+    if (const auto currentParent = child->parent.lock()) {
+        currentParent->RemoveChild(child);
     }
-    if (parent) {
-        parent->AddChild(shared_from_this());
-    }
-    this->parent = parent;
-    ancestorCount = parent ? parent->ancestorCount + 1 : 0;
+    child->SetParent(shared_from_this());
+    children.push_back(child);
 }
 
 
-void SceneNode::SetTransform(const Transform& transform) {
-    this->localTransform = transform;
-    this->initialTransform = transform;
-    MarkTransformDirty();
-}
-
-
-void SceneNode::SetNodeScale(const vec3& scale) {
-    this->scale = Scale(scale);
-}
-
-
-
-void SceneNode::AddAnimation(Animation* animation) {
-    if (animation) {
-        animation->Reset();
-        animations.push_back(shared_ptr<Animation>(animation));
+void SceneNode::RemoveChild(const shared_ptr<SceneNode>& child) {
+    if (!child or child.get() == this) return;
+    if (const auto it = ranges::remove(children, child).begin(); it != children.end()) {
+        children.erase(it, children.end());
+        child->parent.reset();
     }
+}
+
+
+void SceneNode::InsertNodeAbove(const shared_ptr<SceneNode>& node) {
+    if (!node) return;
+    if (const auto oldParent = GetParent()) {
+        oldParent->RemoveChild(shared_from_this());
+        oldParent->AddChild(node);
+    }
+    node->AddChild(shared_from_this());
+}
+
+
+int SceneNode::GetID() const {
+    return id;
 }
 
 
@@ -52,64 +55,44 @@ string SceneNode::GetName() const {
 }
 
 
-mat4 SceneNode::GetModelMatrix() const {
-    if (transformDirty) {
-        modelMatrix = localTransform.ToMatrix();
-        auto current = shared_from_this();
-        while (current->ancestorCount > 0) {
-            current = current->parent.lock();
-            modelMatrix = current->localTransform.ToMatrix() * modelMatrix;
-        }
-        transformDirty = false;
-    }
-    return modelMatrix * scale.ToMatrix();
+shared_ptr<SceneNode> SceneNode::GetParent() const {
+    return parent.lock();
 }
 
 
-void SceneNode::Update(const float deltaTime) {
-    Transform animationOffset;
-    for (const auto& animation : animations) {
-        if (animation && animation->IsPlaying()) {
-            animationOffset = animation->GetOffset(deltaTime) * animationOffset;
-        }
-    }
-    localTransform = initialTransform * animationOffset;
-    MarkTransformDirty();
+vector<shared_ptr<SceneNode>> SceneNode::GetChildren() const {
+    return children;
 }
 
 
-void SceneNode::AddChild(const shared_ptr<SceneNode>& child) {
-    if (child.get() == this) return;
-    if (ranges::find(children, child) != children.end()) return;
-    if (const auto currentParent = child->parent.lock()) {
-        currentParent->RemoveChild(child);
-    }
-    children.push_back(child);
-}
-
-
-void SceneNode::RemoveChild(const shared_ptr<SceneNode>& child) {
-    const auto it = ranges::find(children, child); // NOLINT
-    if (it != children.end()) {
-        children.erase(it);
-        child->parent.reset();
-    } else {
-        cerr << "Child '" << child->GetName() << "' from parent '" << this->name << "' not found for removal." << endl;
-    }
-}
-
-
-void SceneNode::MarkTransformDirty() {
+void SceneNode::UpdateSelfAndChildren(const float deltaTime) {
     stack<shared_ptr<SceneNode>> nodeStack;
     nodeStack.push(shared_from_this());
     while (!nodeStack.empty()) {
-        const auto node = nodeStack.top();
+        const auto current = nodeStack.top();
         nodeStack.pop();
-        if (!node->transformDirty) {
-            node->transformDirty = true;
-            for (const auto& child : node->children) {
-                nodeStack.push(child);
-            }
+        current->UpdateSelf(deltaTime); // Optional hook
+        for (auto& child : ranges::reverse_view(current->children)) {
+            nodeStack.push(child);
         }
     }
+}
+
+
+void SceneNode::SetParent(const shared_ptr<SceneNode>& parent) {
+    if (!parent or parent.get() == this) return;
+    this->parent = parent;
+    ancestorCount = parent ? parent->ancestorCount + 1 : 0;
+}
+
+
+bool SceneNode::IsAncestorOf(const shared_ptr<SceneNode>& node) const {
+    if (!node) return false;
+    if (this->ancestorCount >= node->ancestorCount) return false;
+    auto current = node->parent.lock();
+    while (current) {
+        if (current.get() == this) return true;
+        current = current->parent.lock();
+    }
+    return false;
 }
