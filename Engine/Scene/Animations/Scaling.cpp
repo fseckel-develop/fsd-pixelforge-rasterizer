@@ -8,6 +8,11 @@ Scaling::Scaling(const vec3 targetScale, const float duration, const Mode mode):
 }
 
 
+const vec3 &Scaling::GetTargetScale() const {
+    return targetScale;
+}
+
+
 Transform Scaling::GetOffset() {
     Transform offset;
     const float t = GetProgress();

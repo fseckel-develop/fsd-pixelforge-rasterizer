@@ -19,6 +19,11 @@ BSpline::BSpline(const vector<vec3>& points, const int degree, const CurveForm f
 }
 
 
+const vector<float>& BSpline::GetKnotVector() const {
+    return knotVector;
+}
+
+
 int BSpline::FindKnotSpan(float t) const {
     const int n = static_cast<int>(controlPoints.size()) - 1;
     if (curveForm == LOOP) {

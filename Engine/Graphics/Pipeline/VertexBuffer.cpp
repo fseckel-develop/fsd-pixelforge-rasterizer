@@ -8,7 +8,7 @@ VertexBuffer::VertexBuffer(const VertexData& vertexData):
     vertexBufferID(0) {
     glGenBuffers(1, &vertexBufferID);
     BindVBO();
-    glBufferData(GL_ARRAY_BUFFER, vertexData.GetBufferSize(), vertexData.GetBufferData(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, vertexData.GetBufferSize(), vertexData.GetBufferDataPointer(), GL_STATIC_DRAW);
     CreateBufferLayout(vertexData);
     UnbindVBO();
 }

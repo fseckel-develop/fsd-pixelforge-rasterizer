@@ -22,16 +22,16 @@ Points::Points(const Mesh& mesh, const float pointSize):
 
 void Points::SetupMesh() {
     if (!vertexData.HasAttribute(POSITION)) return;
-    VAO = new VertexArray();
+    VAO = make_shared<VertexArray>();
     const auto VBO = VertexBuffer(vertexData);
     VAO->AddVertexBuffer(VBO);
 }
 
-
-void Points::Render() const {
-    VAO->BindVAO();
-    glPointSize(pointSize);
-    glDrawArrays(GL_POINTS, 0, static_cast<GLsizei>(vertexData.GetAttribute<vec3>(POSITION).size()));
-    glPointSize(1.0f);
-    VertexArray::UnbindVAO();
-}
+// TODO: Refactor this into the Renderer class
+// void Points::Render() const {
+//     VAO->BindVAO();
+//     glPointSize(pointSize);
+//     glDrawArrays(GL_POINTS, 0, static_cast<GLsizei>(vertexData.GetAttribute<vec3>(POSITION).size()));
+//     glPointSize(1.0f);
+//     VertexArray::UnbindVAO();
+// }

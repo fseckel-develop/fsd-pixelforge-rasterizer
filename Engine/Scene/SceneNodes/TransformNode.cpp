@@ -37,14 +37,14 @@ void TransformNode::MarkGlobalTransformDirty() {
 }
 
 
-void TransformNode::AddAnimation(Animation* animation) {
+void TransformNode::AddAnimation(const shared_ptr<Animation>& animation) {
     const auto currentParent = GetParent();
-    auto animationNode = std::dynamic_pointer_cast<AnimationNode>(currentParent);
+    auto animationNode = dynamic_pointer_cast<AnimationNode>(currentParent);
     if (!animationNode) {
         animationNode = make_shared<AnimationNode>(GetName() + "-Animation");
         InsertNodeAbove(animationNode);
     }
-    animationNode->AddAnimation(shared_ptr<Animation>(animation));
+    animationNode->AddAnimation(animation);
 }
 
 

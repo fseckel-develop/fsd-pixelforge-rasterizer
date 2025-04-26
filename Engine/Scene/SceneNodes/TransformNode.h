@@ -12,7 +12,7 @@ public:
     void SetTransform(const Transform&);
     void SetNodeScale(const vec3&);
     void MarkGlobalTransformDirty();
-    void AddAnimation(Animation*);
+    virtual void AddAnimation(const shared_ptr<Animation>&);
     [[nodiscard]] bool IsGlobalTransformDirty() const;
     [[nodiscard]] const Transform& GetGlobalTransform() const;
     [[nodiscard]] mat4 GetModelMatrix() const;

@@ -1,5 +1,5 @@
 #pragma once
-#include "../SceneNodes/Light.h"
+#include "Light.h"
 #include <GLM/glm.hpp>
 using namespace glm;
 
@@ -18,17 +18,16 @@ typedef enum LightRange {
 
 class PositionalLight : public Light {
 public:
-    PositionalLight(const string&, const vec3&, const Attenuation&);
-    explicit PositionalLight(const string&, const vec3&, LightRange = R100);
+    PositionalLight(const vec3&, const Attenuation&);
+    explicit PositionalLight(const vec3&, LightRange = R100);
     void SetPosition(const vec3&);
     void SetAttenuation(const Attenuation&);
     void SetAttenuationForRange(LightRange);
-    [[nodiscard]] vec3 GetCurrentPosition() const override;
+    [[nodiscard]] vec3 GetPosition() const override;
     [[nodiscard]] Attenuation GetAttenuation() const;
 
 protected:
     vec3 position;
     Attenuation attenuation;
-
     static Attenuation GetAttenuationForRange(LightRange);
 };

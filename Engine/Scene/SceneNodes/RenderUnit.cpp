@@ -1,26 +1,22 @@
 #include "RenderUnit.h"
-#include "../../Geometry/Meshes/Mesh.h"
-#include "../../Graphics/Texturing/Material.h"
+#include "../../Managers/MaterialManager.h"
+#include "../../Managers/MeshManager.h"
 
 
-RenderUnit::RenderUnit(const string& name, Mesh* mesh):
+RenderUnit::RenderUnit(const string& name, const shared_ptr<Mesh>& mesh):
     TransformNode(name),
-    mesh(shared_ptr<Mesh>(mesh)) {
+    mesh(MeshManager::GetOrCreate(mesh)) {
 }
 
 
-void RenderUnit::SetMaterial(Material* material) {
-    this->material = shared_ptr<Material>(material);
+void RenderUnit::SetMaterial(const shared_ptr<Material>& material) {
+    this->material = MaterialManager::GetOrCreate(material);
 }
 
 
 // TODO: Differentiate between diffuse and specular Texture
-void RenderUnit::SetTexture(const string& filePath) {
-    const auto texture = new Texture(filePath);
-    const auto material = new Material();
-    material->SetDiffuseMap(texture);
-    material->SetSpecularMap(texture);
-    this->SetMaterial(material);
+void RenderUnit::SetTexture(const string& textureFileName) {
+    this->SetMaterial(make_shared<Material>(textureFileName));
 }
 
 

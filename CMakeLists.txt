@@ -62,7 +62,6 @@ set(SOURCE_FILES
         Engine/Graphics/Texturing/CubeMap.cpp
         Engine/Graphics/Texturing/Material.cpp
         Engine/Graphics/Texturing/Texture.cpp
-        Engine/Graphics/Texturing/TextureUnitManager.cpp
 
         # Scene
         # Scene/Animations
@@ -82,7 +81,6 @@ set(SOURCE_FILES
         # Scene/SceneNodes
         Engine/Scene/SceneNodes/AnimationNode.cpp
         Engine/Scene/SceneNodes/Group.cpp
-        Engine/Scene/SceneNodes/Light.cpp
         Engine/Scene/SceneNodes/Model.cpp
         Engine/Scene/SceneNodes/RenderUnit.cpp
         Engine/Scene/SceneNodes/Scene.cpp
@@ -93,6 +91,18 @@ set(SOURCE_FILES
         Engine/Scene/Transforms/Scale.cpp
         Engine/Scene/Transforms/Transform.cpp
         Engine/Scene/Transforms/Translate.cpp
+        Engine/Managers/InstanceManager.h
+        Engine/Managers/MaterialManager.h
+        Engine/Managers/MeshManager.h
+        Engine/Managers/TextureManager.h
+        Engine/Managers.h
+        Engine/Managers/AnimationManager.h
+        Engine/Scene/SceneNodes/LightNode.cpp
+        Engine/Scene/SceneNodes/LightNode.h
+        Engine/Scene/Lights/Light.cpp
+        Engine/Scene/Lights/Light.h
+        Engine/Managers/LightManager.h
+        Engine/Managers/CurveManager.h
 )
 
 # Adding main Executable

@@ -13,9 +13,13 @@ public:
     int BindTexture();
     void UnbindTexture();
     void DeleteTexture();
-    ~Texture();
+    [[nodiscard]] const string& GetFilePath() const;
+    [[nodiscard]] GLuint GetID() const;
+    [[nodiscard]] GLenum GetType() const;
+    [[nodiscard]] GLenum GetUnit() const;
 
 private:
+    string filePath;
     GLuint textureID;
     GLenum textureType;
     GLenum textureUnit;

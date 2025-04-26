@@ -14,9 +14,11 @@ public:
     void Stop();
     void Reset();
     void Update(float deltaTime);
+    [[nodiscard]] Mode GetMode() const;
+    [[nodiscard]] float GetDuration() const;
     [[nodiscard]] bool IsPlaying() const;
     [[nodiscard]] bool IsPaused() const;
-    virtual Transform GetOffset() = 0;
+    [[nodiscard]] virtual Transform GetOffset() = 0;
     virtual ~Animation() = default;
 
 protected:

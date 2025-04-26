@@ -9,35 +9,6 @@ Curve::Curve(const CurveType type, const vector<vec3>& points, const int degree,
 }
 
 
-float Curve::EstimateParameter(const vec3& point, const int maxIterations, const float tolerance) const {
-    float bestT = 0.0f;
-    float bestDist = numeric_limits<float>::max();
-    for (int i = 0; i <= 10; i++) {
-        const float t = static_cast<float>(i) / 10;
-        vec3 samplePoint = Position(t);
-        const float dist = length(samplePoint - point);
-        if (dist < bestDist) {
-            bestDist = dist;
-            bestT = t;
-        }
-    }
-    for (int i = 0; i < maxIterations; i++) {
-        vec3 curvePoint = Position(bestT);
-        vec3 tangent = Velocity(bestT);
-        vec3 errorVector = curvePoint - point;
-        const float error = length(errorVector);
-        if (error < tolerance) break;
-        const float num = dot(errorVector, tangent);
-        const float denom = dot(tangent, tangent);
-        if (abs(denom) < 1e-6) break;
-        const float deltaT = num / denom;
-        bestT -= deltaT;
-        bestT = glm::clamp(bestT, 0.0f, 1.0f);
-    }
-    return bestT;
-}
-
-
 void Curve::SetParameterRange(const float tMin, const float tMax) {
     if (tMin < tMax) {
         this->tMin = tMin;
@@ -63,6 +34,39 @@ void Curve::AddControlPoint(const vec3& point) {
 }
 
 
+float Curve::EstimateParameter(const vec3& point, const int maxIterations, const float tolerance) const {
+    float bestT = 0.0f;
+    float bestDist = numeric_limits<float>::max();
+    for (int i = 0; i <= 10; i++) {
+        const float t = static_cast<float>(i) / 10;
+        vec3 samplePoint = Position(t);
+        const float dist = length(samplePoint - point);
+        if (dist < bestDist) {
+            bestDist = dist;
+            bestT = t;
+        }
+    }
+    for (int i = 0; i < maxIterations; i++) {
+        vec3 curvePoint = Position(bestT);
+        vec3 tangent = Velocity(bestT);
+        vec3 errorVector = curvePoint - point;
+        if (length(errorVector) < tolerance) break;
+        const float num = dot(errorVector, tangent);
+        const float denom = dot(tangent, tangent);
+        if (abs(denom) < 1e-6) break;
+        const float deltaT = num / denom;
+        bestT -= deltaT;
+        bestT = glm::clamp(bestT, 0.0f, 1.0f);
+    }
+    return bestT;
+}
+
+
+Curve::CurveType Curve::GetType() const {
+    return curveType;
+}
+
+
 Curve::CurveForm Curve::GetForm() const {
     return curveForm;
 }
@@ -83,22 +87,13 @@ vec3 Curve::GetCentroid() const {
 }
 
 
-vec3 Curve::Evaluate(float t, const EvaluationType target) const {
-    switch (curveForm) {
-        case OPEN: t = glm::clamp(t, tMin, tMax); break;
-        case LOOP: t = fmod(t - tMin, tMax - tMin) + tMin; break;
-    }
-    switch (target) {
-        case POSITION: return Position(t);
-        case VELOCITY: return Velocity(t);
-        case ACCELERATION: return Acceleration(t);
-        default: return vec3(0.0f);
-    }
+vector<vec3> Curve::GetControlPoints() const {
+    return controlPoints;
 }
 
 
-std::vector<vec3> Curve::Sample(const uint resolution, const EvaluationType type) const {
-    std::vector<vec3> sampledPoints;
+vector<vec3> Curve::Sample(const uint resolution, const EvaluationType type) const {
+    vector<vec3> sampledPoints;
     const float step = (tMax - tMin) / static_cast<float>(resolution);
     float t = tMin;
     while (t <= tMax) {
@@ -111,6 +106,20 @@ std::vector<vec3> Curve::Sample(const uint resolution, const EvaluationType type
         t += step;
     }
     return sampledPoints;
+}
+
+
+vec3 Curve::Evaluate(float t, const EvaluationType target) const {
+    switch (curveForm) {
+        case OPEN: t = glm::clamp(t, tMin, tMax); break;
+        case LOOP: t = fmod(t - tMin, tMax - tMin) + tMin; break;
+    }
+    switch (target) {
+        case POSITION: return Position(t);
+        case VELOCITY: return Velocity(t);
+        case ACCELERATION: return Acceleration(t);
+        default: return vec3(0.0f);
+    }
 }
 
 
@@ -134,9 +143,7 @@ void Curve::ComputeCentroid() {
         totalLength += segmentLength;
         centroid += positions[i] * segmentLength;
     }
-    centroid = totalLength > 0
-        ? centroid / totalLength
-        : vec3(0.0f);
+    centroid = (totalLength > 0) ? centroid / totalLength : vec3(0.0f);
 }
 
 
@@ -158,7 +165,7 @@ mat3 Curve::ComputeFrenetFrame(const float t) const {
     vec3 binormal = normalize(cross(tangent, normal));
     normal = normalize(cross(binormal, tangent));
     const bool tangentChanged = length(cross(lastFrenetFrame[0], tangent)) > 0.01f;
-    const bool normalChanged = length(cross(lastFrenetFrame[1], normal)) > 0.01f;
+    const bool normalChanged = length(cross(lastFrenetFrame[1], normal)) > 0.01f; // NOLINT
     if (tangentChanged || normalChanged) {
         lastFrenetFrame = {tangent, normal, binormal};
     }
@@ -205,7 +212,7 @@ mat3 Curve::ComputeCentroidFrame(const float t) const {
     vec3 binormal = normalize(cross(tangent, normal));
     normal = normalize(cross(binormal, tangent));
     const bool tangentChanged = length(cross(lastCentroidFrame[0], tangent)) > 0.01f;
-    const bool normalChanged = length(cross(lastCentroidFrame[1], normal)) > 0.01f;
+    const bool normalChanged = length(cross(lastCentroidFrame[1], normal)) > 0.01f; // NOLINT
     if (tangentChanged || normalChanged) {
         lastCentroidFrame = {tangent, normal, binormal};
     }

@@ -2,25 +2,25 @@
 #include "TransformNode.h"
 #include <unordered_map>
 #include <string>
-class Light; class RenderUnit;
+class Light; class Mesh; class LightNode; class RenderUnit;
 using namespace std;
 
 
 class Model final : public TransformNode {
 public:
     explicit Model(const string&);
-    void AddLight(Light*, const string& = "");
-    void AddRenderUnit(RenderUnit*, const string& = "");
+    void AddLight(const string&, const shared_ptr<Light>&, const string& = "");
+    void AddRenderUnit(const string&, const shared_ptr<Mesh>&, const string& = "");
     template <typename T> shared_ptr<T> LastAddedAs() const;
-    [[nodiscard]] shared_ptr<Light> GetLightByName(const string&) const;
+    [[nodiscard]] shared_ptr<LightNode> GetLightByName(const string&) const;
     [[nodiscard]] shared_ptr<RenderUnit> GetRenderUnitByName(const string&) const;
-    [[nodiscard]] vector<shared_ptr<Light>>& GetLights();
+    [[nodiscard]] vector<shared_ptr<LightNode>>& GetLights();
     [[nodiscard]] vector<shared_ptr<RenderUnit>>& GetRenderUnits();
     void UpdateSelf(float) override {}
 
 private:
     shared_ptr<SceneNode> lastAdded = nullptr;
-    vector<shared_ptr<Light>> lights;
+    vector<shared_ptr<LightNode>> lights;
     vector<shared_ptr<RenderUnit>> renderUnits;
     template <typename T> void AddSceneNode(const shared_ptr<T>&, const string&, vector<shared_ptr<T>>&);
     shared_ptr<SceneNode> FindSceneNodeByName(const string&) const;

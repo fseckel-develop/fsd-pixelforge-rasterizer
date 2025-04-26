@@ -1,4 +1,5 @@
 #include "Material.h"
+#include "../../Managers/TextureManager.h"
 
 
 Material::Material() {
@@ -8,14 +9,14 @@ Material::Material() {
 
 
 Material::Material(const string& path) {
-    this->diffuseMap = new Texture(path);
+    this->diffuseMap = TextureManager::GetOrCreate(make_shared<Texture>(path));
     this->specularMap = nullptr;
 }
 
 
-Material::Material(Texture* diffTexture, Texture* specTexture, const vec4 ambient, const vec4 diffuse, const vec4 specular, const float shininess) {
-    this->diffuseMap = diffTexture;
-    this->specularMap = specTexture;
+Material::Material(const shared_ptr<Texture>& diffuseMap, const shared_ptr<Texture>& specularMap, const vec4 ambient, const vec4 diffuse, const vec4 specular, const float shininess) {
+    this->diffuseMap = TextureManager::GetOrCreate(diffuseMap);
+    this->specularMap = TextureManager::GetOrCreate(specularMap);
     this->ambient = ambient;
     this->diffuse = diffuse;
     this->specular = specular;
@@ -23,13 +24,13 @@ Material::Material(Texture* diffTexture, Texture* specTexture, const vec4 ambien
 }
 
 
-void Material::SetDiffuseMap(Texture* diffuseMap) {
-    this->diffuseMap = diffuseMap;
+void Material::SetDiffuseMap(const shared_ptr<Texture>& diffuseMap) {
+    this->diffuseMap = TextureManager::GetOrCreate(diffuseMap);
 }
 
 
-void Material::SetSpecularMap(Texture* specularMap) {
-    this->specularMap = specularMap;
+void Material::SetSpecularMap(const shared_ptr<Texture>& specularMap) {
+    this->specularMap = TextureManager::GetOrCreate(specularMap);
 }
 
 
@@ -53,12 +54,12 @@ void Material::SetShininess(const float shininess) {
 }
 
 
-Texture* Material::GetDiffuseMap() const {
+shared_ptr<Texture> Material::GetDiffuseMap() const {
     return this->diffuseMap;
 }
 
 
-Texture* Material::GetSpecularMap() const {
+shared_ptr<Texture> Material::GetSpecularMap() const {
     return this->specularMap;
 }
 

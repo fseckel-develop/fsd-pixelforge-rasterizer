@@ -12,6 +12,16 @@ Rotation::Rotation(const vec3 axis, const float angle, const float duration, con
 }
 
 
+float Rotation::GetTotalAngle() const {
+    return totalAngle;
+}
+
+
+const vec3& Rotation::GetRotationAxis() const {
+    return rotationAxis;
+}
+
+
 Transform Rotation::GetOffset() {
     Transform offset;
     const float angle = radians(totalAngle * GetProgress());

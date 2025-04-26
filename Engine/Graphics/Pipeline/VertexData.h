@@ -24,14 +24,16 @@ public:
     const map<VertexAttribute, AttributeData>& GetAttributes() const;
     template <typename T> const vector<T>& GetAttribute(VertexAttribute) const;
     [[nodiscard]] bool HasAttribute(VertexAttribute) const;
-    [[nodiscard]] const void* GetBufferData() const;
+    [[nodiscard]] const vector<uint8_t>& GetInterleavedVector() const;
+    [[nodiscard]] const void* GetBufferDataPointer() const;
     [[nodiscard]] GLsizeiptr GetBufferSize() const;
+    [[nodiscard]] GLsizei GetVertexCount() const;
     void Clear();
 
 private:
     map<VertexAttribute, AttributeData> attributes;
     mutable vector<uint8_t> interleavedData;
-    unsigned int vertexCount;
+    GLsizei vertexCount;
     void UpdateInterleavedData() const;
 };
 

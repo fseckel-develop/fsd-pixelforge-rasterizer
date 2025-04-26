@@ -2,8 +2,7 @@
 #include "Curve.h"
 #include <vector>
 #include <GLM/glm.hpp>
-using namespace std;
-using namespace glm;
+using namespace std; using namespace glm;
 
 
 class HermiteSpline final : public Curve {

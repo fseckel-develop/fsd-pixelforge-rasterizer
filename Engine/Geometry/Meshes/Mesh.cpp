@@ -14,13 +14,18 @@ Mesh::Mesh(VertexData vertexData, const vector<GLuint>& indices) {
 }
 
 
-Mesh::Mesh(const string& filePath, const bool invertY) {
-    ParseOBJ(filePath, invertY);
+Mesh::Mesh(const string& fileName, const bool invertY) {
+    ParseOBJ(fileName, invertY);
     Mesh::SetupMesh();
 }
 
 
-const VertexArray* Mesh::GetVAO() const {
+void Mesh::SetVAO(const shared_ptr<VertexArray>& VAO) {
+    this->VAO = VAO;
+}
+
+
+const shared_ptr<VertexArray>& Mesh::GetVAO() const {
     return VAO;
 }
 
@@ -36,24 +41,13 @@ const vector<GLuint>& Mesh::GetIndices() const {
 
 
 GLsizei Mesh::GetVertexCount() const {
-    return vertexCount;
-}
-
-
-void Mesh::Render() const {
-    VAO->BindVAO();
-    if (indices.empty()) {
-        glDrawArrays(GL_TRIANGLES, 0, vertexCount);
-    } else {
-        glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, nullptr);
-    }
-    VertexArray::UnbindVAO();
+    return vertexData.GetVertexCount();
 }
 
 
 void Mesh::SetupMesh() {
     if (!vertexData.HasAttribute(POSITION)) return;
-    VAO = new VertexArray();
+    VAO = make_shared<VertexArray>();
     const auto VBO = VertexBuffer(vertexData);
     VAO->AddVertexBuffer(VBO);
     const auto IBO = IndexBuffer(indices);
@@ -78,14 +72,9 @@ void Mesh::UpdateMesh() {
 }
 
 
-Mesh::~Mesh() {
-    VAO->DeleteVAO();
-}
-
-
 const filesystem::path modelDirectory = "../Resources/Models";
-void Mesh::ParseOBJ(const string& modelFileName, const bool invertY) {
-    const auto modelFilePath = modelDirectory / modelFileName;
+void Mesh::ParseOBJ(const string& fileName, const bool invertY) {
+    const auto modelFilePath = modelDirectory / fileName;
     ifstream fileStream(modelFilePath, ios::in);
     vector<vec3> positions, pos;
     vector<vec2> textureCoordinates, tex;
@@ -135,5 +124,4 @@ void Mesh::ParseOBJ(const string& modelFileName, const bool invertY) {
     vertexData.SetAttribute(POSITION, positions);
     vertexData.SetAttribute(TEXTURE, textureCoordinates);
     vertexData.SetAttribute(NORMAL, normals);
-    vertexCount = static_cast<GLsizei>(positions.size());
 }

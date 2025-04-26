@@ -22,9 +22,9 @@ void main(void) {
         lighting = Add(lighting, EvaluateLight(lights[i], fragmentPosition, fragmentNormal, viewDirection, material.shininess));
     }
     vec4 materialDiffuse = material.useDiffuseMap ? vec4(texture(material.diffuseMap, textureCoordinate)) : material.diffuse;
-    vec4 materialSpecular = material.useSpecularMap ? vec4(texture(material.specularMap, textureCoordinate)) : materialDiffuse;
+    vec4 materialSpecular = material.useSpecularMap ? vec4(texture(material.specularMap, textureCoordinate)) : material.specular;
     vec4 ambientColor = vec4(lighting.ambient, 1.0f) * material.ambient;
     vec4 diffuseColor = vec4(lighting.diffuse, 1.0f) * materialDiffuse;
     vec4 specularColor = vec4(lighting.specular, 1.0f) * materialSpecular;
-    fragmentColor = ambientColor + diffuseColor + specularColor;
+    fragmentColor = vec4((ambientColor + diffuseColor + specularColor).rgb, 1.0f);
 }

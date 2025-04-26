@@ -1,23 +1,22 @@
 #pragma once
 #include "Texture.h"
 #include <GLM/glm.hpp>
-using namespace std;
-using namespace glm;
+using namespace std; using namespace glm;
 
 
 class Material {
 public:
     Material();
     explicit Material(const string&);
-    Material(Texture*, Texture*, vec4, vec4, vec4, float);
-    void SetDiffuseMap(Texture*);
-    void SetSpecularMap(Texture*);
+    Material(const shared_ptr<Texture>&, const shared_ptr<Texture>&, vec4, vec4, vec4, float);
+    void SetDiffuseMap(const shared_ptr<Texture>&);
+    void SetSpecularMap(const shared_ptr<Texture>&);
     void SetAmbientColor(vec4);
     void SetDiffuseColor(vec4);
     void SetSpecularColor(vec4);
     void SetShininess(float);
-    [[nodiscard]] Texture* GetDiffuseMap() const;
-    [[nodiscard]] Texture* GetSpecularMap() const;
+    [[nodiscard]] shared_ptr<Texture> GetDiffuseMap() const;
+    [[nodiscard]] shared_ptr<Texture> GetSpecularMap() const;
     [[nodiscard]] vec4 GetAmbient() const;
     [[nodiscard]] vec4 GetDiffuse() const;
     [[nodiscard]] vec4 GetSpecular() const;
@@ -25,8 +24,8 @@ public:
     void UnbindTextures() const;
 
 protected:
-    Texture* diffuseMap;
-    Texture* specularMap;
+    shared_ptr<Texture> diffuseMap;
+    shared_ptr<Texture> specularMap;
     vec4 ambient = vec4(0.0f);
     vec4 diffuse = vec4(0.0f);
     vec4 specular = vec4(0.0f);

@@ -1,8 +1,8 @@
 #include "DirectionalLight.h"
 
 
-DirectionalLight::DirectionalLight(const string& name, const vec3& direction):
-    Light(name, DIRECTIONAL),
+DirectionalLight::DirectionalLight(const vec3& direction):
+    Light(DIRECTIONAL),
     direction(normalize(direction)) {
 }
 
@@ -12,6 +12,6 @@ void DirectionalLight::SetDirection(const vec3& direction) {
 }
 
 
-vec3 DirectionalLight::GetCurrentDirection() const {
-    return normalize(vec3(GetModelMatrix() * vec4(direction, 0.0f)));
+vec3 DirectionalLight::GetDirection() const {
+    return direction;
 }

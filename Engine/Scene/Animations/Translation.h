@@ -8,7 +8,9 @@ using namespace glm;
 class Translation final : public Animation {
 public:
     Translation(float, vec3, float = 4.0f, Mode = BOUNCE);
-    Transform GetOffset() override;
+    [[nodiscard]] float GetTotalDistance() const;
+    [[nodiscard]] const vec3& GetDirection() const;
+    [[nodiscard]] Transform GetOffset() override;
 
 private:
     float totalDistance;

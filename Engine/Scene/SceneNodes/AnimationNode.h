@@ -8,8 +8,8 @@ using namespace std;
 class AnimationNode final : public TransformNode {
 public:
     explicit AnimationNode(const string&);
-    void AddAnimation(const std::shared_ptr<Animation>&);
-    void RemoveAnimation(const std::shared_ptr<Animation>&);
+    void AddAnimation(const shared_ptr<Animation>&) override;
+    void RemoveAnimation(const shared_ptr<Animation>&);
     void PlayAllAnimations() const;
     void PauseAllAnimations() const;
     void ResumeAllAnimations() const;

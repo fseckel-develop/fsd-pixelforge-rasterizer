@@ -31,7 +31,7 @@ GLsizei VertexBufferLayout::GetStride() const {
 
 void VertexBufferLayout::UpdateLayout() {
     stride = 0;
-    for (auto& element : elements) {
+    for (auto& element : elements) { // NOLINT
         element.offset = stride;
         stride += VertexBufferElement::GetTypeSize(element.type) * element.size;
     }

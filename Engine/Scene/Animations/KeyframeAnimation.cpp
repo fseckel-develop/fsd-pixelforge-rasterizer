@@ -17,6 +17,11 @@ void KeyframeAnimation::AddKeyframe(const float timeStamp, const Transform& tran
 }
 
 
+const vector<Keyframe>& KeyframeAnimation::GetKeyframes() const {
+    return keyframes;
+}
+
+
 Transform KeyframeAnimation::GetOffset() {
     return Interpolate(GetProgress());
 }

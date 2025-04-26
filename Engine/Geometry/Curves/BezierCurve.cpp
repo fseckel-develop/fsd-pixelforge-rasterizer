@@ -14,8 +14,8 @@ void BezierCurve::AddControlPoint(const vec3& point) {
 }
 
 
-std::vector<vec3> BezierCurve::GetDerivativePoints(const int degree) {
-    return derivativePoints[degree];
+const vector<vec3>& BezierCurve::GetDerivativePoints(const int degree) const {
+    return derivativePoints[glm::clamp(degree, 0, 1)];
 }
 
 

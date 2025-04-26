@@ -1,5 +1,5 @@
 #include "AnimationNode.h"
-#include "../Animations/Animation.h"
+#include "../../Managers/AnimationManager.h"
 
 
 AnimationNode::AnimationNode(const string& name):
@@ -10,13 +10,13 @@ AnimationNode::AnimationNode(const string& name):
 void AnimationNode::AddAnimation(const shared_ptr<Animation>& animation) {
     if (animation) {
         animation->Reset();
-        animations.push_back(animation);
+        animations.push_back(AnimationManager::GetOrCreate(animation));
         MarkGlobalTransformDirty();
     }
 }
 
 
-void AnimationNode::RemoveAnimation(const std::shared_ptr<Animation>& animation) {
+void AnimationNode::RemoveAnimation(const shared_ptr<Animation>& animation) {
     erase(animations, animation);
     MarkGlobalTransformDirty();
 }

@@ -1,6 +1,6 @@
 #include "Scene.h"
 #include "Model.h"
-#include "Light.h"
+#include "LightNode.h"
 
 
 Scene::Scene(const string& name):
@@ -13,8 +13,8 @@ void Scene::AddModel(const shared_ptr<Model>& model) const {
 }
 
 
-void Scene::AddLight(const shared_ptr<Light>& light) const {
-    if (light) globalLights->AddChild(light);
+void Scene::AddLight(const string& name, const shared_ptr<Light>& light) const {
+    globalLights->AddChild(make_shared<LightNode>(name, light));
 }
 
 
@@ -27,17 +27,19 @@ vector<shared_ptr<Model>> Scene::GetModels() const {
 }
 
 
-vector<shared_ptr<Light>> Scene::GetGlobalLights() const {
-    vector<shared_ptr<Light>> globalLights;
+vector<shared_ptr<LightNode>> Scene::GetGlobalLights() const {
+    vector<shared_ptr<LightNode>> globalLights;
     for (const auto& child : this->globalLights->GetChildren()) {
-        if (const auto light = dynamic_pointer_cast<Light>(child)) globalLights.push_back(light);
+        if (const auto light = dynamic_pointer_cast<LightNode>(child)) {
+            globalLights.push_back(light);
+        }
     }
     return globalLights;
 }
 
 
-vector<shared_ptr<Light>> Scene::GetAllLights() const {
-    vector<shared_ptr<Light>> allLights = GetGlobalLights();
+vector<shared_ptr<LightNode>> Scene::GetAllLights() const {
+    vector<shared_ptr<LightNode>> allLights = GetGlobalLights();
     for (const auto& child : models->GetChildren()) {
         if (const auto model = dynamic_pointer_cast<Model>(child)) {
             for (const auto& light : model->GetLights()) allLights.push_back(light);

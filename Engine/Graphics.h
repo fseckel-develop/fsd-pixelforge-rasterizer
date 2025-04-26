@@ -12,4 +12,3 @@
 #include "Graphics/Texturing/CubeMap.h"
 #include "Graphics/Texturing/Material.h"
 #include "Graphics/Texturing/Texture.h"
-#include "Graphics/Texturing/TextureUnitManager.h"

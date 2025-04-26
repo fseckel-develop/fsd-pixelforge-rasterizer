@@ -9,6 +9,11 @@ Orbiting::Orbiting(const float radius, const vec3 axis, const float angle, const
 }
 
 
+float Orbiting::GetRadius() const {
+    return radius;
+}
+
+
 Transform Orbiting::GetOffset() {
     Transform offset;
     const float currentAngle = radians(totalAngle * GetProgress());

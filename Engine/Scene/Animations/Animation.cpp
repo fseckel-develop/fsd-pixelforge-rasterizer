@@ -14,7 +14,6 @@ void Animation::SetDuration(const float duration) {
 }
 
 
-
 void Animation::Play() {
     if (!isPlaying || isPaused) {
         isPlaying = true;
@@ -53,6 +52,16 @@ void Animation::Update(const float deltaTime) {
     if (isPlaying) {
         elapsedTime += deltaTime;
     }
+}
+
+
+Animation::Mode Animation::GetMode() const {
+    return mode;
+}
+
+
+float Animation::GetDuration() const {
+    return duration;
 }
 
 

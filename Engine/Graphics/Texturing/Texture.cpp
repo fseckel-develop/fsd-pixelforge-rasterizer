@@ -1,13 +1,16 @@
 #include "Texture.h"
-#include "TextureUnitManager.h"
+#include "../../Managers/TextureManager.h"
 #include <SOIL2/SOIL2.h>
+#include <fstream>
 #include <iostream>
 
 
-Texture::Texture(const string& filePath, const GLenum type, const GLint format) {
+const filesystem::path textureDirectory = "../Resources/Textures";
+Texture::Texture(const string& fileName, const GLenum type, const GLint format) {
+    this->filePath = textureDirectory / fileName;
     this->textureID = 0;
     this->textureType = type;
-    this->textureUnit = TextureUnitManager::NoUnit();
+    this->textureUnit = TextureManager::NoUnit();
     glGenTextures(1, &textureID);
     glBindTexture(textureType, textureID);
     int width, height;
@@ -29,7 +32,7 @@ Texture::Texture(const string& filePath, const GLenum type, const GLint format) 
 Texture::Texture(const vector<string>& faces) {
     this->textureID = 0;
     this->textureType = GL_TEXTURE_CUBE_MAP;
-    this->textureUnit = TextureUnitManager::NoUnit();
+    this->textureUnit = TextureManager::NoUnit();
     glGenTextures(1, &textureID);
     glBindTexture(textureType, textureID);
     int width, height;
@@ -66,7 +69,7 @@ void Texture::SetFiltering(const GLint minFilter, const GLint magFilter) const {
 
 
 int Texture::BindTexture() {
-    if (textureUnit == TextureUnitManager::NoUnit()) textureUnit = TextureUnitManager::GetFreeUnit();
+    if (textureUnit == TextureManager::NoUnit()) textureUnit = TextureManager::GetFreeUnit();
     glActiveTexture(textureUnit);
     glBindTexture(textureType, textureID);
     return static_cast<int>(textureUnit - GL_TEXTURE0);
@@ -75,8 +78,7 @@ int Texture::BindTexture() {
 
 void Texture::UnbindTexture() {
     glBindTexture(textureType, 0);
-    TextureUnitManager::ReleaseUnit(textureUnit);
-    textureUnit = TextureUnitManager::NoUnit();
+    TextureManager::ReleaseUnit(textureUnit);
 }
 
 
@@ -86,6 +88,21 @@ void Texture::DeleteTexture() {
 }
 
 
-Texture::~Texture() {
-    DeleteTexture();
+const string& Texture::GetFilePath() const {
+    return filePath;
+}
+
+
+GLuint Texture::GetID() const {
+    return textureID;
+}
+
+
+GLenum Texture::GetType() const {
+    return textureType;
+}
+
+
+GLenum Texture::GetUnit() const {
+    return textureUnit;
 }

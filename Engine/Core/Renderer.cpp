@@ -12,9 +12,9 @@
 unordered_map<string, shared_ptr<ShaderProgram>> Renderer::shaderPrograms;
 shared_ptr<ShaderProgram> Renderer::currentProgram = nullptr;
 auto fallbackMaterial = make_shared<Material>(WhiteRubber());
-vector<shared_ptr<Light>> fallbackLights = {
-    make_shared<AmbientLight>("Ambient", vec3(1.0f, 1.0f, 1.0f), 1.0f),
-    make_shared<DirectionalLight>("Directional", vec3(1.0f, -2.0f, -2.0f)),
+vector fallbackLights = {
+    make_shared<LightNode>("Ambient", shared<AmbientLight>(vec3(1.0f, 1.0f, 1.0f), 1.0f)),
+    make_shared<LightNode>("Directional", shared<DirectionalLight>(vec3(1.0f, -2.0f, -2.0f)))
 };
 
 
@@ -42,7 +42,7 @@ void Renderer::Render(const shared_ptr<Mesh>& mesh, const RenderMode mode) {
 }
 
 
-void Renderer::Render(const shared_ptr<Light>& light, const RenderMode mode) {
+void Renderer::Render(const shared_ptr<LightNode>& light, const RenderMode mode) {
     light->UpdateSelfAndChildren(Input::GetDeltaTime());
     PrepareFrameGL(mode);
     DrawLight(light);
@@ -96,41 +96,42 @@ void Renderer::SetCameraUniforms() {
 }
 
 
-void Renderer::SetLightingUniforms(const vector<shared_ptr<Light>>& lights) {
+void Renderer::SetLightingUniforms(const vector<shared_ptr<LightNode>>& lightNodes) {
     if (currentProgram != shaderPrograms.at("Lighting")) SetShaderProgram("Lighting");
-    currentProgram->SetUniform("lightCount", static_cast<int>(lights.size()));
-    for (size_t i = 0; i < lights.size(); i++) {
-        currentProgram->SetUniform(ArrayElement("lights", i, "type"), static_cast<int>(lights[i]->GetType()));
-        currentProgram->SetUniform(ArrayElement("lights", i, "ambient.color"), lights[i]->GetAmbient().color);
-        currentProgram->SetUniform(ArrayElement("lights", i, "ambient.intensity"), lights[i]->GetAmbient().intensity);
-        currentProgram->SetUniform(ArrayElement("lights", i, "diffuse.color"), lights[i]->GetDiffuse().color);
-        currentProgram->SetUniform(ArrayElement("lights", i, "diffuse.intensity"), lights[i]->GetDiffuse().intensity);
-        currentProgram->SetUniform(ArrayElement("lights", i, "specular.color"), lights[i]->GetSpecular().color);
-        currentProgram->SetUniform(ArrayElement("lights", i, "specular.intensity"), lights[i]->GetSpecular().intensity);
-        switch (lights[i]->GetType()) {
+    currentProgram->SetUniform("lightCount", static_cast<int>(lightNodes.size()));
+    for (size_t i = 0; i < lightNodes.size(); i++) {
+        auto light = lightNodes.at(i)->GetLight();
+        currentProgram->SetUniform(ArrayElement("lights", i, "type"), static_cast<int>(light->GetType()));
+        currentProgram->SetUniform(ArrayElement("lights", i, "ambient.color"), light->GetAmbient().color);
+        currentProgram->SetUniform(ArrayElement("lights", i, "ambient.intensity"), light->GetAmbient().intensity);
+        currentProgram->SetUniform(ArrayElement("lights", i, "diffuse.color"), light->GetDiffuse().color);
+        currentProgram->SetUniform(ArrayElement("lights", i, "diffuse.intensity"), light->GetDiffuse().intensity);
+        currentProgram->SetUniform(ArrayElement("lights", i, "specular.color"), light->GetSpecular().color);
+        currentProgram->SetUniform(ArrayElement("lights", i, "specular.intensity"), light->GetSpecular().intensity);
+        switch (light->GetType()) {
             case AMBIENT: break;
             case DIRECTIONAL: {
-                const auto light = dynamic_pointer_cast<DirectionalLight>(lights[i]);
-                currentProgram->SetUniform(ArrayElement("lights", i, "direction"), light->GetCurrentDirection());
+                const auto directionalLight = dynamic_pointer_cast<DirectionalLight>(light);
+                currentProgram->SetUniform(ArrayElement("lights", i, "direction"), lightNodes.at(i)->GetCurrentDirection());
                 break;
             }
             case POSITIONAL: {
-                const auto light = dynamic_pointer_cast<PositionalLight>(lights[i]);
-                currentProgram->SetUniform(ArrayElement("lights", i, "position"), light->GetCurrentPosition());
-                currentProgram->SetUniform(ArrayElement("lights", i, "attenuation.constant"), light->GetAttenuation().constant);
-                currentProgram->SetUniform(ArrayElement("lights", i, "attenuation.linear"), light->GetAttenuation().linear);
-                currentProgram->SetUniform(ArrayElement("lights", i, "attenuation.quadratic"), light->GetAttenuation().quadratic);
+                const auto positionalLight = dynamic_pointer_cast<PositionalLight>(light);
+                currentProgram->SetUniform(ArrayElement("lights", i, "position"), lightNodes.at(i)->GetCurrentPosition());
+                currentProgram->SetUniform(ArrayElement("lights", i, "attenuation.constant"), positionalLight->GetAttenuation().constant);
+                currentProgram->SetUniform(ArrayElement("lights", i, "attenuation.linear"), positionalLight->GetAttenuation().linear);
+                currentProgram->SetUniform(ArrayElement("lights", i, "attenuation.quadratic"), positionalLight->GetAttenuation().quadratic);
                 break;
             }
             case SPOT: {
-                const auto light = dynamic_pointer_cast<SpotLight>(lights[i]);
-                currentProgram->SetUniform(ArrayElement("lights", i, "direction"), light->GetCurrentDirection());
-                currentProgram->SetUniform(ArrayElement("lights", i, "position"), light->GetCurrentPosition());
-                currentProgram->SetUniform(ArrayElement("lights", i, "attenuation.constant"), light->GetAttenuation().constant);
-                currentProgram->SetUniform(ArrayElement("lights", i, "attenuation.linear"), light->GetAttenuation().linear);
-                currentProgram->SetUniform(ArrayElement("lights", i, "attenuation.quadratic"), light->GetAttenuation().quadratic);
-                currentProgram->SetUniform(ArrayElement("lights", i, "innerCutoff"), light->GetInnerCutoff());
-                currentProgram->SetUniform(ArrayElement("lights", i, "outerCutoff"), light->GetOuterCutoff());
+                const auto spotLight = dynamic_pointer_cast<SpotLight>(light);
+                currentProgram->SetUniform(ArrayElement("lights", i, "direction"), lightNodes.at(i)->GetCurrentDirection());
+                currentProgram->SetUniform(ArrayElement("lights", i, "position"), lightNodes.at(i)->GetCurrentPosition());
+                currentProgram->SetUniform(ArrayElement("lights", i, "attenuation.constant"), spotLight->GetAttenuation().constant);
+                currentProgram->SetUniform(ArrayElement("lights", i, "attenuation.linear"), spotLight->GetAttenuation().linear);
+                currentProgram->SetUniform(ArrayElement("lights", i, "attenuation.quadratic"), spotLight->GetAttenuation().quadratic);
+                currentProgram->SetUniform(ArrayElement("lights", i, "innerCutoff"), spotLight->GetInnerCutoff());
+                currentProgram->SetUniform(ArrayElement("lights", i, "outerCutoff"), spotLight->GetOuterCutoff());
                 break;
             }
         }
@@ -167,15 +168,15 @@ void Renderer::DrawMesh(const shared_ptr<Mesh>& mesh) {
 }
 
 
-void Renderer::DrawLight(const shared_ptr<Light>& light) {
-    if (light->ToBeRendered()) {
+void Renderer::DrawLight(const shared_ptr<LightNode>& lightNode) {
+    if (lightNode->ToBeRendered()) {
         SetShaderProgram("Emissive");
-        currentProgram->SetUniform("modelMatrix", light->GetModelMatrix());
+        currentProgram->SetUniform("modelMatrix", lightNode->GetModelMatrix());
         currentProgram->SetUniform("viewMatrix", Camera::GetViewMatrix());
         currentProgram->SetUniform("projectionMatrix", Camera::GetProjectionMatrix());
-        currentProgram->SetUniform("emissive.color", light->GetAmbient().color);
-        currentProgram->SetUniform("emissive.intensity", light->GetAmbient().intensity);
-        Draw(light->GetMesh());
+        currentProgram->SetUniform("emissive.color", lightNode->GetLight()->GetAmbient().color);
+        currentProgram->SetUniform("emissive.intensity", lightNode->GetLight()->GetAmbient().intensity);
+        Draw(lightNode->GetMesh());
     }
 }
 

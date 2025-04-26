@@ -21,7 +21,7 @@
 
 #include "Scene/SceneNodes/AnimationNode.h"
 #include "Scene/SceneNodes/Group.h"
-#include "Scene/SceneNodes/Light.h"
+#include "Scene/SceneNodes/LightNode.h"
 #include "Scene/SceneNodes/Model.h"
 #include "Scene/SceneNodes/RenderUnit.h"
 #include "Scene/SceneNodes/Scene.h"

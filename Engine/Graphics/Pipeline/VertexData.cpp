@@ -7,7 +7,7 @@ VertexData::VertexData(): vertexCount(0) {}
 
 
 void VertexData::SetAttribute(const VertexAttribute attribute, const AttributeData& data) {
-    uint dataSize;
+    GLsizei dataSize;
     visit([&](const auto& attributeData) { dataSize = attributeData.size(); }, data);
     if (attribute == POSITION) {
         vertexCount = dataSize;
@@ -37,13 +37,23 @@ const map<VertexAttribute, VertexData::AttributeData>& VertexData::GetAttributes
 }
 
 
-const void* VertexData::GetBufferData() const {
+const std::vector<uint8_t>& VertexData::GetInterleavedVector() const {
+    return interleavedData;
+}
+
+
+const void* VertexData::GetBufferDataPointer() const {
     return interleavedData.empty() ? nullptr : interleavedData.data();
 }
 
 
 GLsizeiptr VertexData::GetBufferSize() const {
     return static_cast<GLsizeiptr>(interleavedData.size());
+}
+
+
+GLsizei VertexData::GetVertexCount() const {
+    return vertexCount;
 }
 
 

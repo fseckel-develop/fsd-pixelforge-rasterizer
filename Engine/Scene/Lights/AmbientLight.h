@@ -1,12 +1,12 @@
 #pragma once
-#include "../SceneNodes/Light.h"
+#include "Light.h"
 #include <GLM/glm.hpp>
 using namespace glm;
 
 
 class AmbientLight final : public Light {
 public:
-    explicit AmbientLight(const string&, const vec3& = vec3(1.0f), float = 1.0f);
+    explicit AmbientLight(const vec3& = vec3(1.0f), float = 1.0f);
     void SetDiffuse(const vec3&, float) override {}
     void SetSpecular(const vec3&, float) override {}
 };

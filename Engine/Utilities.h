@@ -31,6 +31,12 @@ public:
 };
 
 
+template<typename T, typename... Args>
+shared_ptr<T> shared(Args&&... args) {
+    return std::make_shared<T>(std::forward<Args>(args)...);
+}
+
+
 inline void Utilities::PrintShaderInfoLog(const GLuint shaderID) {
     int infoLogLength;
     glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &infoLogLength);

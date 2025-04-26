@@ -1,8 +1,8 @@
 #include "SpotLight.h"
 
 
-SpotLight::SpotLight(const string& name, const vec3& position, const vec3& direction, const Attenuation& attenuation):
-    PositionalLight(name, position, attenuation),
+SpotLight::SpotLight(const vec3& position, const vec3& direction, const Attenuation& attenuation):
+    PositionalLight(position, attenuation),
     direction(normalize(direction)),
     innerCutoff(cos(radians(5.0f))),
     outerCutoff(cos(radians(15.0f))) {
@@ -10,8 +10,8 @@ SpotLight::SpotLight(const string& name, const vec3& position, const vec3& direc
 }
 
 
-SpotLight::SpotLight(const string& name, const vec3& position, const vec3& direction, const LightRange range):
-    PositionalLight(name, position, GetAttenuationForRange(range)),
+SpotLight::SpotLight(const vec3& position, const vec3& direction, const LightRange range):
+    PositionalLight(position, GetAttenuationForRange(range)),
     direction(normalize(direction)),
     innerCutoff(cos(radians(5.0f))),
     outerCutoff(cos(radians(15.0f))) {
@@ -36,8 +36,8 @@ void SpotLight::SetCutoffAngles(const float firstAngle, const float secondAngle)
 }
 
 
-vec3 SpotLight::GetCurrentDirection() const {
-    return normalize(vec3(GetModelMatrix() * vec4(direction, 0.0f)));
+vec3 SpotLight::GetDirection() const {
+    return direction;
 }
 
 

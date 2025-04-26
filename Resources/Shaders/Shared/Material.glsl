@@ -1,5 +1,4 @@
 
-
 struct Material {
     bool useDiffuseMap;
     bool useSpecularMap;
@@ -10,4 +9,3 @@ struct Material {
     vec4 specular;
     float shininess;
 };
-

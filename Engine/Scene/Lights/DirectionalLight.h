@@ -1,14 +1,14 @@
 #pragma once
-#include "../SceneNodes/Light.h"
+#include "Light.h"
 #include <GLM/glm.hpp>
 using namespace glm;
 
 
 class DirectionalLight final : public Light {
 public:
-    explicit DirectionalLight(const string&, const vec3&);
+    explicit DirectionalLight(const vec3&);
     void SetDirection(const vec3&);
-    [[nodiscard]] vec3 GetCurrentDirection() const override;
+    [[nodiscard]] vec3 GetDirection() const override;
 
 private:
     vec3 direction;

@@ -45,6 +45,13 @@ float GetAttenuationFactor(Light light, vec3 fragmentPosition) {
 }
 
 
+float GetSpecularIntensity(vec3 N, vec3 H, float shininess) {
+    float dotNH = max(dot(N, H), 0.0);
+    if (shininess <= 0.0) return 0.0;
+    return pow(dotNH, shininess);
+}
+
+
 Lighting NoLighting(void) {
     Lighting lighting;
     lighting.ambient = vec3(0.0f);
@@ -78,7 +85,7 @@ Lighting EvaluateDirectionalLight(Light light, vec3 fragmentNormal, vec3 viewDir
     vec3 L = normalize(-light.direction);
     vec3 H = normalize(L + viewDirection);
     float diffuseIntensity = max(0.0f, dot(N, L));
-    float specularIntensity = pow(max(0.0f, dot(N, H)), shininess);
+    float specularIntensity = GetSpecularIntensity(N, H, shininess);
     lighting.ambient = light.ambient.color * light.ambient.intensity;
     lighting.diffuse = light.diffuse.color * light.diffuse.intensity * diffuseIntensity;
     lighting.specular = light.specular.color * light.specular.intensity * specularIntensity;
@@ -93,7 +100,7 @@ Lighting EvaluatePositionalLight(Light light, vec3 fragmentPosition, vec3 fragme
     vec3 H = normalize(L + viewDirection);
     float attenuation = GetAttenuationFactor(light, fragmentPosition);
     float diffuseIntensity = max(0.0f, dot(N, L));
-    float specularIntensity = pow(max(0.0f, dot(N, H)), shininess);
+    float specularIntensity = GetSpecularIntensity(N, H, shininess);
     lighting.ambient = light.ambient.color * light.ambient.intensity * attenuation;
     lighting.diffuse = light.diffuse.color * light.diffuse.intensity * diffuseIntensity * attenuation;
     lighting.specular = light.specular.color * light.specular.intensity * specularIntensity * attenuation;
@@ -108,7 +115,7 @@ Lighting EvaluateSpotLight(Light light, vec3 fragmentPosition, vec3 fragmentNorm
     vec3 H = normalize(L + viewDirection);
     float attenuation = GetAttenuationFactor(light, fragmentPosition);
     float diffuseIntensity = max(0.0f, dot(N, L));
-    float specularIntensity = pow(max(0.0f, dot(N, H)), shininess);
+    float specularIntensity = GetSpecularIntensity(N, H, shininess);
     float theta = dot(normalize(-light.direction), L);
     float epsilon = light.innerCutoff - light.outerCutoff;
     float spotIntensity = clamp((theta - light.outerCutoff) / epsilon, 0.0f, 1.0f);

@@ -8,7 +8,8 @@ using namespace glm;
 class Orbiting final : public Rotation {
 public:
     Orbiting(float, vec3, float = 360.0f, float = 4.0f, Mode = LOOP);
-    Transform GetOffset() override;
+    [[nodiscard]] float GetRadius() const;
+    [[nodiscard]] Transform GetOffset() override;
 
 private:
     float radius;

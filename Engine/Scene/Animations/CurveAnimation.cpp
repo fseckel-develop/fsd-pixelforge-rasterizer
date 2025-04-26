@@ -6,8 +6,14 @@
 
 CurveAnimation::CurveAnimation(Curve* curve, const float duration, const Mode mode):
     Animation(duration, mode) {
-    this->curve = curve;
+    this->curve = shared_ptr<Curve>(curve);
 }
+
+
+shared_ptr<Curve> CurveAnimation::GetCurve() const {
+    return curve;
+}
+
 
 
 Transform CurveAnimation::GetOffset() {

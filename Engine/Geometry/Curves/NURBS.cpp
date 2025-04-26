@@ -18,6 +18,11 @@ NURBS::NURBS(const vector<vec3>& points, const vector<float>& weights, const int
 }
 
 
+const vector<float>& NURBS::GetWeights() const {
+    return weights;
+}
+
+
 vec3 NURBS::Position(const float t) const {
     return Sample(t, POSITION);
 }

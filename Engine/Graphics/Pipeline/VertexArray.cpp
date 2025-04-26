@@ -23,8 +23,8 @@ void VertexArray::UnbindVAO() {
 void VertexArray::AddVertexBuffer(const VertexBuffer& vertexBuffer) {
     BindVAO();
     vertexBuffer.BindVBO();
-    const auto& layout = vertexBuffer.GetBufferLayout();
-    for (const auto& element : layout.GetElements()) {
+    const auto& layout = vertexBuffer.GetBufferLayout(); // NOLINT
+    for (const auto& element : layout.GetElements()) { // NOLINT
         glVertexAttribPointer(
             element.index,
             element.size,

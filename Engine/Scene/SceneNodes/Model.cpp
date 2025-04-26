@@ -1,5 +1,5 @@
 #include "Model.h"
-#include "../../Scene/SceneNodes/Light.h"
+#include "../../Scene/SceneNodes/LightNode.h"
 #include "../../Scene/SceneNodes/RenderUnit.h"
 
 
@@ -8,19 +8,19 @@ Model::Model(const string& name):
 }
 
 
-void Model::AddLight(Light* light, const string& parentName) {
-    AddSceneNode(shared_ptr<Light>(light), parentName, lights);
+void Model::AddLight(const string& name, const shared_ptr<Light>& light, const string& parentName) {
+    AddSceneNode(make_shared<LightNode>(name, light), parentName, lights);
 }
 
 
-void Model::AddRenderUnit(RenderUnit* renderUnit, const string& parentName) {
-    AddSceneNode(shared_ptr<RenderUnit>(renderUnit), parentName, renderUnits);
+void Model::AddRenderUnit(const string& name, const shared_ptr<Mesh>& mesh, const string& parentName) {
+    AddSceneNode(make_shared<RenderUnit>(name, mesh), parentName, renderUnits);
 }
 
 
-shared_ptr<Light> Model::GetLightByName(const string& name) const {
-    for (const auto& light : lights) {
-        if (light && light->GetName() == name) return light;
+shared_ptr<LightNode> Model::GetLightByName(const string& name) const {
+    for (const auto& lightNode : lights) {
+        if (lightNode && lightNode->GetName() == name) return lightNode;
     }
     return nullptr;
 }
@@ -34,7 +34,7 @@ shared_ptr<RenderUnit> Model::GetRenderUnitByName(const string& name) const {
 }
 
 
-vector<shared_ptr<Light>>& Model::GetLights() {
+vector<shared_ptr<LightNode>>& Model::GetLights() {
     return lights;
 }
 
