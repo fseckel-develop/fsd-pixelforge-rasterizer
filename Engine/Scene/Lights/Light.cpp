@@ -1,13 +1,6 @@
 #include "Light.h"
 
 
-Light::Light(const LightType type, const vec3& color, const float intensity) {
-    this->type = type;
-    SetColor(color);
-    SetIntensity(intensity);
-}
-
-
 void Light::SetColor(const vec3& color) {
     const vec3 clamped = { clamp(color.r, 0.0f, 1.0f), clamp(color.g, 0.0f, 1.0f), clamp(color.b, 0.0f, 1.0f) };
     ambient.color = clamped;

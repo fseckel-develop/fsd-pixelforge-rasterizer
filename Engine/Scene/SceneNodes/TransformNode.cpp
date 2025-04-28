@@ -1,6 +1,7 @@
 #include "TransformNode.h"
 #include "AnimationNode.h"
 #include "../Animations/Animation.h"
+#include "../../Managers/SceneNodeManager.h"
 #include <queue>
 #include <ranges>
 
@@ -42,7 +43,7 @@ void TransformNode::AddAnimation(const shared_ptr<Animation>& animation) {
     auto animationNode = dynamic_pointer_cast<AnimationNode>(currentParent);
     if (!animationNode) {
         animationNode = make_shared<AnimationNode>(GetName() + "-Animation");
-        InsertNodeAbove(animationNode);
+        InsertNodeAbove(SceneNodeManager::Register(animationNode));
     }
     animationNode->AddAnimation(animation);
 }

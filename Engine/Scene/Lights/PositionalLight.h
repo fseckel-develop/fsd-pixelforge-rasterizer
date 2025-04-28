@@ -18,16 +18,16 @@ typedef enum LightRange {
 
 class PositionalLight : public Light {
 public:
-    PositionalLight(const vec3&, const Attenuation&);
-    explicit PositionalLight(const vec3&, LightRange = R100);
+    PositionalLight();
+    explicit PositionalLight(const vec3&);
     void SetPosition(const vec3&);
     void SetAttenuation(const Attenuation&);
-    void SetAttenuationForRange(LightRange);
+    void SetRange(LightRange);
     [[nodiscard]] vec3 GetPosition() const override;
     [[nodiscard]] Attenuation GetAttenuation() const;
 
 protected:
     vec3 position;
-    Attenuation attenuation;
+    Attenuation attenuation = Attenuation(1.0, 0.045, 0.0075);
     static Attenuation GetAttenuationForRange(LightRange);
 };

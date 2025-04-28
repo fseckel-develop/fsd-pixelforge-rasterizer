@@ -11,17 +11,19 @@
 
 unordered_map<string, shared_ptr<ShaderProgram>> Renderer::shaderPrograms;
 shared_ptr<ShaderProgram> Renderer::currentProgram = nullptr;
-auto fallbackMaterial = make_shared<Material>(WhiteRubber());
-vector fallbackLights = {
-    make_shared<LightNode>("Ambient", shared<AmbientLight>(vec3(1.0f, 1.0f, 1.0f), 1.0f)),
-    make_shared<LightNode>("Directional", shared<DirectionalLight>(vec3(1.0f, -2.0f, -2.0f)))
-};
+vector<shared_ptr<LightUnit>> Renderer::fallbackLights;
+shared_ptr<Material> Renderer::fallbackMaterial = nullptr;
 
 
 void Renderer::Initialize() {
     InitializeShaderProgram("White");
     InitializeShaderProgram("Emissive");
     InitializeShaderProgram("Lighting");
+    fallbackMaterial = make_shared<Material>(WhiteRubber());
+    fallbackLights = {
+        LightUnit_("FallBack1").withLight(AmbientLight_()),
+        LightUnit_("FallBack2").withLight(DirectionalLight_().withDirection(vec3(1.0f, -2.0f, -2.0f)))
+    };
 }
 
 
@@ -42,7 +44,7 @@ void Renderer::Render(const shared_ptr<Mesh>& mesh, const RenderMode mode) {
 }
 
 
-void Renderer::Render(const shared_ptr<LightNode>& light, const RenderMode mode) {
+void Renderer::Render(const shared_ptr<LightUnit>& light, const RenderMode mode) {
     light->UpdateSelfAndChildren(Input::GetDeltaTime());
     PrepareFrameGL(mode);
     DrawLight(light);
@@ -96,7 +98,7 @@ void Renderer::SetCameraUniforms() {
 }
 
 
-void Renderer::SetLightingUniforms(const vector<shared_ptr<LightNode>>& lightNodes) {
+void Renderer::SetLightingUniforms(const vector<shared_ptr<LightUnit>>& lightNodes) {
     if (currentProgram != shaderPrograms.at("Lighting")) SetShaderProgram("Lighting");
     currentProgram->SetUniform("lightCount", static_cast<int>(lightNodes.size()));
     for (size_t i = 0; i < lightNodes.size(); i++) {
@@ -168,7 +170,7 @@ void Renderer::DrawMesh(const shared_ptr<Mesh>& mesh) {
 }
 
 
-void Renderer::DrawLight(const shared_ptr<LightNode>& lightNode) {
+void Renderer::DrawLight(const shared_ptr<LightUnit>& lightNode) {
     if (lightNode->ToBeRendered()) {
         SetShaderProgram("Emissive");
         currentProgram->SetUniform("modelMatrix", lightNode->GetModelMatrix());
@@ -192,11 +194,11 @@ void Renderer::DrawRenderUnit(const shared_ptr<RenderUnit>& renderUnit, const Li
 
 
 void Renderer::DrawModel(const shared_ptr<Model>& model) {
-    for (const auto& light : model->GetLights()) {
+    for (const auto& light : model->GetLightUnits()) {
         DrawLight(light);
     }
-    const bool hasLights = !model->GetLights().empty();
-    SetLightingUniforms(hasLights ? model->GetLights() : fallbackLights);
+    const bool hasLights = !model->GetLightUnits().empty();
+    SetLightingUniforms(hasLights ? model->GetLightUnits() : fallbackLights);
     for (const auto& renderUnit : model->GetRenderUnits()) {
         DrawRenderUnit(renderUnit, hasLights ? MODEL_LIGHT : NONE);
     }

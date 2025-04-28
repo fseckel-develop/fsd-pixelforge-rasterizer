@@ -1,9 +1,17 @@
 #include "DirectionalLight.h"
 
 
+DirectionalLight::DirectionalLight():
+    Light(),
+    direction(vec3(0.0f, -1.0f, 0.0f)) {
+    this->type = DIRECTIONAL;
+}
+
+
 DirectionalLight::DirectionalLight(const vec3& direction):
-    Light(DIRECTIONAL),
+    Light(),
     direction(normalize(direction)) {
+    this->type = DIRECTIONAL;
 }
 
 

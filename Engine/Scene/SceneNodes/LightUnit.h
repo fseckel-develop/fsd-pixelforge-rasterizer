@@ -3,9 +3,11 @@
 #include "../Lights/Light.h"
 
 
-class LightNode final : public TransformNode {
+class LightUnit final : public TransformNode {
 public:
-    LightNode(const string&, const shared_ptr<Light>&);
+    explicit LightUnit(const string&);
+    LightUnit(const string&, const shared_ptr<Light>&);
+    void SetLight(const shared_ptr<Light>&);
     void SetMesh(const shared_ptr<Mesh>&);
     [[nodiscard]] const shared_ptr<Light>& GetLight() const;
     [[nodiscard]] vec3 GetCurrentPosition() const;
@@ -17,4 +19,5 @@ private:
     shared_ptr<Light> light;
     shared_ptr<Mesh> mesh = nullptr;
     bool toBeRendered = false;
+    void SetDefaultMesh(LightType);
 };

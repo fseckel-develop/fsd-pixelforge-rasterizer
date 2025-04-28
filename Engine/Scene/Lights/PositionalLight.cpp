@@ -1,17 +1,16 @@
 #include "PositionalLight.h"
 
 
-PositionalLight::PositionalLight(const vec3& position, const Attenuation& attenuation):
-    Light(POSITIONAL),
-    position(position),
-    attenuation(attenuation) {
+PositionalLight::PositionalLight():
+    position(vec3(0.0f)) {
+    this->type = POSITIONAL;
 }
 
 
-PositionalLight::PositionalLight(const vec3& position, const LightRange range):
-    Light(POSITIONAL),
-    position(position),
-    attenuation(GetAttenuationForRange(range)) {
+PositionalLight::PositionalLight(const vec3& position):
+    Light(),
+    position(position) {
+    this->type = POSITIONAL;
 }
 
 
@@ -25,7 +24,7 @@ void PositionalLight::SetAttenuation(const Attenuation& attenuation) {
 }
 
 
-void PositionalLight::SetAttenuationForRange(const LightRange range) {
+void PositionalLight::SetRange(const LightRange range) {
     this->attenuation = GetAttenuationForRange(range);
 }
 

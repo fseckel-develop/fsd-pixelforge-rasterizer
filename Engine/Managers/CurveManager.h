@@ -1,6 +1,5 @@
 #pragma once
 #include "InstanceManager.h"
-#include "../Geometry/Curves/Curve.h"
 #include "../Geometry/Curves/BezierCurve.h"
 #include "../Geometry/Curves/BSpline.h"
 #include "../Geometry/Curves/HermiteSpline.h"

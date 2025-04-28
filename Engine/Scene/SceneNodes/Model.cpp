@@ -1,6 +1,6 @@
 #include "Model.h"
-#include "../../Scene/SceneNodes/LightNode.h"
-#include "../../Scene/SceneNodes/RenderUnit.h"
+#include "LightUnit.h"
+#include "RenderUnit.h"
 
 
 Model::Model(const string& name):
@@ -8,19 +8,29 @@ Model::Model(const string& name):
 }
 
 
-void Model::AddLight(const string& name, const shared_ptr<Light>& light, const string& parentName) {
-    AddSceneNode(make_shared<LightNode>(name, light), parentName, lights);
+void Model::AddLightUnit(const shared_ptr<LightUnit>& lightUnit) {
+    lightUnits.push_back(lightUnit);
+    if (const auto root = lightUnit->GetRoot()) {
+        AddChild(root);
+    } else {
+        AddChild(lightUnit);
+    }
 }
 
 
-void Model::AddRenderUnit(const string& name, const shared_ptr<Mesh>& mesh, const string& parentName) {
-    AddSceneNode(make_shared<RenderUnit>(name, mesh), parentName, renderUnits);
+void Model::AddRenderUnit(const shared_ptr<RenderUnit>& renderUnit) {
+    renderUnits.push_back(renderUnit);
+    if (const auto root = renderUnit->GetRoot()) {
+        AddChild(root);
+    } else {
+        AddChild(renderUnit);
+    }
 }
 
 
-shared_ptr<LightNode> Model::GetLightByName(const string& name) const {
-    for (const auto& lightNode : lights) {
-        if (lightNode && lightNode->GetName() == name) return lightNode;
+shared_ptr<LightUnit> Model::GetLightUnitByName(const string& name) const {
+    for (const auto& lightUnit : lightUnits) {
+        if (lightUnit && lightUnit->GetName() == name) return lightUnit;
     }
     return nullptr;
 }
@@ -34,22 +44,11 @@ shared_ptr<RenderUnit> Model::GetRenderUnitByName(const string& name) const {
 }
 
 
-vector<shared_ptr<LightNode>>& Model::GetLights() {
-    return lights;
+vector<shared_ptr<LightUnit>>& Model::GetLightUnits() {
+    return lightUnits;
 }
 
 
 vector<shared_ptr<RenderUnit>>& Model::GetRenderUnits() {
     return renderUnits;
-}
-
-
-shared_ptr<SceneNode> Model::FindSceneNodeByName(const string& name) const {
-    for (const auto& light : lights) {
-        if (light && light->GetName() == name) return light;
-    }
-    for (const auto& unit : renderUnits) {
-        if (unit && unit->GetName() == name) return unit;
-    }
-    return nullptr;
 }

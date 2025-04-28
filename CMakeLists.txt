@@ -8,6 +8,7 @@ set(HEADER_FILES
         Engine/Core.h
         Engine/Geometry.h
         Engine/Graphics.h
+        Engine/Managers.h
         Engine/Scene.h
         Engine/Utilities.h
 )
@@ -63,7 +64,6 @@ set(SOURCE_FILES
         Engine/Graphics/Texturing/Material.cpp
         Engine/Graphics/Texturing/Texture.cpp
 
-        # Scene
         # Scene/Animations
         Engine/Scene/Animations/Animation.cpp
         Engine/Scene/Animations/CurveAnimation.cpp
@@ -76,11 +76,13 @@ set(SOURCE_FILES
         # Scene/Lights
         Engine/Scene/Lights/AmbientLight.cpp
         Engine/Scene/Lights/DirectionalLight.cpp
+        Engine/Scene/Lights/Light.cpp
         Engine/Scene/Lights/PositionalLight.cpp
         Engine/Scene/Lights/SpotLight.cpp
         # Scene/SceneNodes
         Engine/Scene/SceneNodes/AnimationNode.cpp
         Engine/Scene/SceneNodes/Group.cpp
+        Engine/Scene/SceneNodes/LightUnit.cpp
         Engine/Scene/SceneNodes/Model.cpp
         Engine/Scene/SceneNodes/RenderUnit.cpp
         Engine/Scene/SceneNodes/Scene.cpp
@@ -91,18 +93,6 @@ set(SOURCE_FILES
         Engine/Scene/Transforms/Scale.cpp
         Engine/Scene/Transforms/Transform.cpp
         Engine/Scene/Transforms/Translate.cpp
-        Engine/Managers/InstanceManager.h
-        Engine/Managers/MaterialManager.h
-        Engine/Managers/MeshManager.h
-        Engine/Managers/TextureManager.h
-        Engine/Managers.h
-        Engine/Managers/AnimationManager.h
-        Engine/Scene/SceneNodes/LightNode.cpp
-        Engine/Scene/SceneNodes/LightNode.h
-        Engine/Scene/Lights/Light.cpp
-        Engine/Scene/Lights/Light.h
-        Engine/Managers/LightManager.h
-        Engine/Managers/CurveManager.h
 )
 
 # Adding main Executable

@@ -1,13 +1,13 @@
 #pragma once
 #include "InstanceManager.h"
 #include "CurveManager.h"
-#include "../Scene/Animations/Animation.h"
 #include "../Scene/Animations/CurveAnimation.h"
 #include "../Scene/Animations/KeyframeAnimation.h"
 #include "../Scene/Animations/Orbiting.h"
 #include "../Scene/Animations/Rotation.h"
 #include "../Scene/Animations/Scaling.h"
 #include "../Scene/Animations/Translation.h"
+using namespace std;
 
 
 class AnimationManager final : public InstanceManager<Animation, AnimationManager> {

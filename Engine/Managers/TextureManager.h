@@ -1,6 +1,7 @@
 #pragma once
 #include "InstanceManager.h"
 #include "../Graphics/Texturing/Texture.h"
+using namespace std;
 
 
 class TextureManager final : public InstanceManager<Texture, TextureManager> {

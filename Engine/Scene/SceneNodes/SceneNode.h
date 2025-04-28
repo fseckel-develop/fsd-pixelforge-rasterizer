@@ -1,4 +1,5 @@
 #pragma once
+#include <ostream>
 #include <vector>
 using namespace std;
 
@@ -13,6 +14,7 @@ public:
     [[nodiscard]] int GetID() const;
     [[nodiscard]] string GetName() const;
     [[nodiscard]] shared_ptr<SceneNode> GetParent() const;
+    [[nodiscard]] shared_ptr<SceneNode> GetRoot();
     [[nodiscard]] vector<shared_ptr<SceneNode>> GetChildren() const;
     void UpdateSelfAndChildren(float);
     virtual ~SceneNode() = default;

@@ -1,6 +1,7 @@
 #pragma once
 #include "InstanceManager.h"
 #include "../Geometry/Meshes/Mesh.h"
+using namespace std;
 
 
 class MeshManager final : public InstanceManager<Mesh, MeshManager> {

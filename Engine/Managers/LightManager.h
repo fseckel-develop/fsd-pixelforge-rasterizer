@@ -4,6 +4,7 @@
 #include "../Scene/Lights/DirectionalLight.h"
 #include "../Scene/Lights/PositionalLight.h"
 #include "../Scene/Lights/SpotLight.h"
+using namespace std;
 
 
 class LightManager final: public InstanceManager<Light, LightManager> {

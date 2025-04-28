@@ -1,5 +1,4 @@
 #include "SceneNode.h"
-#include <iostream>
 #include <ranges>
 
 
@@ -57,6 +56,15 @@ string SceneNode::GetName() const {
 
 shared_ptr<SceneNode> SceneNode::GetParent() const {
     return parent.lock();
+}
+
+
+shared_ptr<SceneNode> SceneNode::GetRoot() {
+    auto current = shared_from_this();
+    while (current->parent.lock()) {
+        current = current->parent.lock();
+    }
+    return current;
 }
 
 

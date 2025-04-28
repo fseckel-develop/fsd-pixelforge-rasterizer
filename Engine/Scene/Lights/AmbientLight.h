@@ -6,7 +6,8 @@ using namespace glm;
 
 class AmbientLight final : public Light {
 public:
-    explicit AmbientLight(const vec3& = vec3(1.0f), float = 1.0f);
+    AmbientLight();
+    AmbientLight(const vec3&, float);
     void SetDiffuse(const vec3&, float) override {}
     void SetSpecular(const vec3&, float) override {}
 };

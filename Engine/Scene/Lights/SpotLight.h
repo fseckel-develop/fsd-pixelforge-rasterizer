@@ -6,8 +6,8 @@ using namespace glm;
 
 class SpotLight final : public PositionalLight {
 public:
-    SpotLight(const vec3&, const vec3&, const Attenuation&);
-    SpotLight(const vec3&, const vec3&, LightRange = R3250);
+    SpotLight();
+    SpotLight(const vec3&, const vec3&);
     void SetDirection(const vec3&);
     void SetCutoffAngles(float, float);
     [[nodiscard]] vec3 GetDirection() const override;

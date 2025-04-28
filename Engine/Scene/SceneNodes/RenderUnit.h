@@ -6,7 +6,9 @@ using namespace std;
 
 class RenderUnit final : public TransformNode {
 public:
-    explicit RenderUnit(const string&, const shared_ptr<Mesh>&);
+    explicit RenderUnit(const string&);
+    RenderUnit(const string&, const shared_ptr<Mesh>&);
+    void SetMesh(const shared_ptr<Mesh>&);
     void SetMaterial(const shared_ptr<Material>&);
     void SetTexture(const string&);
     [[nodiscard]] shared_ptr<Mesh>& GetMesh();

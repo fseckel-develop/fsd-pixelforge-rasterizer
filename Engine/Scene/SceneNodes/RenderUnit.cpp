@@ -3,9 +3,19 @@
 #include "../../Managers/MeshManager.h"
 
 
+RenderUnit::RenderUnit(const string& name):
+    TransformNode(name) {
+}
+
+
 RenderUnit::RenderUnit(const string& name, const shared_ptr<Mesh>& mesh):
     TransformNode(name),
     mesh(MeshManager::GetOrCreate(mesh)) {
+}
+
+
+void RenderUnit::SetMesh(const shared_ptr<Mesh>& mesh) {
+    this->mesh = MeshManager::GetOrCreate(mesh);
 }
 
 
