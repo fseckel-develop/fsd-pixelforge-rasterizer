@@ -1,9 +1,9 @@
 #pragma once
 #include "LightBuilder.h"
-#include "AmbientLight.h"
+#include "../../Lights/AmbientLight.h"
 
 
-class AmbientLightBuilder : public LightBuilder<AmbientLight, AmbientLightBuilder> {
+class AmbientLightBuilder final : public LightBuilder<AmbientLight, AmbientLightBuilder> {
 public:
     AmbientLightBuilder() = default;
 

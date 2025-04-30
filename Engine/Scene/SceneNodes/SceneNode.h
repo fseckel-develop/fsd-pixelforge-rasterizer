@@ -28,6 +28,6 @@ protected:
 
 private:
     inline static int nextID = 0;
-    void SetParent(const shared_ptr<SceneNode>&);
+    virtual void SetParent(const shared_ptr<SceneNode>&);
     bool IsAncestorOf(const shared_ptr<SceneNode>&) const;
 };

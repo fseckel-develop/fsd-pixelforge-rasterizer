@@ -12,6 +12,7 @@ public:
     [[nodiscard]] const shared_ptr<Light>& GetLight() const;
     [[nodiscard]] vec3 GetCurrentPosition() const;
     [[nodiscard]] vec3 GetCurrentDirection() const;
+    [[nodiscard]] mat4 GetModelMatrix() const override;
     [[nodiscard]] shared_ptr<Mesh>& GetMesh();
     [[nodiscard]] bool ToBeRendered() const;
 
@@ -19,5 +20,5 @@ private:
     shared_ptr<Light> light;
     shared_ptr<Mesh> mesh = nullptr;
     bool toBeRendered = false;
-    void SetDefaultMesh(LightType);
+    void SetDefaultMesh(Light::Type);
 };

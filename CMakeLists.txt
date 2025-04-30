@@ -70,9 +70,9 @@ set(SOURCE_FILES
         Engine/Scene/Animations/Easing.cpp
         Engine/Scene/Animations/KeyframeAnimation.cpp
         Engine/Scene/Animations/Orbiting.cpp
-        Engine/Scene/Animations/Rotation.cpp
+        Engine/Scene/Animations/Rotating.cpp
         Engine/Scene/Animations/Scaling.cpp
-        Engine/Scene/Animations/Translation.cpp
+        Engine/Scene/Animations/Translating.cpp
         # Scene/Lights
         Engine/Scene/Lights/AmbientLight.cpp
         Engine/Scene/Lights/DirectionalLight.cpp
@@ -89,10 +89,10 @@ set(SOURCE_FILES
         Engine/Scene/SceneNodes/SceneNode.cpp
         Engine/Scene/SceneNodes/TransformNode.cpp
         # Scene/Transforms
-        Engine/Scene/Transforms/Rotate.cpp
+        Engine/Scene/Transforms/Rotation.cpp
         Engine/Scene/Transforms/Scale.cpp
         Engine/Scene/Transforms/Transform.cpp
-        Engine/Scene/Transforms/Translate.cpp
+        Engine/Scene/Transforms/Translation.cpp
 )
 
 # Adding main Executable

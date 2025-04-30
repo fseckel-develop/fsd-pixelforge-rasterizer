@@ -7,13 +7,19 @@
 
 
 TransformNode::TransformNode(const string& name):
-    SceneNode(name) {
+    SceneNode(name),
+    nodeScale(Scale()) {
 }
 
 
 void TransformNode::SetTransform(const Transform& transform) {
     localTransform = transform;
     MarkGlobalTransformDirty();
+}
+
+
+void TransformNode::SetNodeScale(const float scale) {
+    nodeScale = Scale(vec3(scale));
 }
 
 

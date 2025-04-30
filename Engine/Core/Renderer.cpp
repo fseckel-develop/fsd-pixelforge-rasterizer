@@ -1,6 +1,4 @@
-#include "Renderer.h"
-#include "Camera.h"
-#include "Input.h"
+#include "../Core.h"
 #include "../Scene.h"
 #include "../Utilities.h"
 #include "../Geometry/Meshes/Mesh.h"
@@ -11,7 +9,7 @@
 
 unordered_map<string, shared_ptr<ShaderProgram>> Renderer::shaderPrograms;
 shared_ptr<ShaderProgram> Renderer::currentProgram = nullptr;
-vector<shared_ptr<LightUnit>> Renderer::fallbackLights;
+vector<shared_ptr<LightUnit>> Renderer::fallbackLightUnits;
 shared_ptr<Material> Renderer::fallbackMaterial = nullptr;
 
 
@@ -20,7 +18,7 @@ void Renderer::Initialize() {
     InitializeShaderProgram("Emissive");
     InitializeShaderProgram("Lighting");
     fallbackMaterial = make_shared<Material>(WhiteRubber());
-    fallbackLights = {
+    fallbackLightUnits = {
         LightUnit_("FallBack1").withLight(AmbientLight_()),
         LightUnit_("FallBack2").withLight(DirectionalLight_().withDirection(vec3(1.0f, -2.0f, -2.0f)))
     };
@@ -47,7 +45,7 @@ void Renderer::Render(const shared_ptr<Mesh>& mesh, const RenderMode mode) {
 void Renderer::Render(const shared_ptr<LightUnit>& light, const RenderMode mode) {
     light->UpdateSelfAndChildren(Input::GetDeltaTime());
     PrepareFrameGL(mode);
-    DrawLight(light);
+    DrawLightUnit(light);
 }
 
 
@@ -111,13 +109,13 @@ void Renderer::SetLightingUniforms(const vector<shared_ptr<LightUnit>>& lightNod
         currentProgram->SetUniform(ArrayElement("lights", i, "specular.color"), light->GetSpecular().color);
         currentProgram->SetUniform(ArrayElement("lights", i, "specular.intensity"), light->GetSpecular().intensity);
         switch (light->GetType()) {
-            case AMBIENT: break;
-            case DIRECTIONAL: {
+            case Light::AMBIENT: break;
+            case Light::DIRECTIONAL: {
                 const auto directionalLight = dynamic_pointer_cast<DirectionalLight>(light);
                 currentProgram->SetUniform(ArrayElement("lights", i, "direction"), lightNodes.at(i)->GetCurrentDirection());
                 break;
             }
-            case POSITIONAL: {
+            case Light::POSITIONAL: {
                 const auto positionalLight = dynamic_pointer_cast<PositionalLight>(light);
                 currentProgram->SetUniform(ArrayElement("lights", i, "position"), lightNodes.at(i)->GetCurrentPosition());
                 currentProgram->SetUniform(ArrayElement("lights", i, "attenuation.constant"), positionalLight->GetAttenuation().constant);
@@ -125,7 +123,7 @@ void Renderer::SetLightingUniforms(const vector<shared_ptr<LightUnit>>& lightNod
                 currentProgram->SetUniform(ArrayElement("lights", i, "attenuation.quadratic"), positionalLight->GetAttenuation().quadratic);
                 break;
             }
-            case SPOT: {
+            case Light::SPOT: {
                 const auto spotLight = dynamic_pointer_cast<SpotLight>(light);
                 currentProgram->SetUniform(ArrayElement("lights", i, "direction"), lightNodes.at(i)->GetCurrentDirection());
                 currentProgram->SetUniform(ArrayElement("lights", i, "position"), lightNodes.at(i)->GetCurrentPosition());
@@ -170,15 +168,15 @@ void Renderer::DrawMesh(const shared_ptr<Mesh>& mesh) {
 }
 
 
-void Renderer::DrawLight(const shared_ptr<LightUnit>& lightNode) {
-    if (lightNode->ToBeRendered()) {
+void Renderer::DrawLightUnit(const shared_ptr<LightUnit>& lightUnit) {
+    if (lightUnit->ToBeRendered()) {
         SetShaderProgram("Emissive");
-        currentProgram->SetUniform("modelMatrix", lightNode->GetModelMatrix());
+        currentProgram->SetUniform("modelMatrix", lightUnit->GetModelMatrix());
         currentProgram->SetUniform("viewMatrix", Camera::GetViewMatrix());
         currentProgram->SetUniform("projectionMatrix", Camera::GetProjectionMatrix());
-        currentProgram->SetUniform("emissive.color", lightNode->GetLight()->GetAmbient().color);
-        currentProgram->SetUniform("emissive.intensity", lightNode->GetLight()->GetAmbient().intensity);
-        Draw(lightNode->GetMesh());
+        currentProgram->SetUniform("emissive.color", lightUnit->GetLight()->GetAmbient().color);
+        currentProgram->SetUniform("emissive.intensity", lightUnit->GetLight()->GetAmbient().intensity);
+        Draw(lightUnit->GetMesh());
     }
 }
 
@@ -187,34 +185,34 @@ void Renderer::DrawRenderUnit(const shared_ptr<RenderUnit>& renderUnit, const Li
     SetShaderProgram("Lighting");
     SetCameraUniforms();
     currentProgram->SetUniform("modelMatrix", renderUnit->GetModelMatrix());
-    if (lighting == NONE) SetLightingUniforms(fallbackLights);
+    if (lighting == NONE) SetLightingUniforms(fallbackLightUnits);
     SetMaterialUniforms(renderUnit->GetMaterial() ? renderUnit->GetMaterial() : fallbackMaterial);
     Draw(renderUnit->GetMesh());
 }
 
 
 void Renderer::DrawModel(const shared_ptr<Model>& model) {
-    for (const auto& light : model->GetLightUnits()) {
-        DrawLight(light);
+    for (const auto& lightUnit : model->GetLightUnits()) {
+        DrawLightUnit(lightUnit);
     }
-    const bool hasLights = !model->GetLightUnits().empty();
-    SetLightingUniforms(hasLights ? model->GetLightUnits() : fallbackLights);
+    const bool hasLightUnits = !model->GetLightUnits().empty();
+    SetLightingUniforms(hasLightUnits ? model->GetLightUnits() : fallbackLightUnits);
     for (const auto& renderUnit : model->GetRenderUnits()) {
-        DrawRenderUnit(renderUnit, hasLights ? MODEL_LIGHT : NONE);
+        DrawRenderUnit(renderUnit, hasLightUnits ? MODEL_LIGHT : NONE);
     }
 }
 
 
 
 void Renderer::DrawScene(const shared_ptr<Scene>& scene) {
-    for (const auto& light : scene->GetAllLights()) {
-        DrawLight(light);
+    for (const auto& lightUnit : scene->GetAllLightUnits()) {
+        DrawLightUnit(lightUnit);
     }
-    const bool hasLights = !scene->GetAllLights().empty();
-    SetLightingUniforms(hasLights ? scene->GetAllLights() : fallbackLights);
+    const bool hasLightUnits = !scene->GetAllLightUnits().empty();
+    SetLightingUniforms(hasLightUnits ? scene->GetAllLightUnits() : fallbackLightUnits);
     for (const auto& model : scene->GetModels()) {
         for (const auto& renderUnit : model->GetRenderUnits()) {
-            DrawRenderUnit(renderUnit, hasLights ? SCENE_LIGHT : NONE);
+            DrawRenderUnit(renderUnit, hasLightUnits ? SCENE_LIGHT : NONE);
         }
     }
 }

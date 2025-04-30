@@ -1,10 +1,19 @@
 #pragma once
+#include <memory>
+#include <GLM/glm.hpp>
+class Light;
+
+
+template<typename T>
+concept IsLightBuilder = requires(T t) {
+    { t.Build() } -> std::convertible_to<std::shared_ptr<Light>>;
+};
 
 
 template<typename LightT, typename DerivedBuilder> class LightBuilder {
 public:
     LightBuilder() {
-        light = make_shared<LightT>();
+        light = std::make_shared<LightT>();
     }
 
     auto& withColor(const vec3& color) {
@@ -32,14 +41,14 @@ public:
         return static_cast<DerivedBuilder&>(*this);
     }
 
-    shared_ptr<LightT> Build() const {
+    std::shared_ptr<LightT> Build() const {
         return light;
     }
 
-    operator shared_ptr<LightT>() { // NOLINT
+    operator std::shared_ptr<LightT>() { // NOLINT
         return Build();
     }
 
 protected:
-    shared_ptr<LightT> light;
+    std::shared_ptr<LightT> light;
 };

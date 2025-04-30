@@ -4,6 +4,8 @@
 #include "../../Managers/LightManager.h"
 #include <GLM/gtc/quaternion.hpp>
 
+#include "../Transforms/Translation.h"
+
 
 LightUnit::LightUnit(const string& name):
     TransformNode(name) {
@@ -40,12 +42,17 @@ const shared_ptr<Light>& LightUnit::GetLight() const {
 
 vec3 LightUnit::GetCurrentPosition() const {
     const auto position = vec3(GetGlobalTransform().ToMatrix() * vec4(light->GetPosition(), 1.0f));
-    return position; // NOLINT
+    return position;
 }
 
 
 vec3 LightUnit::GetCurrentDirection() const {
-    return normalize(mat3_cast(GetGlobalTransform().rotation) * light->GetDirection());
+    return normalize(mat3_cast(GetGlobalTransform().GetRotation()) * light->GetDirection());
+}
+
+
+mat4 LightUnit::GetModelMatrix() const {
+    return (GetGlobalTransform() * nodeScale * Translation(light->GetPosition())).ToMatrix();
 }
 
 
@@ -61,17 +68,17 @@ bool LightUnit::ToBeRendered() const {
 
 // TODO: Orienting Cone and Arrow in the direction of the Light
 // TODO: Cone and Arrow do show weird faulty rendering (faulty normals?)
-void LightUnit::SetDefaultMesh(const LightType type) {
+void LightUnit::SetDefaultMesh(const Light::Type type) {
     switch (type) {
-        case DIRECTIONAL: {
+        case Light::DIRECTIONAL: {
             mesh = MeshManager::GetOrCreate(make_shared<Mesh>("Arrow.obj"));
             break;
         }
-        case POSITIONAL: {
+        case Light::POSITIONAL: {
             mesh = MeshManager::GetOrCreate(make_shared<Mesh>("Sphere.obj"));
             break;
         }
-        case SPOT: {
+        case Light::SPOT: {
             mesh = MeshManager::GetOrCreate(make_shared<Mesh>("Cone.obj"));
             break;
         }

@@ -1,9 +1,9 @@
 #pragma once
 #include "LightBuilder.h"
-#include "SpotLight.h"
+#include "../../Lights/SpotLight.h"
 
 
-class SpotLightBuilder : public LightBuilder<SpotLight, SpotLightBuilder> {
+class SpotLightBuilder final : public LightBuilder<SpotLight, SpotLightBuilder> {
 public:
     SpotLightBuilder() = default;
 

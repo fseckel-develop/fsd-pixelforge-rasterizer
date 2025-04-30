@@ -1,10 +1,11 @@
 #pragma once
 #include "TransformNodeBuilder.h"
-#include "../SceneNodes/RenderUnit.h"
-using namespace std;
+#include "../../SceneNodes/RenderUnit.h"
+#include "../../../Geometry/Meshes/Mesh.h"
+#include "../../../Graphics/Texturing/Material.h"
 
 
-class RenderUnitBuilder : public TransformNodeBuilder<RenderUnit, RenderUnitBuilder> {
+class RenderUnitBuilder final : public TransformNodeBuilder<RenderUnit, RenderUnitBuilder> {
 public:
     explicit RenderUnitBuilder(const string& name, const string& parentName = ""):
         TransformNodeBuilder(name, parentName) {
@@ -15,8 +16,23 @@ public:
         return *this;
     }
 
+    auto& withMesh(const Mesh& mesh) {
+        this->sceneNode->SetMesh(make_shared<Mesh>(mesh));
+        return *this;
+    }
+
+    auto& withMesh(const string& fileName) {
+        this->sceneNode->SetMesh(make_shared<Mesh>(fileName));
+        return *this;
+    }
+
     auto& withMaterial(const shared_ptr<Material>& material) {
         this->sceneNode->SetMaterial(material);
+        return *this;
+    }
+
+    auto& withMaterial(const Material& material) {
+        this->sceneNode->SetMaterial(make_shared<Material>(material));
         return *this;
     }
 

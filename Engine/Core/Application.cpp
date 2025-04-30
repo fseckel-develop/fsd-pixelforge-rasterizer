@@ -20,32 +20,36 @@ void Application::Initialize() {
 void Application::Run() {
     Initialize();
 
-    const auto model = Model_("Model")
+    const auto scene = Scene_("Scene")
+    .With(Model_("Model")
         .With(LightUnit_("Ambient")
             .withLight(AmbientLight_().withIntensity(0.5f)))
         .With(LightUnit_("Light")
             .withLight(PositionalLight_())
-            .withAnimation(make_shared<Orbiting>(1.0f, vec3(0.0f, 1.0f, 1.0f), 360.0f, 3.0f))
-            .withNodeScale(vec3(0.15f)))
+            .withTransform(Translation(0.0f, -2.0f, 0.0f))
+            .withAnimation(Translating_(Animation::BOUNCE)
+                .withDuration(1.0f).withTotalDistance(4.0f).withDirection({0.0f, 1.0f, 0.0f}))
+            .withNodeScale(0.15f))
         .With(RenderUnit_("Sphere")
-            .withMesh(make_shared<Sphere>())
-            .withMaterial(make_shared<Gold>())
-            .withAnimation(make_shared<Rotation>(vec3(1.0f, 0.0f, 1.0f), 360.0f, 5.0f))
-            .withAnimation(make_shared<Orbiting>(2.0f, vec3(0.0f, 1.0f, 0.0f), 360.0f, 8.0f)))
+            .withMesh(Sphere())
+            .withMaterial(Gold())
+            .withAnimation(Rotating_(Animation::LOOP)
+                .withDuration(5.0f).withRotationAxis({1.0f, 0.0f, 1.0f}))
+            .withAnimation(Orbiting_(Animation::LOOP)
+                .withDuration(8.0f).withRadius(2.0f).withRotationAxis({0.0f, 1.0f, 0.0f})))
         .With(RenderUnit_("Cube", "Sphere")
-            .withMesh(make_shared<Mesh>("Cube.obj"))
-            .withMaterial(make_shared<Silver>())
-            .withTransform(Scale(vec3(0.5f)))
-            .withAnimation(make_shared<Orbiting>(2.0f, vec3(0.5, 1.5f, -2.0f), 360.0f, 4.0)))
+            .withMesh("Cube.obj")
+            .withMaterial(Silver())
+            .withTransform(Scale(0.5f))
+            .withAnimation(Orbiting_(Animation::LOOP)
+                .withDuration(4.0f).withRadius(2.0f).withRotationAxis({0.5, 1.5f, -2.0})))
         .With(RenderUnit_("Cylinder", "Cube")
-            .withMesh(make_shared<Mesh>("Cylinder.obj"))
-            .withMaterial(make_shared<Bronze>())
-            .withNodeScale(vec3(0.5f))
-            .withAnimation(make_shared<Orbiting>(1.5f, vec3(0.5, -1.5f, 2.0f), 360.0f, 6.0)))
-        .Build();
-
-    const auto scene = make_shared<Scene>("Scene");
-    scene->AddModel(model);
+            .withMesh("Cylinder.obj")
+            .withMaterial(Bronze())
+            .withNodeScale(0.5f)
+            .withAnimation(Orbiting_(Animation::LOOP)
+                .withDuration(6.0f).withRadius(1.5f).withRotationAxis({0.5, -1.5f, 2.0}))))
+    .Build();
 
     while (!Window::ShouldClose()) {
         Input::TimeStep();

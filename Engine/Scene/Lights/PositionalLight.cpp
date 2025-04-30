@@ -2,14 +2,15 @@
 
 
 PositionalLight::PositionalLight():
-    position(vec3(0.0f)) {
+    position(vec3(0.0f)),
+    attenuation(GetAttenuationForRange(R100)) {
     this->type = POSITIONAL;
 }
 
 
 PositionalLight::PositionalLight(const vec3& position):
-    Light(),
-    position(position) {
+    position(position),
+    attenuation(GetAttenuationForRange(R100)) {
     this->type = POSITIONAL;
 }
 

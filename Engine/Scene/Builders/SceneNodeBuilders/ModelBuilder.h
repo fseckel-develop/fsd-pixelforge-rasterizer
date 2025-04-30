@@ -2,11 +2,10 @@
 #include "TransformNodeBuilder.h"
 #include "LightUnitBuilder.h"
 #include "RenderUnitBuilder.h"
-#include "Model.h"
-using namespace std;
+#include "../../SceneNodes/Model.h"
 
 
-class ModelBuilder : public TransformNodeBuilder<Model, ModelBuilder> {
+class ModelBuilder final : public TransformNodeBuilder<Model, ModelBuilder> {
 public:
     explicit ModelBuilder(const string& name, const string& parentName = ""):
         TransformNodeBuilder(name, parentName) {

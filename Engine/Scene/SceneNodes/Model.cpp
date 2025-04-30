@@ -44,11 +44,11 @@ shared_ptr<RenderUnit> Model::GetRenderUnitByName(const string& name) const {
 }
 
 
-vector<shared_ptr<LightUnit>>& Model::GetLightUnits() {
+const vector<shared_ptr<LightUnit>>& Model::GetLightUnits() {
     return lightUnits;
 }
 
 
-vector<shared_ptr<RenderUnit>>& Model::GetRenderUnits() {
+const vector<shared_ptr<RenderUnit>>& Model::GetRenderUnits() {
     return renderUnits;
 }

@@ -1,22 +1,21 @@
 #include "DirectionalLight.h"
+#include "../../Utilities.h"
 
 
 DirectionalLight::DirectionalLight():
-    Light(),
     direction(vec3(0.0f, -1.0f, 0.0f)) {
     this->type = DIRECTIONAL;
 }
 
 
 DirectionalLight::DirectionalLight(const vec3& direction):
-    Light(),
-    direction(normalize(direction)) {
+    direction(Utilities::ValidateDirection(direction, "DirectionalLight::DirectionalLight")) {
     this->type = DIRECTIONAL;
 }
 
 
 void DirectionalLight::SetDirection(const vec3& direction) {
-    this->direction = normalize(direction);
+    this->direction = Utilities::ValidateDirection(direction, "DirectionalLight::SetDirection");
 }
 
 

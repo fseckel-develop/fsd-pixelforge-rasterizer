@@ -1,4 +1,14 @@
 #include "Light.h"
+#include <stdexcept>
+
+
+Light::Light():
+    type(AMBIENT),
+    ambient(LightAttribute(vec3(1.0f), 1.0f)),
+    diffuse(LightAttribute(vec3(1.0f), 1.0f)),
+    specular(LightAttribute(vec3(1.0f), 1.0f)) {
+}
+
 
 
 void Light::SetColor(const vec3& color) {
@@ -38,7 +48,7 @@ void Light::SetSpecular(const vec3& color, const float intensity) {
 }
 
 
-LightType Light::GetType() const {
+Light::Type Light::GetType() const {
     return type;
 }
 

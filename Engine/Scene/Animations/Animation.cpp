@@ -3,14 +3,25 @@
 using namespace glm;
 
 
-Animation::Animation(const float duration, const Mode mode) {
-    SetDuration(duration);
-    this->mode = mode;
+Animation::Animation(const Mode mode):
+    mode(mode),
+    duration(1.0f) {
+}
+
+
+Animation::Animation(const Mode mode, const float duration):
+    mode(mode),
+    duration(duration <= 0.01f ? 0.01f : duration) {
 }
 
 
 void Animation::SetDuration(const float duration) {
-    this->duration = duration >= 0.1f ? duration : 0.1f;
+    this->duration = duration <= 0.01f ? 0.01f : duration;
+}
+
+
+void Animation::SetMode(const Mode mode) {
+    this->mode = mode;
 }
 
 

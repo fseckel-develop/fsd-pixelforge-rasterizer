@@ -28,6 +28,8 @@ public:
     static void Translate(vector<vec3>&, vec3);
     static void Rotate(vector<vec3>&, float, vec3);
     static void Rotate(vector<vec3>&, quat);
+
+    static vec3 ValidateDirection(const vec3&, const string& = "");
 };
 
 
@@ -161,4 +163,12 @@ inline void Utilities::Rotate(vector<vec3>& vertices, const quat rotation) {
     for (auto& vertex : vertices) {
         vertex = rotation * vertex;
     }
+}
+
+
+inline vec3 Utilities::ValidateDirection(const vec3& direction, const string& context) {
+    if (length(direction) < 1e-6f) {
+        throw std::invalid_argument("Invalid zero direction vector" + (context.empty() ? "" : " in " + context));
+    }
+    return normalize(direction);
 }

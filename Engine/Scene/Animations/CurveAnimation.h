@@ -9,7 +9,9 @@ using namespace std; using namespace glm;
 
 class CurveAnimation final : public Animation {
 public:
-    explicit CurveAnimation(Curve*, float = 4.0, Mode = BOUNCE);
+    explicit CurveAnimation(Mode);
+    explicit CurveAnimation(const shared_ptr<Curve>&, float, Mode = BOUNCE);
+    void SetCurve(const shared_ptr<Curve>&);
     [[nodiscard]] shared_ptr<Curve> GetCurve() const;
     [[nodiscard]] Transform GetOffset() override;
 

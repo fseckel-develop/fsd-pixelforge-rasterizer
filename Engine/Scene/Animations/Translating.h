@@ -5,14 +5,17 @@ class Transform;
 using namespace glm;
 
 
-class Translation final : public Animation {
+class Translating final : public Animation {
 public:
-    Translation(float, vec3, float = 4.0f, Mode = BOUNCE);
+    explicit Translating(Mode);
+    Translating(Mode, float, const vec3&, float);
+    void SetTotalDistance(float);
+    void SetDirection(const vec3&);
     [[nodiscard]] float GetTotalDistance() const;
     [[nodiscard]] const vec3& GetDirection() const;
     [[nodiscard]] Transform GetOffset() override;
 
 private:
     float totalDistance;
-    vec3 direction = vec3(1.0f, 0.0f, 0.0f);
+    vec3 direction;
 };

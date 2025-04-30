@@ -4,14 +4,6 @@ class ShaderProgram; class Mesh;
 using namespace glm;
 
 
-typedef enum LightType {
-    AMBIENT = 0,
-    DIRECTIONAL = 1,
-    POSITIONAL = 2,
-    SPOT = 3
-} LightType;
-
-
 typedef struct LightAttribute {
     vec3 color;
     float intensity;
@@ -20,12 +12,14 @@ typedef struct LightAttribute {
 
 class Light {
 public:
+    enum Type { AMBIENT = 0, DIRECTIONAL = 1, POSITIONAL = 2, SPOT = 3 };
+    Light();
     void SetColor(const vec3&);
     void SetIntensity(float);
     void SetAmbient(const vec3&, float);
     virtual void SetDiffuse(const vec3&, float);
     virtual void SetSpecular(const vec3&, float);
-    [[nodiscard]] LightType GetType() const;
+    [[nodiscard]] Type GetType() const;
     [[nodiscard]] LightAttribute GetAmbient() const;
     [[nodiscard]] LightAttribute GetDiffuse() const;
     [[nodiscard]] LightAttribute GetSpecular() const;
@@ -34,8 +28,8 @@ public:
     virtual ~Light() = default;
 
 protected:
-    LightType type;
-    LightAttribute ambient = LightAttribute(vec3(1.0f), 1.0f);
-    LightAttribute diffuse = LightAttribute(vec3(1.0f), 1.0f);
-    LightAttribute specular = LightAttribute(vec3(1.0f), 1.0f);
+    Type type;
+    LightAttribute ambient;
+    LightAttribute diffuse;
+    LightAttribute specular;
 };

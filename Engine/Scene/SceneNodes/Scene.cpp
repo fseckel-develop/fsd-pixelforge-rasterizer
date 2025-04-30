@@ -8,48 +8,42 @@ Scene::Scene(const string& name):
 }
 
 
-void Scene::AddModel(const shared_ptr<Model>& model) const {
-    if (model) models->AddChild(model);
-}
-
-
-void Scene::AddLight(const string& name, const shared_ptr<Light>& light) const {
-    globalLights->AddChild(make_shared<LightUnit>(name, light));
-}
-
-
-vector<shared_ptr<Model>> Scene::GetModels() const {
-    vector<shared_ptr<Model>> models;
-    for (const auto& child : this->models->GetChildren()) {
-        if (const auto model = dynamic_pointer_cast<Model>(child)) models.push_back(model);
+void Scene::AddModel(const shared_ptr<Model>& model) {
+    if (!model) return;
+    models.push_back(model);
+    if (const auto root = model->GetRoot()) {
+        AddChild(root);
+    } else {
+        AddChild(model);
     }
+}
+
+
+void Scene::AddLightUnit(const shared_ptr<LightUnit>& lightUnit) {
+    if (!lightUnit) return;
+    globalLightUnits.push_back(lightUnit);
+    if (const auto root = lightUnit->GetRoot()) {
+        AddChild(root);
+    } else {
+        AddChild(lightUnit);
+    }
+}
+
+
+const vector<shared_ptr<Model>>& Scene::GetModels() const {
     return models;
 }
 
 
-vector<shared_ptr<LightUnit>> Scene::GetGlobalLights() const {
-    vector<shared_ptr<LightUnit>> globalLights;
-    for (const auto& child : this->globalLights->GetChildren()) {
-        if (const auto light = dynamic_pointer_cast<LightUnit>(child)) {
-            globalLights.push_back(light);
-        }
-    }
-    return globalLights;
+const vector<shared_ptr<LightUnit>>& Scene::GetGlobalLightUnits() const {
+    return globalLightUnits;
 }
 
 
-vector<shared_ptr<LightUnit>> Scene::GetAllLights() const {
-    vector<shared_ptr<LightUnit>> allLights = GetGlobalLights();
-    for (const auto& child : models->GetChildren()) {
-        if (const auto model = dynamic_pointer_cast<Model>(child)) {
-            for (const auto& light : model->GetLightUnits()) allLights.push_back(light);
-        }
+vector<shared_ptr<LightUnit>> Scene::GetAllLightUnits() const {
+    vector<shared_ptr<LightUnit>> allLights = GetGlobalLightUnits();
+    for (const auto& model : models) {
+        for (const auto& lightUnit : model->GetLightUnits()) allLights.push_back(lightUnit);
     }
     return allLights;
-}
-
-
-void Scene::UpdateSelf(const float deltaTime) {
-    models->UpdateSelfAndChildren(deltaTime);
-    globalLights->UpdateSelfAndChildren(deltaTime);
 }

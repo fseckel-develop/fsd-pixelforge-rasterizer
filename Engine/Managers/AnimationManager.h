@@ -4,9 +4,9 @@
 #include "../Scene/Animations/CurveAnimation.h"
 #include "../Scene/Animations/KeyframeAnimation.h"
 #include "../Scene/Animations/Orbiting.h"
-#include "../Scene/Animations/Rotation.h"
+#include "../Scene/Animations/Rotating.h"
 #include "../Scene/Animations/Scaling.h"
-#include "../Scene/Animations/Translation.h"
+#include "../Scene/Animations/Translating.h"
 using namespace std;
 
 
@@ -22,11 +22,11 @@ public:
             CombineHashes(seed, HashAnimation(*keyframeAnimation));
         } else if (auto* orbiting = dynamic_cast<const Orbiting*>(&animation)) {
             CombineHashes(seed, HashAnimation(*orbiting));
-        } else if (auto* rotation = dynamic_cast<const Rotation*>(&animation)) {
+        } else if (auto* rotation = dynamic_cast<const Rotating*>(&animation)) {
             CombineHashes(seed, HashAnimation(*rotation));
         } else if (auto* scaling = dynamic_cast<const Scaling*>(&animation)) {
             CombineHashes(seed, HashAnimation(*scaling));
-        } else if (auto* translation = dynamic_cast<const Translation*>(&animation)) {
+        } else if (auto* translation = dynamic_cast<const Translating*>(&animation)) {
             CombineHashes(seed, HashAnimation(*translation));
         }
         return seed;
@@ -53,8 +53,8 @@ public:
                 leftOrbiting->GetRotationAxis() == rightOrbiting->GetRotationAxis() &&
                 leftOrbiting->GetRadius() == rightOrbiting->GetRadius();
         }
-        if (auto* leftRotation = dynamic_cast<const Rotation*>(&left)) {
-            auto* rightRotation = dynamic_cast<const Rotation*>(&right);
+        if (auto* leftRotation = dynamic_cast<const Rotating*>(&left)) {
+            auto* rightRotation = dynamic_cast<const Rotating*>(&right);
             if (!rightRotation) return false;
             return leftRotation->GetTotalAngle() == rightRotation->GetTotalAngle() &&
                 leftRotation->GetRotationAxis() == rightRotation->GetRotationAxis();
@@ -64,8 +64,8 @@ public:
             if (!rightScaling) return false;
             return leftScaling->GetTargetScale() == rightScaling->GetTargetScale();
         }
-        if (auto* leftTranslation = dynamic_cast<const Translation*>(&left)) {
-            auto* rightTranslation = dynamic_cast<const Translation*>(&right);
+        if (auto* leftTranslation = dynamic_cast<const Translating*>(&left)) {
+            auto* rightTranslation = dynamic_cast<const Translating*>(&right);
             if (!rightTranslation) return false;
             return leftTranslation->GetTotalDistance() == rightTranslation->GetTotalDistance() &&
                 leftTranslation->GetDirection() == rightTranslation->GetDirection();
@@ -84,9 +84,9 @@ private:
         size_t seed = 0;
         for (const auto& [timeStamp, transform] : animation.GetKeyframes()) {
             CombineHashes(seed, hash<float>()(timeStamp));
-            CombineHashes(seed, hash<vec3>()(transform.translation));
-            CombineHashes(seed, hash<quat>()(transform.rotation));
-            CombineHashes(seed, hash<vec3>{}(transform.scaling));
+            CombineHashes(seed, hash<vec3>()(transform.GetTranslation()));
+            CombineHashes(seed, hash<quat>()(transform.GetRotation()));
+            CombineHashes(seed, hash<vec3>{}(transform.GetScale()));
         }
         return seed;
     }
@@ -99,7 +99,7 @@ private:
         return seed;
     }
 
-    static size_t HashAnimation(const Rotation& animation) {
+    static size_t HashAnimation(const Rotating& animation) {
         size_t seed = 0;
         CombineHashes(seed, hash<float>()(animation.GetTotalAngle()));
         CombineHashes(seed, hash<vec3>()(animation.GetRotationAxis()));
@@ -112,7 +112,7 @@ private:
         return seed;
     }
 
-    static size_t HashAnimation(const Translation& animation) {
+    static size_t HashAnimation(const Translating& animation) {
         size_t seed = 0;
         CombineHashes(seed, hash<float>()(animation.GetTotalDistance()));
         CombineHashes(seed, hash<vec3>()(animation.GetDirection()));

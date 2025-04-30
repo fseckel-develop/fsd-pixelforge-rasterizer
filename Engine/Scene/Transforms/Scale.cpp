@@ -1,11 +1,16 @@
 #include "Scale.h"
 
 
+Scale::Scale(const float scale) {
+    this->scale.SetScale(scale);
+}
+
+
 Scale::Scale(const vec3& scale) {
-    this->scaling = scale;
+    this->scale.SetScale(scale);
 }
 
 
 Scale::Scale(const float scaleX, const float scaleY, const float scaleZ) {
-    this->scaling = vec3(scaleX, scaleY, scaleZ);
+    this->scale.SetScale(scaleX, scaleY, scaleZ);
 }

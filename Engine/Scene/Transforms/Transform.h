@@ -1,19 +1,32 @@
 #pragma once
 #include <GLM/glm.hpp>
-#include <GLM/detail/type_quat.hpp>
+#include <GLM/gtc/quaternion.hpp>
 using namespace glm;
 
 
 class Transform {
 public:
-    vec3 translation = vec3(0.0f);
-    quat rotation = quat(1.0f, 0.0f, 0.0f, 0.0f);
-    vec3 scaling = vec3(1.0f);
-    Transform() = default;
+    Transform();
     explicit Transform(const mat4&);
     Transform(const vec3&, const quat&, const vec3&);
     Transform(const vec3&, const vec3&, const vec3&);
-    static Transform FromMatrix(const mat4&);
-    Transform operator*(const Transform& other) const;
+    void SetFromMatrix(const mat4&);
+    void SetTranslation(const vec3&);
+    void SetTranslation(float, float, float);
+    void SetRotation(const quat&);
+    void SetRotation(const vec3&);
+    void SetRotation(float, float, float);
+    void SetScale(const vec3&);
+    void SetScale(float);
+    void SetScale(float, float, float);
     [[nodiscard]] mat4 ToMatrix() const;
+    [[nodiscard]] const vec3& GetTranslation() const;
+    [[nodiscard]] const quat& GetRotation() const;
+    [[nodiscard]] const vec3& GetScale() const;
+    Transform operator*(const Transform& other) const;
+
+private:
+    vec3 translation;
+    quat rotation;
+    vec3 scale;
 };

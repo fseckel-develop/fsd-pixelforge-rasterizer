@@ -10,9 +10,9 @@ typedef struct Keyframe {
     Transform transform;
     bool operator==(const Keyframe& other) const {
         return timeStamp == other.timeStamp &&
-            transform.translation == other.transform.translation &&
-            transform.rotation == other.transform.rotation &&
-            transform.scaling == other.transform.scaling;
+            transform.GetTranslation() == other.transform.GetTranslation() &&
+            transform.GetRotation() == other.transform.GetRotation() &&
+            transform.GetScale() == other.transform.GetScale();
     }
 } Keyframe;
 

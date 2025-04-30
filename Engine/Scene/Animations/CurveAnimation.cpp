@@ -4,9 +4,19 @@
 #include <GLM/gtc/quaternion.hpp>
 
 
-CurveAnimation::CurveAnimation(Curve* curve, const float duration, const Mode mode):
-    Animation(duration, mode) {
-    this->curve = shared_ptr<Curve>(curve);
+CurveAnimation::CurveAnimation(const Mode mode):
+    Animation(mode) {
+}
+
+
+CurveAnimation::CurveAnimation(const shared_ptr<Curve>& curve, const float duration, const Mode mode):
+    Animation(mode, duration) {
+    this->curve = curve;
+}
+
+
+void CurveAnimation::SetCurve(const shared_ptr<Curve>& curve) {
+    this->curve = curve;
 }
 
 
@@ -15,12 +25,11 @@ shared_ptr<Curve> CurveAnimation::GetCurve() const {
 }
 
 
-
 Transform CurveAnimation::GetOffset() {
     Transform offset;
     const float t = GetProgress() * (curve->GetTMax() - curve->GetTMin()) + curve->GetTMin();
-    offset.translation = curve->Evaluate(t);
+    offset.SetTranslation(curve->Evaluate(t));
     const mat3 frame = curve->ComputeRotMinFrame(t);
-    offset.rotation = quat_cast(frame);
+    offset.SetRotation(quat_cast(frame));
     return offset;
 }

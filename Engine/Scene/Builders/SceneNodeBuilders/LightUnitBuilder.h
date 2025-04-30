@@ -1,10 +1,10 @@
 #pragma once
 #include "TransformNodeBuilder.h"
-#include "LightUnit.h"
+#include "../../SceneNodes/LightUnit.h"
 using namespace std;
 
 
-class LightUnitBuilder : public TransformNodeBuilder<LightUnit, LightUnitBuilder> {
+class LightUnitBuilder final : public TransformNodeBuilder<LightUnit, LightUnitBuilder> {
 public:
     explicit LightUnitBuilder(const string& name, const string& parentName = ""):
         TransformNodeBuilder(name, parentName) {
@@ -15,22 +15,8 @@ public:
         return *this;
     }
 
-    auto& withLight(const AmbientLightBuilder& builder) {
-        this->sceneNode->SetLight(builder.Build());
-        return *this;
-    }
-
-    auto& withLight(const DirectionalLightBuilder& builder) {
-        this->sceneNode->SetLight(builder.Build());
-        return *this;
-    }
-
-    auto& withLight(const PositionalLightBuilder& builder) {
-        this->sceneNode->SetLight(builder.Build());
-        return *this;
-    }
-
-    auto& withLight(const SpotLightBuilder& builder) {
+    template<IsLightBuilder BuilderT>
+    auto& withLight(const BuilderT& builder) {
         this->sceneNode->SetLight(builder.Build());
         return *this;
     }

@@ -1,5 +1,6 @@
 #pragma once
 
+/// Pipeline
 #include "Graphics/Pipeline/IndexBuffer.h"
 #include "Graphics/Pipeline/ShaderProgram.h"
 #include "Graphics/Pipeline/ShaderStorageBuffer.h"
@@ -9,6 +10,7 @@
 #include "Graphics/Pipeline/VertexBufferLayout.h"
 #include "Graphics/Pipeline/VertexData.h"
 
+/// Texturing
 #include "Graphics/Texturing/CubeMap.h"
 #include "Graphics/Texturing/Material.h"
 #include "Graphics/Texturing/Texture.h"

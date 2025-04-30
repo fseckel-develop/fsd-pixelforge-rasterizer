@@ -8,14 +8,14 @@ using namespace std;
 class Scene final : public Group {
 public:
     explicit Scene(const string&);
-    void AddModel(const shared_ptr<Model>&) const;
-    void AddLight(const string&, const shared_ptr<Light>&) const;
-    [[nodiscard]] vector<shared_ptr<Model>> GetModels() const;
-    [[nodiscard]] vector<shared_ptr<LightUnit>> GetGlobalLights() const;
-    [[nodiscard]] vector<shared_ptr<LightUnit>> GetAllLights() const;
-    void UpdateSelf(float) override;
+    void AddModel(const shared_ptr<Model>&);
+    void AddLightUnit(const shared_ptr<LightUnit>&);
+    [[nodiscard]] const vector<shared_ptr<Model>>& GetModels() const;
+    [[nodiscard]] const vector<shared_ptr<LightUnit>>& GetGlobalLightUnits() const;
+    [[nodiscard]] vector<shared_ptr<LightUnit>> GetAllLightUnits() const;
+
 
 private:
-    shared_ptr<Group> models = make_shared<Group>("Models");
-    shared_ptr<Group> globalLights = make_shared<Group>("GlobalLights");
+    vector<shared_ptr<Model>> models;
+    vector<shared_ptr<LightUnit>> globalLightUnits;
 };

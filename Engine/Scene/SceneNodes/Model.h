@@ -13,8 +13,8 @@ public:
     void AddRenderUnit(const shared_ptr<RenderUnit>&);
     [[nodiscard]] shared_ptr<LightUnit> GetLightUnitByName(const string&) const;
     [[nodiscard]] shared_ptr<RenderUnit> GetRenderUnitByName(const string&) const;
-    [[nodiscard]] vector<shared_ptr<LightUnit>>& GetLightUnits();
-    [[nodiscard]] vector<shared_ptr<RenderUnit>>& GetRenderUnits();
+    [[nodiscard]] const vector<shared_ptr<LightUnit>>& GetLightUnits();
+    [[nodiscard]] const vector<shared_ptr<RenderUnit>>& GetRenderUnits();
     void UpdateSelf(float) override {}
 
 private:

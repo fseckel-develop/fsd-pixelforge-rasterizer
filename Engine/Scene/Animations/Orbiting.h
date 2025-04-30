@@ -1,13 +1,15 @@
 #pragma once
-#include "Rotation.h"
+#include "Rotating.h"
 #include <GLM/glm.hpp>
 class Transform;
 using namespace glm;
 
 
-class Orbiting final : public Rotation {
+class Orbiting final : public Rotating {
 public:
-    Orbiting(float, vec3, float = 360.0f, float = 4.0f, Mode = LOOP);
+    explicit Orbiting(Mode);
+    Orbiting(Mode, float, float, const vec3&, float = 360.0f);
+    void SetRadius(float);
     [[nodiscard]] float GetRadius() const;
     [[nodiscard]] Transform GetOffset() override;
 

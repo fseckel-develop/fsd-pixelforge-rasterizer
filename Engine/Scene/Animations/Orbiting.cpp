@@ -3,8 +3,19 @@
 #include <GLM/gtc/quaternion.hpp>
 
 
-Orbiting::Orbiting(const float radius, const vec3 axis, const float angle, const float duration, const Mode mode):
-    Rotation(axis, angle, duration, mode) {
+Orbiting::Orbiting(const Mode mode):
+    Rotating(mode),
+    radius(0.0f) {
+}
+
+
+Orbiting::Orbiting(const Mode mode, const float duration, const float radius, const vec3& axis, const float angle):
+    Rotating(mode, duration, axis, angle) {
+    this->radius = radius;
+}
+
+
+void Orbiting::SetRadius(const float radius) {
     this->radius = radius;
 }
 
@@ -24,7 +35,7 @@ Transform Orbiting::GetOffset() {
     radiant = normalize(cross(rotationAxis, radiant)) * radius;
     const quat rotation = angleAxis(currentAngle, rotationAxis);
     const vec3 orbitalPosition = rotation * radiant;
-    offset.translation = orbitalPosition;
-    offset.rotation = rotation;
+    offset.SetTranslation(orbitalPosition);
+    offset.SetRotation(rotation);
     return offset;
 }

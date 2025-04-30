@@ -1,5 +1,6 @@
 #pragma once
 
+/// Curves
 #include "Geometry/Curves/BezierCurve.h"
 #include "Geometry/Curves/BSpline.h"
 #include "Geometry/Curves/Curve.h"
@@ -8,6 +9,7 @@
 #include "Geometry/Curves/LagrangeCurve.h"
 #include "Geometry/Curves/NURBS.h"
 
+/// Meshes
 #include "Geometry/Meshes/Arrow.h"
 #include "Geometry/Meshes/Cone.h"
 #include "Geometry/Meshes/Cube.h"

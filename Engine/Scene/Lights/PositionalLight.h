@@ -28,6 +28,6 @@ public:
 
 protected:
     vec3 position;
-    Attenuation attenuation = Attenuation(1.0, 0.045, 0.0075);
+    Attenuation attenuation;
     static Attenuation GetAttenuationForRange(LightRange);
 };

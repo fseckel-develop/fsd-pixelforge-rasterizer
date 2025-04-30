@@ -11,13 +11,15 @@ public:
     explicit TransformNode(const string&);
     void SetTransform(const Transform&);
     void SetNodeScale(const vec3&);
+    void SetNodeScale(float);
     void MarkGlobalTransformDirty();
     virtual void AddAnimation(const shared_ptr<Animation>&);
     [[nodiscard]] bool IsGlobalTransformDirty() const;
     [[nodiscard]] const Transform& GetGlobalTransform() const;
-    [[nodiscard]] mat4 GetModelMatrix() const;
+    [[nodiscard]] virtual mat4 GetModelMatrix() const;
 
 protected:
+    Scale nodeScale;
     Transform localTransform;
     mutable Transform globalTransform;
     mutable bool globalTransformDirty = true;
@@ -25,6 +27,5 @@ protected:
     static shared_ptr<TransformNode> FindNextTransformAncestorFrom(const shared_ptr<SceneNode>&);
 
 private:
-    Scale nodeScale;
     void UpdateGlobalTransform() const;
 };

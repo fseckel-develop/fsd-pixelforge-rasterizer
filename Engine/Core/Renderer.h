@@ -21,7 +21,7 @@ public:
 private:
     static unordered_map<string, shared_ptr<ShaderProgram>> shaderPrograms;
     static shared_ptr<ShaderProgram> currentProgram;
-    static vector<shared_ptr<LightUnit>> fallbackLights;
+    static vector<shared_ptr<LightUnit>> fallbackLightUnits;
     static shared_ptr<Material> fallbackMaterial;
     static void InitializeShaderProgram(const string&);
     static void PrepareFrameGL(RenderMode, vec4 = vec4(0.0f, 0.0f, 0.0f, 1.0f));
@@ -30,7 +30,7 @@ private:
     static void SetLightingUniforms(const vector<shared_ptr<LightUnit>>&);
     static void SetMaterialUniforms(const shared_ptr<Material>&);
     static void DrawMesh(const shared_ptr<Mesh>&);
-    static void DrawLight(const shared_ptr<LightUnit>&);
+    static void DrawLightUnit(const shared_ptr<LightUnit>&);
     static void DrawRenderUnit(const shared_ptr<RenderUnit>&, Lighting);
     static void DrawModel(const shared_ptr<Model>&);
     static void DrawScene(const shared_ptr<Scene>&);

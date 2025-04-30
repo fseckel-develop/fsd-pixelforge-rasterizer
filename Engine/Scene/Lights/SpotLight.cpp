@@ -1,4 +1,5 @@
 #include "SpotLight.h"
+#include "../../Utilities.h"
 
 
 SpotLight::SpotLight():
@@ -11,7 +12,7 @@ SpotLight::SpotLight():
 
 SpotLight::SpotLight(const vec3& position, const vec3& direction):
     PositionalLight(position),
-    direction(normalize(direction)),
+    direction(Utilities::ValidateDirection(direction, "SpotLight::SpotLight")),
     innerCutoff(cos(radians(5.0f))),
     outerCutoff(cos(radians(15.0f))) {
     this->type = SPOT;
@@ -19,7 +20,7 @@ SpotLight::SpotLight(const vec3& position, const vec3& direction):
 
 
 void SpotLight::SetDirection(const vec3& direction) {
-    this->direction = normalize(direction);
+    this->direction = Utilities::ValidateDirection(direction, "SpotLight::SetDirection");
 }
 
 

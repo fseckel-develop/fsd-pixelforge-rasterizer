@@ -1,9 +1,9 @@
 #pragma once
 #include "LightBuilder.h"
-#include "DirectionalLight.h"
+#include "../../Lights/DirectionalLight.h"
 
 
-class DirectionalLightBuilder : public LightBuilder<DirectionalLight, DirectionalLightBuilder> {
+class DirectionalLightBuilder final : public LightBuilder<DirectionalLight, DirectionalLightBuilder> {
 public:
     DirectionalLightBuilder() = default;
 
