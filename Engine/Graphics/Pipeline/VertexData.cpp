@@ -1,9 +1,6 @@
 #include "VertexData.h"
 #include <iostream>
-#include <ostream>
-
-
-VertexData::VertexData(): vertexCount(0) {}
+using namespace std;
 
 
 void VertexData::SetAttribute(const VertexAttribute attribute, const AttributeData& data) {
@@ -11,8 +8,7 @@ void VertexData::SetAttribute(const VertexAttribute attribute, const AttributeDa
     visit([&](const auto& attributeData) { dataSize = attributeData.size(); }, data);
     if (attribute == POSITION) {
         vertexCount = dataSize;
-    }
-    else if (vertexCount != dataSize) {
+    } else if (vertexCount != dataSize) {
         cerr << "Attribute not added! Data size and Vertex count not matching." << endl;
         return;
     }
@@ -37,12 +33,12 @@ const map<VertexAttribute, VertexData::AttributeData>& VertexData::GetAttributes
 }
 
 
-const std::vector<uint8_t>& VertexData::GetInterleavedVector() const {
+const std::vector<uint8_t>& VertexData::GetInterleavedBuffer() const {
     return interleavedData;
 }
 
 
-const void* VertexData::GetBufferDataPointer() const {
+const void* VertexData::GetInterleavedBufferPointer() const {
     return interleavedData.empty() ? nullptr : interleavedData.data();
 }
 
@@ -66,9 +62,7 @@ void VertexData::Clear() {
 
 void VertexData::UpdateInterleavedData() const {
     interleavedData.clear();
-    if (vertexCount == 0 || attributes.empty()) {
-        return;
-    }
+    if (vertexCount == 0 || attributes.empty()) return;
     size_t stride = 0;
     map<VertexAttribute, size_t> attributeOffsets;
     for (const auto& [attribute, data] : attributes) {
@@ -78,7 +72,7 @@ void VertexData::UpdateInterleavedData() const {
         }, data);
     }
     interleavedData.resize(vertexCount * stride);
-    for (size_t i = 0; i < vertexCount; i++) {
+    for (GLsizei i = 0; i < vertexCount; i++) {
         uint8_t* vertexPointer = interleavedData.data() + i * stride;
         for (const auto& [vertexAttribute, attributeData] : attributes) {
             visit([&]<typename T>(const vector<T>& data) {

@@ -1,6 +1,7 @@
 #include "VertexArray.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
+using namespace std;
 
 
 VertexArray::VertexArray():
@@ -76,4 +77,3 @@ void VertexArray::DeleteVAO() const {
 VertexArray::~VertexArray() {
     DeleteVAO();
 }
-

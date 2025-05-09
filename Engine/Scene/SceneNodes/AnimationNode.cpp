@@ -1,5 +1,6 @@
 #include "AnimationNode.h"
 #include "../../Managers/AnimationManager.h"
+using namespace std;
 
 
 AnimationNode::AnimationNode(const string& name):

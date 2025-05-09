@@ -1,29 +1,28 @@
 #include "Curve.h"
+using namespace std; using namespace glm;
 
 
-Curve::Curve(const CurveType type, const vector<vec3>& points, const int degree, const CurveForm form):
-    curveType(type),
+Curve::Curve(const vector<vec3>& controlPoints, const int degree, const CurveForm form):
     curveForm(form),
     degree(degree),
-    controlPoints(points) {
+    controlPoints(controlPoints) {
 }
 
 
-void Curve::SetParameterRange(const float tMin, const float tMax) {
-    if (tMin < tMax) {
-        this->tMin = tMin;
-        this->tMax = tMax;
-    }
-    else {
-        this->tMin = tMax;
-        this->tMax = tMin;
+void Curve::SetParameterRange(const float min, const float max) {
+    if (min < max) {
+        this->tMin = min;
+        this->tMax = max;
+    } else {
+        this->tMin = max;
+        this->tMax = min;
     }
 }
 
 
-void Curve::SetParameterRange(const vec3& start, const vec3& end) {
-    const float tStart = EstimateParameter(start);
-    const float tEnd = EstimateParameter(end);
+void Curve::SetParameterRange(const vec3& pointA, const vec3& pointB) {
+    const float tStart = EstimateParameter(pointA);
+    const float tEnd = EstimateParameter(pointB);
     SetParameterRange(tStart, tEnd);
 }
 
@@ -62,11 +61,6 @@ float Curve::EstimateParameter(const vec3& point, const int maxIterations, const
 }
 
 
-Curve::CurveType Curve::GetType() const {
-    return curveType;
-}
-
-
 Curve::CurveForm Curve::GetForm() const {
     return curveForm;
 }
@@ -92,9 +86,9 @@ vector<vec3> Curve::GetControlPoints() const {
 }
 
 
-vector<vec3> Curve::Sample(const uint resolution, const EvaluationType type) const {
+vector<vec3> Curve::Sample(const uint sampleCount, const EvaluationType type) const {
     vector<vec3> sampledPoints;
-    const float step = (tMax - tMin) / static_cast<float>(resolution);
+    const float step = (tMax - tMin) / static_cast<float>(sampleCount);
     float t = tMin;
     while (t <= tMax) {
         switch (type) {
@@ -109,12 +103,12 @@ vector<vec3> Curve::Sample(const uint resolution, const EvaluationType type) con
 }
 
 
-vec3 Curve::Evaluate(float t, const EvaluationType target) const {
+vec3 Curve::Evaluate(float t, const EvaluationType type) const {
     switch (curveForm) {
         case OPEN: t = glm::clamp(t, tMin, tMax); break;
         case LOOP: t = fmod(t - tMin, tMax - tMin) + tMin; break;
     }
-    switch (target) {
+    switch (type) {
         case POSITION: return Position(t);
         case VELOCITY: return Velocity(t);
         case ACCELERATION: return Acceleration(t);

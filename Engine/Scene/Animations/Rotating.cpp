@@ -1,13 +1,13 @@
 #include "Rotating.h"
 #include "../Transforms/Transform.h"
 #include "../../Utilities.h"
-#include <GLM/gtc/quaternion.hpp>
+using namespace glm;
 
 
 Rotating::Rotating(const Mode mode):
     Animation(mode),
-    rotationAxis(vec3(0.0f, 1.0f, 0.0f)),
-    totalAngle(360.0f) {
+    rotationAxis({0.0f, 1.0f, 0.0f}),
+    totalAngle(radians(360.0f)) {
 }
 
 
@@ -15,7 +15,7 @@ Rotating::Rotating(const Mode mode, const float duration, const vec3& axis, cons
     Animation(mode, duration),
     rotationAxis() {
     this->rotationAxis = Utilities::ValidateDirection(axis, "Rotation::Rotation");
-    this->totalAngle = angle;
+    this->totalAngle = radians(angle);
 }
 
 
@@ -25,7 +25,7 @@ void Rotating::SetRotationAxis(const vec3& axis) {
 
 
 void Rotating::SetTotalAngle(const float angle) {
-    this->totalAngle = angle;
+    this->totalAngle = radians(angle);
 }
 
 
@@ -41,7 +41,7 @@ float Rotating::GetTotalAngle() const {
 
 Transform Rotating::GetOffset() {
     Transform offset;
-    const float angle = radians(totalAngle * GetProgress());
+    const float angle = totalAngle * GetProgress();
     const mat4 rotationMatrix = rotate(mat4(1.0f), angle, rotationAxis);
     offset.SetRotation(quat_cast(rotationMatrix));
     return offset;

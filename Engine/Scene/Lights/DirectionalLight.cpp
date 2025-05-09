@@ -1,5 +1,6 @@
 #include "DirectionalLight.h"
 #include "../../Utilities.h"
+using namespace glm;
 
 
 DirectionalLight::DirectionalLight():
@@ -15,7 +16,7 @@ DirectionalLight::DirectionalLight(const vec3& direction):
 
 
 void DirectionalLight::SetDirection(const vec3& direction) {
-    this->direction = Utilities::ValidateDirection(direction, "DirectionalLight::SetDirection");
+    this->direction = Utilities::ValidateDirection(direction, "DirectionalLight::setDirection");
 }
 
 

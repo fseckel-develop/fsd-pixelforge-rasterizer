@@ -1,6 +1,7 @@
 #include "Window.h"
 #include "Input.h"
 #include <iostream>
+using namespace std;
 
 
 bool Input::mouseHasMoved = false;

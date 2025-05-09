@@ -1,4 +1,5 @@
 #include "Frustum.h"
+using namespace std; using namespace glm;
 
 
 Frustum::Frustum(const float radiusBase, const float radiusTop, const float height, const uint sectorCount):

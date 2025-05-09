@@ -1,5 +1,6 @@
 #include "SceneNode.h"
 #include <ranges>
+using namespace std;
 
 
 SceneNode::SceneNode(const string& name) {

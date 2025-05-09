@@ -1,10 +1,11 @@
 #include "Scaling.h"
 #include "../Transforms/Transform.h"
+using namespace glm;
 
 
 Scaling::Scaling(const Mode mode):
     Animation(mode),
-    targetScale(vec3(0.0f)) {
+    targetScale(vec3(1.0f)) {
 }
 
 

@@ -1,4 +1,5 @@
 #include "Scale.h"
+using namespace glm;
 
 
 Scale::Scale(const float scale) {

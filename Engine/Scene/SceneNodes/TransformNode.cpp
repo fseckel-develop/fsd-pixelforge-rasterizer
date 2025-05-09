@@ -1,9 +1,8 @@
 #include "TransformNode.h"
 #include "AnimationNode.h"
-#include "../Animations/Animation.h"
 #include "../../Managers/SceneNodeManager.h"
-#include <queue>
 #include <ranges>
+using namespace std; using namespace glm;
 
 
 TransformNode::TransformNode(const string& name):

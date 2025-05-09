@@ -1,4 +1,5 @@
 #include "VertexBufferLayout.h"
+using namespace std;
 
 
 VertexBufferLayout::VertexBufferLayout():

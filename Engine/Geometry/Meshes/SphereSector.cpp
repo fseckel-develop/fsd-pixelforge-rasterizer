@@ -1,5 +1,5 @@
 #include "SphereSector.h"
-#include <ostream>
+using namespace std; using namespace glm;
 
 
 SphereSector::SphereSector(const float radius, const float angle, const uint stackCount, const uint sectorCount):

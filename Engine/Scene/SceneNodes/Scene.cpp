@@ -1,6 +1,7 @@
 #include "Scene.h"
 #include "Model.h"
 #include "LightUnit.h"
+using namespace std;
 
 
 Scene::Scene(const string& name):

@@ -1,4 +1,5 @@
 #include "Translation.h"
+using namespace glm;
 
 
 Translation::Translation(const vec3& translation) {

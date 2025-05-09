@@ -1,4 +1,5 @@
 #include "Torus.h"
+using namespace std; using namespace glm;
 
 
 Torus::Torus(const float innerRadius, const float torusRadius, const uint stackCount, const uint sectorCount):

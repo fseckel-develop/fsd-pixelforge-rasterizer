@@ -1,4 +1,5 @@
 #include "Rotation.h"
+using namespace glm;
 
 
 Rotation::Rotation(const quat& rotation) {

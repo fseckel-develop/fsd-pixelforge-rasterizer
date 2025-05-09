@@ -1,11 +1,11 @@
 #include "NURBS.h"
 #include <iostream>
+using namespace std; using namespace glm;
 
 
 NURBS::NURBS(const vector<vec3>& points, const vector<float>& weights, const int degree, const CurveForm form):
     BSpline(points, degree, form),
     weights(weights) {
-    curveType = Curve::NURBS;
     if (curveForm == LOOP) {
         for (int i = 0; i < this->degree; i++) {
             this->weights.push_back(weights[i]);
@@ -18,27 +18,24 @@ NURBS::NURBS(const vector<vec3>& points, const vector<float>& weights, const int
 }
 
 
+void NURBS::AddControlPoint(const vec3& point) {
+    AddControlPointWithWeight(point, 1.0f);
+}
+
+
+void NURBS::AddControlPointWithWeight(const glm::vec3& point, const float weight) {
+    BSpline::AddControlPoint(point);
+    weights.push_back(weight);
+}
+
+
+
 const vector<float>& NURBS::GetWeights() const {
     return weights;
 }
 
 
-vec3 NURBS::Position(const float t) const {
-    return Sample(t, POSITION);
-}
-
-
-vec3 NURBS::Velocity(const float t) const {
-    return Sample(t, VELOCITY);
-}
-
-
-vec3 NURBS::Acceleration(const float t) const {
-    return Sample(t, ACCELERATION);
-}
-
-
-vec3 NURBS::Sample(const float t, const EvaluationType type) const {
+vec3 NURBS::EvaluateSpline(const float t, const EvaluationType type) const {
     if (controlPoints.empty() || knotVector.empty()) {
         cerr << "NURBS is not initialized correctly!" << endl;
         return vec3(0.0f);

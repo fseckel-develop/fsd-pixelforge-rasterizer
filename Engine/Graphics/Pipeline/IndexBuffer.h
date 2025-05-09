@@ -1,17 +1,28 @@
 #pragma once
 #include <GL/glew.h>
 #include <vector>
-using namespace std;
 
 
+/// Represents an Index Buffer Object (IBO) in
+/// OpenGL, managing rendering indexed geometry.
 class IndexBuffer {
 public:
-    explicit IndexBuffer(const vector<GLuint>&);
+    /// Constructs an index buffer and uploads the provided index data.
+    /// @param data A vector of indices to initialize the buffer with.
+    explicit IndexBuffer(const std::vector<GLuint>& data);
+
+    /// Binds the index buffer to the current OpenGL context.
     void BindIBO() const;
+
+    /// Unbinds the currently bound index buffer from the OpenGL context.
     static void UnbindIBO();
+
+    /// Deletes the index buffer from GPU memory.
     void DeleteIBO() const;
+
+    /// Destructor. Automatically deletes the index buffer.
     ~IndexBuffer();
 
 private:
-    GLuint indexBufferID;
+    GLuint indexBufferID; ///< OpenGL handle for the index buffer object (IBO).
 };

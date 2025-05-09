@@ -10,7 +10,7 @@ void Application::Initialize() {
     Utilities::InitializeGLFW();
     Window::Create(1400, 900, "PixelForge");
     Utilities::InitializeGLEW();
-    Camera::TurnOn(vec3(0.0f, 0.0f, 5.0f));
+    Camera::TurnOn({0.0f, 0.0f, 5.0f});
     Input::Enable();
     Renderer::Initialize();
     TextureManager::Initialize();
@@ -26,9 +26,8 @@ void Application::Run() {
             .withLight(AmbientLight_().withIntensity(0.5f)))
         .With(LightUnit_("Light")
             .withLight(PositionalLight_())
-            .withTransform(Translation(0.0f, -2.0f, 0.0f))
-            .withAnimation(Translating_(Animation::BOUNCE)
-                .withDuration(1.0f).withTotalDistance(4.0f).withDirection({0.0f, 1.0f, 0.0f}))
+            .withAnimation(Orbiting_(Animation::LOOP)
+                .withDuration(3.0f).withRadius(4.0f).withRotationAxis({0.0f, -1.0f, 0.0f}))
             .withNodeScale(0.15f))
         .With(RenderUnit_("Sphere")
             .withMesh(Sphere())

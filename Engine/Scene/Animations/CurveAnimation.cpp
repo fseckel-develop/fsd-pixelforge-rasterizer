@@ -2,6 +2,7 @@
 #include "../Transforms/Transform.h"
 #include "../../Geometry/Curves/Curve.h"
 #include <GLM/gtc/quaternion.hpp>
+using namespace std; using namespace glm;
 
 
 CurveAnimation::CurveAnimation(const Mode mode):

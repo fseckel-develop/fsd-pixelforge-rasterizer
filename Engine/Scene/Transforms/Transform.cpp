@@ -1,6 +1,7 @@
 #include "Transform.h"
 #include <GLM/glm.hpp>
 #include <GLM/gtc/quaternion.hpp>
+using namespace glm;
 
 
 Transform::Transform():
@@ -28,11 +29,11 @@ Transform::Transform(const mat4& matrix):
     translation(vec3(0.0f)),
     rotation(quat(1.0f, 0.0f, 0.0f, 0.0f)),
     scale(vec3(1.0f)) {
-    SetFromMatrix(matrix);
+    ComposeFromMatrix(matrix);
 }
 
 
-void Transform::SetFromMatrix(const mat4& matrix) {
+void Transform::ComposeFromMatrix(const mat4& matrix) {
     translation = vec3(matrix[3]);
     vec3 scaling;
     scaling.x = length(vec3(matrix[0]));
@@ -64,12 +65,12 @@ void Transform::SetRotation(const quat& rotation) {
 
 
 void Transform::SetRotation(const vec3& eulerAngles) {
-    SetRotation(quat(eulerAngles));
+    SetRotation(quat(radians(eulerAngles)));
 }
 
 
-void Transform::SetRotation(const float pitch, const float yaw, const float roll) {
-    SetRotation(vec3(pitch, yaw, roll));
+void Transform::SetRotation(const float rotationX, const float rotationY, const float rotationZ) {
+    SetRotation(vec3(rotationX, rotationY, rotationZ));
 }
 
 

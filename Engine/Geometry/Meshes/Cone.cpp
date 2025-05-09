@@ -1,4 +1,5 @@
 #include "Cone.h"
+using namespace std; using namespace glm;
 
 
 Cone Cone::ConeByRadius(const float height, const float baseRadius, const uint sectorCount) {

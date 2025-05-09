@@ -1,6 +1,6 @@
 #include "Orbiting.h"
 #include "../Transforms/Transform.h"
-#include <GLM/gtc/quaternion.hpp>
+using namespace glm;
 
 
 Orbiting::Orbiting(const Mode mode):
@@ -27,7 +27,7 @@ float Orbiting::GetRadius() const {
 
 Transform Orbiting::GetOffset() {
     Transform offset;
-    const float currentAngle = radians(totalAngle * GetProgress());
+    const float currentAngle = totalAngle * GetProgress();
     auto radiant = vec3(1.0f, 0.0f, 0.0f);
     if (abs(dot(radiant, rotationAxis)) > 0.99f) {
         radiant = vec3(0.0f, 1.0f, 0.0f);

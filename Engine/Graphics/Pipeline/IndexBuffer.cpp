@@ -1,8 +1,8 @@
 #include "IndexBuffer.h"
-#include <iostream>
+#include <vector>
 
 
-IndexBuffer::IndexBuffer(const vector<GLuint>& data):
+IndexBuffer::IndexBuffer(const std::vector<GLuint>& data):
     indexBufferID(0) {
     glGenBuffers(1, &indexBufferID);
     BindIBO();

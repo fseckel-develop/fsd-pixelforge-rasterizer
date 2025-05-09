@@ -1,16 +1,26 @@
 #pragma once
 #include "Light.h"
 #include <GLM/glm.hpp>
-using namespace glm;
 
 
+/// Extension of the Light class with a specified direction but no position.
 class DirectionalLight final : public Light {
 public:
+    /// Default constructor with direction set to (0, -1, 0).
     DirectionalLight();
-    explicit DirectionalLight(const vec3&);
-    void SetDirection(const vec3&);
-    [[nodiscard]] vec3 GetDirection() const override;
+
+    /// Constructs a directional light with a specified direction.
+    /// @param direction The direction vector for the light.
+    explicit DirectionalLight(const glm::vec3& direction);
+
+    /// Sets the light's direction.
+    /// @param direction The direction vector for the light.
+    void SetDirection(const glm::vec3& direction);
+
+    /// Gets the current direction of the light.
+    /// @return Normalized direction vector.
+    [[nodiscard]] glm::vec3 GetDirection() const override;
 
 private:
-    vec3 direction;
+    glm::vec3 direction; ///< Normalized direction vector of the light.
 };

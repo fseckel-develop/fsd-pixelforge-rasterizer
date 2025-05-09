@@ -1,10 +1,8 @@
 #include "LightUnit.h"
-#include "../../Utilities.h"
+#include "../Transforms/Translation.h"
 #include "../../Managers/MeshManager.h"
 #include "../../Managers/LightManager.h"
-#include <GLM/gtc/quaternion.hpp>
-
-#include "../Transforms/Translation.h"
+using namespace std; using namespace glm;
 
 
 LightUnit::LightUnit(const string& name):
@@ -20,23 +18,16 @@ LightUnit::LightUnit(const string& name, const shared_ptr<Light>& light):
 
 void LightUnit::SetLight(const shared_ptr<Light>& light) {
     this->light = LightManager::GetOrCreate(light);
-    SetDefaultMesh(this->light->GetType());
+    SetDefaultMesh();
 }
 
 
 void LightUnit::SetMesh(const shared_ptr<Mesh>& mesh) {
     if (mesh) {
         this->mesh = MeshManager::GetOrCreate(mesh);
-        this->toBeRendered = true;
     } else {
-        this->toBeRendered = false;
+        this->mesh = nullptr;
     }
-
-}
-
-
-const shared_ptr<Light>& LightUnit::GetLight() const {
-    return light;
 }
 
 
@@ -56,34 +47,29 @@ mat4 LightUnit::GetModelMatrix() const {
 }
 
 
+const shared_ptr<Light>& LightUnit::GetLight() const {
+    return light;
+}
+
+
 shared_ptr<Mesh>& LightUnit::GetMesh() {
     return mesh;
 }
 
 
-bool LightUnit::ToBeRendered() const {
-    return toBeRendered;
-}
-
-
 // TODO: Orienting Cone and Arrow in the direction of the Light
 // TODO: Cone and Arrow do show weird faulty rendering (faulty normals?)
-void LightUnit::SetDefaultMesh(const Light::Type type) {
-    switch (type) {
+void LightUnit::SetDefaultMesh() {
+    switch (light->GetType()) {
         case Light::DIRECTIONAL: {
-            mesh = MeshManager::GetOrCreate(make_shared<Mesh>("Arrow.obj"));
-            break;
+            mesh = MeshManager::GetOrCreate(make_shared<Mesh>("Arrow.obj")); break;
         }
         case Light::POSITIONAL: {
-            mesh = MeshManager::GetOrCreate(make_shared<Mesh>("Sphere.obj"));
-            break;
+            mesh = MeshManager::GetOrCreate(make_shared<Mesh>("Sphere.obj")); break;
         }
         case Light::SPOT: {
-            mesh = MeshManager::GetOrCreate(make_shared<Mesh>("Cone.obj"));
-            break;
+            mesh = MeshManager::GetOrCreate(make_shared<Mesh>("Cone.obj")); break;
         }
         default: break;
     }
-    if (mesh) toBeRendered = true;
 }
-

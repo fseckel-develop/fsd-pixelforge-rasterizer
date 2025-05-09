@@ -1,6 +1,7 @@
 #include "RoundedCube.h"
 #include "../Curves/BSpline.h"
 #include "../../Utilities.h"
+using namespace std; using namespace glm;
 
 
 RoundedCube::RoundedCube(const float sideLength, const uint precision):

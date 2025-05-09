@@ -1,5 +1,6 @@
 #include "Polygon.h"
 #include "../../Graphics/Pipeline/VertexArray.h"
+using namespace std; using namespace glm;
 
 
 Polygon::Polygon(const vector<vec3>& points):

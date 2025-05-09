@@ -1,35 +1,77 @@
 #pragma once
 #include "Texture.h"
 #include <GLM/glm.hpp>
-using namespace std; using namespace glm;
 
 
+/// Represents a surface material used in rendering,
+/// supporting texture maps and Phong shading.
 class Material {
 public:
+    /// Default constructor initializing zero colors and no bound textures.
     Material();
-    explicit Material(const string&);
-    Material(const shared_ptr<Texture>&, const shared_ptr<Texture>&, vec4, vec4, vec4, float);
-    void SetDiffuseMap(const shared_ptr<Texture>&);
-    void SetSpecularMap(const shared_ptr<Texture>&);
-    void SetAmbientColor(vec4);
-    void SetDiffuseColor(vec4);
-    void SetSpecularColor(vec4);
-    void SetShininess(float);
-    [[nodiscard]] shared_ptr<Texture> GetDiffuseMap() const;
-    [[nodiscard]] shared_ptr<Texture> GetSpecularMap() const;
-    [[nodiscard]] vec4 GetAmbient() const;
-    [[nodiscard]] vec4 GetDiffuse() const;
-    [[nodiscard]] vec4 GetSpecular() const;
+
+    /// Constructs a material using a texture file path.
+    /// @param path File path to the diffuse texture.
+    explicit Material(const std::string& path);
+
+    /// Sets the diffuse texture map.
+    /// @param diffuseMap Shared pointer to a texture.
+    void SetDiffuseMap(const std::shared_ptr<Texture>& diffuseMap);
+
+    /// Sets the specular texture map.
+    /// @param specularMap Shared pointer to a texture.
+    void SetSpecularMap(const std::shared_ptr<Texture>& specularMap);
+
+    /// Sets the ambient color component.
+    /// @param ambientColor 4D color vector (RGBA).
+    void SetAmbientColor(const glm::vec4& ambientColor);
+
+    /// Sets the diffuse color component.
+    /// @param diffuseColor 4D color vector (RGBA).
+    void SetDiffuseColor(const glm::vec4& diffuseColor);
+
+    /// Sets the specular color component.
+    /// @param specularColor 4D color vector (RGBA).
+    void SetSpecularColor(const glm::vec4& specularColor);
+
+    /// Sets the shininess factor used in specular lighting.
+    /// @param shininess The shininess factor.
+    void SetShininess(float shininess);
+
+    /// Gets the diffuse texture map of the material.
+    /// @return Shared pointer to the bound diffuse map.
+    [[nodiscard]] const std::shared_ptr<Texture>& GetDiffuseMap() const;
+
+    /// Gets the specular texture map of the material.
+    /// @return Shared pointer to the bound specular map.
+    [[nodiscard]] const std::shared_ptr<Texture>& GetSpecularMap() const;
+
+    /// Gets the ambient color of the material.
+    /// @return Reference to the 4D color vector (RGBA).
+    [[nodiscard]] const glm::vec4& GetAmbient() const;
+
+    /// Gets the diffuse color of the material.
+    /// @return Reference to the 4D color vector (RGBA).
+    [[nodiscard]] const glm::vec4& GetDiffuse() const;
+
+    /// Gets the specular color of the material.
+    /// @return Reference to the 4D color vector (RGBA).
+    [[nodiscard]] const glm::vec4& GetSpecular() const;
+
+    /// Gets the shininess factor of the material.
+    /// @return The shininess factor.
     [[nodiscard]] float GetShininess() const;
+
+    /// Unbinds any of the bound textures, if present.
     void UnbindTextures() const;
 
 protected:
-    shared_ptr<Texture> diffuseMap;
-    shared_ptr<Texture> specularMap;
-    vec4 ambient = vec4(0.0f);
-    vec4 diffuse = vec4(0.0f);
-    vec4 specular = vec4(0.0f);
-    float shininess = 0.0f;
+    std::shared_ptr<Texture> diffuseMap;  ///< Diffuse texture map.
+    std::shared_ptr<Texture> specularMap; ///< Specular texture map.
+    glm::vec4 ambient;  ///< Ambient color (RGBA).
+    glm::vec4 diffuse;  ///< Diffuse color (RGBA).
+    glm::vec4 specular; ///< Specular color (RGBA).
+    float shininess;    ///< Shininess factor for specular highlights.
 };
 
 

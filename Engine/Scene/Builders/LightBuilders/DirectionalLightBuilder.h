@@ -3,17 +3,25 @@
 #include "../../Lights/DirectionalLight.h"
 
 
+/// Extension of the LightBuilder class for building
+/// directional lights using a fluent interface.
 class DirectionalLightBuilder final : public LightBuilder<DirectionalLight, DirectionalLightBuilder> {
 public:
+    /// Starts the building process for a directional light.
     DirectionalLightBuilder() = default;
 
-    auto& withDirection(const vec3& direction) {
+    /// Sets the direction of the directional light being built.
+    /// @param direction The direction vector for the light.
+    /// @return Reference to the builder for chaining.
+    auto& withDirection(const glm::vec3& direction) {
         light->SetDirection(direction);
         return *this;
     }
 };
 
 
+/// Alias function to begin building a directional light.
+/// @return Directional light builder for fluent configuration.
 inline auto DirectionalLight_() {
     return DirectionalLightBuilder();
 }

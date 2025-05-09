@@ -4,20 +4,24 @@
 #include "../Scene/Lights/DirectionalLight.h"
 #include "../Scene/Lights/PositionalLight.h"
 #include "../Scene/Lights/SpotLight.h"
-using namespace std;
 
 
+/// Extension of the InstanceManager class for managing
+/// light instances and ensuring their uniqueness.
 class LightManager final: public InstanceManager<Light, LightManager> {
 public:
+    /// Computes the hash for a light instance.
+    /// @param light The light instance to hash.
+    /// @return Hash value for the light.
     static size_t Hash(const Light& light) {
         size_t seed = typeid(light).hash_code();
-        CombineHashes(seed, hash<int>{}(light.GetType()));
-        CombineHashes(seed, hash<vec3>{}(light.GetAmbient().color));
-        CombineHashes(seed, hash<float>{}(light.GetAmbient().intensity));
-        CombineHashes(seed, hash<vec3>{}(light.GetDiffuse().color));
-        CombineHashes(seed, hash<float>{}(light.GetDiffuse().intensity));
-        CombineHashes(seed, hash<vec3>{}(light.GetSpecular().color));
-        CombineHashes(seed, hash<float>{}(light.GetSpecular().intensity));
+        CombineHashes(seed, std::hash<int>{}(light.GetType()));
+        CombineHashes(seed, std::hash<glm::vec3>{}(light.GetAmbient().color));
+        CombineHashes(seed, std::hash<float>{}(light.GetAmbient().intensity));
+        CombineHashes(seed, std::hash<glm::vec3>{}(light.GetDiffuse().color));
+        CombineHashes(seed, std::hash<float>{}(light.GetDiffuse().intensity));
+        CombineHashes(seed, std::hash<glm::vec3>{}(light.GetSpecular().color));
+        CombineHashes(seed, std::hash<float>{}(light.GetSpecular().intensity));
         if (auto* directionalLight = dynamic_cast<const DirectionalLight*>(&light)) {
             CombineHashes(seed, HashLight(*directionalLight));
         } else if (auto* positionalLight = dynamic_cast<const PositionalLight*>(&light)) {
@@ -28,6 +32,10 @@ public:
         return seed;
     }
 
+    /// Compares two lights instances for equality.
+    /// @param left The first light to compare.
+    /// @param right The second light to compare.
+    /// @return True if the lights are equal, false otherwise.
     static bool Equals(const Light& left, const Light& right) {
         if (typeid(left) != typeid(right)) return false;
         if (left.GetType() != right.GetType()) return false;
@@ -65,26 +73,35 @@ public:
     }
 
 private:
+    /// Computes the hash for a directional light instance.
+    /// @param light Directional light instance to hash.
+    /// @return The computed hash value for the directional light instance.
     static size_t HashLight(const DirectionalLight& light) {
-        return hash<vec3>{}(light.GetDirection());
+        return std::hash<glm::vec3>{}(light.GetDirection());
     }
 
+    /// Computes the hash for a positional light instance.
+    /// @param light Positional light instance to hash.
+    /// @return The computed hash value for the positional light instance.
     static size_t HashLight(const PositionalLight& light) {
         size_t seed = 0;
-        CombineHashes(seed, hash<vec3>{}(light.GetPosition()));
-        CombineHashes(seed, hash<float>{}(light.GetAttenuation().constant));
-        CombineHashes(seed, hash<float>{}(light.GetAttenuation().linear));
-        CombineHashes(seed, hash<float>{}(light.GetAttenuation().quadratic));
+        CombineHashes(seed, std::hash<glm::vec3>{}(light.GetPosition()));
+        CombineHashes(seed, std::hash<float>{}(light.GetAttenuation().constant));
+        CombineHashes(seed, std::hash<float>{}(light.GetAttenuation().linear));
+        CombineHashes(seed, std::hash<float>{}(light.GetAttenuation().quadratic));
         return seed;
     }
 
+    /// Computes the hash for a spotlight instance.
+    /// @param light Spotlight instance to hash.
+    /// @return The computed hash value for the spotlight instance.
     static size_t HashLight(const SpotLight& light) {
         size_t seed = 0;
-        CombineHashes(seed, hash<vec3>{}(light.GetPosition()));
-        CombineHashes(seed, hash<vec3>{}(light.GetDirection()));
-        CombineHashes(seed, hash<float>{}(light.GetAttenuation().constant));
-        CombineHashes(seed, hash<float>{}(light.GetAttenuation().linear));
-        CombineHashes(seed, hash<float>{}(light.GetAttenuation().quadratic));
+        CombineHashes(seed, std::hash<glm::vec3>{}(light.GetPosition()));
+        CombineHashes(seed, std::hash<glm::vec3>{}(light.GetDirection()));
+        CombineHashes(seed, std::hash<float>{}(light.GetAttenuation().constant));
+        CombineHashes(seed, std::hash<float>{}(light.GetAttenuation().linear));
+        CombineHashes(seed, std::hash<float>{}(light.GetAttenuation().quadratic));
         return seed;
     }
 };

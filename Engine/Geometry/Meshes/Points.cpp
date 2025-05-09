@@ -1,6 +1,7 @@
 #include "Points.h"
 #include "../../Graphics/Pipeline/VertexArray.h"
 #include "../../Graphics/Pipeline/VertexBuffer.h"
+using namespace std; using namespace glm;
 
 
 Points::Points(const vector<vec3>& points, const float pointSize):

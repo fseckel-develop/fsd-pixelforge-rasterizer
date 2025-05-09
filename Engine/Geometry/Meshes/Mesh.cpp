@@ -3,8 +3,8 @@
 #include "../../Graphics/Pipeline/VertexBuffer.h"
 #include "../../Graphics/Pipeline/IndexBuffer.h"
 #include <fstream>
-#include <iostream>
 #include <sstream>
+using namespace std; using namespace glm;
 
 
 Mesh::Mesh(VertexData vertexData, const vector<GLuint>& indices) {

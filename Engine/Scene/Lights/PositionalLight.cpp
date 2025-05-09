@@ -1,4 +1,5 @@
 #include "PositionalLight.h"
+using namespace glm;
 
 
 PositionalLight::PositionalLight():
@@ -25,7 +26,7 @@ void PositionalLight::SetAttenuation(const Attenuation& attenuation) {
 }
 
 
-void PositionalLight::SetRange(const LightRange range) {
+void PositionalLight::SetRange(const Range range) {
     this->attenuation = GetAttenuationForRange(range);
 }
 
@@ -40,7 +41,7 @@ Attenuation PositionalLight::GetAttenuation() const {
 }
 
 
-Attenuation PositionalLight::GetAttenuationForRange(const LightRange range) {
+Attenuation PositionalLight::GetAttenuationForRange(const Range range) {
     switch (range) {
         case R3250: return Attenuation(1.0, 0.0014, 0.000007);
         case R600: return Attenuation(1.0, 0.007, 0.0002);

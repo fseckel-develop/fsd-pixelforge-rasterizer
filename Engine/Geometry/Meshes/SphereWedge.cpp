@@ -1,4 +1,5 @@
 #include "SphereWedge.h"
+using namespace std; using namespace glm;
 
 
 SphereWedge::SphereWedge(const float radius, const float wedgeAngle, const uint stackCount, const uint sectorCount):

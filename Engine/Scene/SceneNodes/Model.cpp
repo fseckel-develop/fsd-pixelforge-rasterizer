@@ -1,6 +1,7 @@
 #include "Model.h"
 #include "LightUnit.h"
 #include "RenderUnit.h"
+using namespace std;
 
 
 Model::Model(const string& name):

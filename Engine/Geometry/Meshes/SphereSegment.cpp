@@ -1,4 +1,5 @@
 #include "SphereSegment.h"
+using namespace std; using namespace glm;
 
 
 uint stackStart;

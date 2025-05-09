@@ -3,6 +3,14 @@
 #include <SOIL2/SOIL2.h>
 #include <fstream>
 #include <iostream>
+using namespace std;
+
+
+Texture::Texture():
+    textureID(0),
+    textureType(0),
+    textureUnit(0) {
+}
 
 
 const filesystem::path textureDirectory = "../Resources/Textures";
@@ -22,30 +30,6 @@ Texture::Texture(const string& fileName, const GLenum type, const GLint format) 
     else cerr << "Failed to load texture: " << filePath << endl;
     glTexParameteri(textureType, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
     glTexParameteri(textureType, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-    glTexParameteri(textureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(textureType, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glBindTexture(textureType, 0);
-}
-
-
-// TODO: Moving to an own CubeMap class
-Texture::Texture(const vector<string>& faces) {
-    this->textureID = 0;
-    this->textureType = GL_TEXTURE_CUBE_MAP;
-    this->textureUnit = TextureManager::NoUnit();
-    glGenTextures(1, &textureID);
-    glBindTexture(textureType, textureID);
-    int width, height;
-    for (size_t i = 0; i < faces.size(); i++) {
-        if (unsigned char* data = SOIL_load_image(faces[i].c_str(), &width, &height, nullptr, SOIL_LOAD_RGBA)) {
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-            SOIL_free_image_data(data);
-        }
-        else cerr << "Failed to load cube-map face: " << faces[i] << endl;
-    }
-    glTexParameteri(textureType, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(textureType, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(textureType, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
     glTexParameteri(textureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(textureType, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glBindTexture(textureType, 0);

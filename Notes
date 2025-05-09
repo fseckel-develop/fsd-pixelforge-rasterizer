@@ -1,5 +1,7 @@
 TODO: Connecting Light Types with default Meshes
 
+TODO: Adding Doxygen Comments to and remove namespaces from all Mesh headers
+
 What are Shader Storage Buffer Objects (SSBO)?
 
 What are Uniform Buffer Objects (UBO)?
@@ -7,10 +9,3 @@ What are Uniform Buffer Objects (UBO)?
 What is SSAO (Screen Space Ambient Occlusion)?
 
 What is the Cook-Torrance model in lighting?
-
-
-Idea: "Chaining" Setter Methods by having the object type as return type
-SpotLight* spot = new SpotLight("Spot");
-spot->SetPosition(vec3(0.0f, 0.0f, 0.0f))
-    ->SetDirection(vec(0.0f, -1.0f, 0.0f))
-    ->CutoffAngles(5.0f, 20.0f);

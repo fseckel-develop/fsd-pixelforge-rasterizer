@@ -65,7 +65,6 @@ float Window::GetAspectRatio() {
 }
 
 
-
 void Window::Close() {
     glfwDestroyWindow(window);
 }

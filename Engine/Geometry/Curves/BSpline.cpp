@@ -1,10 +1,10 @@
 #include "BSpline.h"
 #include <iostream>
-#include <GLM/common.hpp>
+using namespace std; using namespace glm;
 
 
 BSpline::BSpline(const vector<vec3>& points, const int degree, const CurveForm form):
-    Curve(BSPLINE, points, degree, form) {
+    Curve(points, degree, form) {
     ComputeCentroid();
     if (!controlPoints.empty() && controlPoints.size() <= static_cast<size_t>(this->degree)) {
         cerr << "Invalid degree for BSpline" << endl;
@@ -15,6 +15,12 @@ BSpline::BSpline(const vector<vec3>& points, const int degree, const CurveForm f
             controlPoints.push_back(controlPoints[i]);
         }
     }
+    GenerateKnotVector();
+}
+
+
+void BSpline::AddControlPoint(const glm::vec3 &point) {
+    controlPoints.push_back(point);
     GenerateKnotVector();
 }
 
@@ -124,21 +130,21 @@ void BSpline::GenerateKnotVector() {
 
 
 vec3 BSpline::Position(const float t) const {
-    return Sample(t, POSITION);
+    return EvaluateSpline(t, POSITION);
 }
 
 
 vec3 BSpline::Velocity(const float t) const {
-    return Sample(t, VELOCITY);
+    return EvaluateSpline(t, VELOCITY);
 }
 
 
 vec3 BSpline::Acceleration(const float t) const {
-    return Sample(t, ACCELERATION);
+    return EvaluateSpline(t, ACCELERATION);
 }
 
 
-vec3 BSpline::Sample(const float t, const EvaluationType type) const {
+vec3 BSpline::EvaluateSpline(const float t, const EvaluationType type) const {
     if (controlPoints.empty() || knotVector.empty()) {
         std::cerr << "BSpline is not initialized correctly!" << std::endl;
         return vec3(0.0f);

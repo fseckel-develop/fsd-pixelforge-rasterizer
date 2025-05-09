@@ -4,7 +4,7 @@
 #include <GLFW/glfw3.h>
 #include <GLM/gtc/matrix_transform.hpp>
 #include <iostream>
-using namespace std;
+using namespace std; using namespace glm;
 
 
 vec3 Camera::position = vec3(0.0f, 0.0f, 0.0f);

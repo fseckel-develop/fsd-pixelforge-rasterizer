@@ -1,9 +1,10 @@
 #include "LagrangeCurve.h"
 #include <iostream>
+using namespace std; using namespace glm;
 
 
 LagrangeCurve::LagrangeCurve(const std::vector<vec3>& points):
-    Curve(LAGRANGE, points, static_cast<int>(points.size()) - 1, OPEN) {
+    Curve(points, static_cast<int>(points.size()) - 1, OPEN) {
 }
 
 
@@ -66,21 +67,21 @@ float LagrangeCurve::BasisFunctionForAcceleration(const float t, const int i) co
 
 
 vec3 LagrangeCurve::Position(const float t) const {
-    return Sample(t, POSITION);
+    return EvaluateBasis(t, POSITION);
 }
 
 
 vec3 LagrangeCurve::Velocity(float t) const {
-    return Sample(t, VELOCITY);
+    return EvaluateBasis(t, VELOCITY);
 }
 
 
 vec3 LagrangeCurve::Acceleration(const float t) const {
-    return Sample(t, ACCELERATION);
+    return EvaluateBasis(t, ACCELERATION);
 }
 
 
-vec3 LagrangeCurve::Sample(const float t, const EvaluationType type) const {
+vec3 LagrangeCurve::EvaluateBasis(const float t, const EvaluationType type) const {
     if (controlPoints.size() < 2) {
         cerr << "Not enough data to evaluate Lagrange curve." << endl;
         return vec3(0.0f);

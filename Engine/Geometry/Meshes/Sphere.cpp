@@ -1,6 +1,5 @@
 #include "Sphere.h"
-
-#include <iostream>
+using namespace std; using namespace glm;
 
 
 Sphere::Sphere(const float radius, const uint stackCount, const uint sectorCount):

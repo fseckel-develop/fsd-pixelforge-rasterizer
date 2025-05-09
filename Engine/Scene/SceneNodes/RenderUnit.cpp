@@ -1,6 +1,7 @@
 #include "RenderUnit.h"
 #include "../../Managers/MaterialManager.h"
 #include "../../Managers/MeshManager.h"
+using namespace std;
 
 
 RenderUnit::RenderUnit(const string& name):

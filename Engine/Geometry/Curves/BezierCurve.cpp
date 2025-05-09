@@ -1,9 +1,10 @@
 #include "BezierCurve.h"
 #include <iostream>
+using namespace std; using namespace glm;
 
 
 BezierCurve::BezierCurve(const vector<vec3>& points):
-    Curve(BEZIER, points, static_cast<int>(points.size()) - 1, OPEN) {
+    Curve(points, static_cast<int>(points.size()) - 1, OPEN) {
     ComputeDerivativePoints();
 }
 

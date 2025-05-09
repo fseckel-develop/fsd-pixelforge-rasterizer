@@ -1,5 +1,6 @@
 #include "SpotLight.h"
 #include "../../Utilities.h"
+using namespace glm;
 
 
 SpotLight::SpotLight():
@@ -24,14 +25,14 @@ void SpotLight::SetDirection(const vec3& direction) {
 }
 
 
-void SpotLight::SetCutoffAngles(const float firstAngle, const float secondAngle) {
-    if (firstAngle <= secondAngle) {
-        this->innerCutoff = cos(radians(firstAngle));
-        this->outerCutoff = cos(radians(secondAngle));
+void SpotLight::SetCutoffAngles(const float innerCutoff, const float outerCutoff) {
+    if (innerCutoff <= outerCutoff) {
+        this->innerCutoff = cos(radians(innerCutoff));
+        this->outerCutoff = cos(radians(outerCutoff));
     }
     else {
-        this->innerCutoff = cos(radians(secondAngle));
-        this->outerCutoff = cos(radians(firstAngle));
+        this->innerCutoff = cos(radians(outerCutoff));
+        this->outerCutoff = cos(radians(innerCutoff));
     }
 }
 

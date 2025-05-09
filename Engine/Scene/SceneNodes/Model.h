@@ -1,44 +1,43 @@
 #pragma once
 #include "TransformNode.h"
-#include <iostream>
-#include <string>
 class Light; class Mesh; class LightUnit; class RenderUnit;
-using namespace std;
 
 
+/// Extension of the TransformNode class that represents a model in a
+/// scene, hierarchically composable of render units and light units.
 class Model final : public TransformNode {
 public:
-    explicit Model(const string&);
-    void AddLightUnit(const shared_ptr<LightUnit>&);
-    void AddRenderUnit(const shared_ptr<RenderUnit>&);
-    [[nodiscard]] shared_ptr<LightUnit> GetLightUnitByName(const string&) const;
-    [[nodiscard]] shared_ptr<RenderUnit> GetRenderUnitByName(const string&) const;
-    [[nodiscard]] const vector<shared_ptr<LightUnit>>& GetLightUnits();
-    [[nodiscard]] const vector<shared_ptr<RenderUnit>>& GetRenderUnits();
-    void UpdateSelf(float) override {}
+    /// Constructs a model with a given name.
+    /// @param name The name of the model.
+    explicit Model(const std::string& name);
+
+    /// Adds a light unit to the model.
+    /// @param lightUnit Shared pointer to the light unit to be added.
+    void AddLightUnit(const std::shared_ptr<LightUnit>& lightUnit);
+
+    /// Adds a render unit to the model.
+    /// @param renderUnit Shared pointer to the render unit to be added.
+    void AddRenderUnit(const std::shared_ptr<RenderUnit>& renderUnit);
+
+    /// Retrieves a light unit by its name.
+    /// @param name The name of the light unit to be retrieved.
+    /// @return Shared pointer to the light unit with the matching name, or nullptr if not found.
+    [[nodiscard]] std::shared_ptr<LightUnit> GetLightUnitByName(const std::string& name) const;
+
+    /// Retrieves a render unit by its name.
+    /// @param name The name of the render unit to be retrieved.
+    /// @return Shared pointer to the render unit with the matching name, or nullptr if not found.
+    [[nodiscard]] std::shared_ptr<RenderUnit> GetRenderUnitByName(const std::string& name) const;
+
+    /// Retrieves all light units in the model.
+    /// @return Reference to the vector of shared pointers to light units.
+    [[nodiscard]] const std::vector<std::shared_ptr<LightUnit>>& GetLightUnits();
+
+    /// Retrieves all render units in the model.
+    /// @return Reference to the vector of shared pointers to render units.
+    [[nodiscard]] const std::vector<std::shared_ptr<RenderUnit>>& GetRenderUnits();
 
 private:
-    vector<shared_ptr<LightUnit>> lightUnits;
-    vector<shared_ptr<RenderUnit>> renderUnits;
+    std::vector<std::shared_ptr<LightUnit>> lightUnits;   ///< List of light units associated with the model.
+    std::vector<std::shared_ptr<RenderUnit>> renderUnits; ///< List of render units associated with the model.
 };
-
-
-// inline Model SolarSystem() {
-//     Model model;
-//     model.AddRenderable("Sun", new Sphere()); {
-//         model.LastAdded()->SetTexture("../Resources/Textures/sunMap.jpg");
-//         model.LastAdded()->AddAnimation(new Rotation(vec3(0.0f, 1.0f, 0.0f), 360.0f, 16.0f));
-//     }
-//     model.AddRenderable("Earth", new Sphere()); {
-//         model.LastAdded()->SetTexture("../Resources/Textures/earthMap.jpg");
-//         model.LastAdded()->SetTransform(Scale(vec3(0.4f, 0.4f, 0.4f)));
-//         model.LastAdded()->AddAnimation(new Rotation(vec3(0.0f, 1.0f, 0.0f), 360.0f, 8.0f));
-//         model.LastAdded()->AddAnimation(new Orbiting(2.0f, vec3(0.0f, 1.0f, 0.0f), 360.0f, 14.0f));
-//     }
-//     model.AddRenderable("Shuttle", new Mesh("../resources/models/shuttle.obj"), "Earth"); {
-//         model.LastAdded()->SetTexture("../resources/textures/shuttle.jpg");
-//         model.LastAdded()->SetTransform(Transform(vec3(0.0f), vec3(0.7f, 1.0f, 0.0f), vec3(0.3f, 0.3f, 0.3f)));
-//         model.LastAdded()->AddAnimation(new Orbiting(1.0f, vec3(0.5f, 1.0f, 0.0f), 360.0f, 8.0f));
-//     }
-//     return model;
-// }

@@ -1,100 +1,101 @@
-#include "ShaderProgram.h"
+#include "Shader.h"
 #include "../../Utilities.h"
 #include <fstream>
 #include <sstream>
+using namespace std;
 
 
-ShaderProgram::ShaderProgram() {
-    shaderProgramID = glCreateProgram();
-    if (!shaderProgramID) {
+Shader::Shader() {
+    shaderID = glCreateProgram();
+    if (!shaderID) {
         cerr << "Failed to create shader program." << endl;
     }
 }
 
 
 const filesystem::path shaderDirectory = "../Resources/Shaders";
-void ShaderProgram::AddShader(const GLenum shaderType, const char* shaderFileName) const {
-    const GLuint shaderID = glCreateShader(shaderType);
-    const auto shaderFilePath = shaderDirectory / shaderFileName;
-    const string shaderSource = ReadShaderFile(shaderFilePath.c_str());
+void Shader::AddModule(const GLenum moduleType, const char* moduleFileName) const {
+    const GLuint shaderModuleID = glCreateShader(moduleType);
+    const auto shaderFilePath = shaderDirectory / moduleFileName;
+    const string shaderSource = ReadShaderModuleFile(shaderFilePath.c_str());
     const char* shaderCode = shaderSource.c_str();
-    glShaderSource(shaderID, 1, &shaderCode, nullptr);
+    glShaderSource(shaderModuleID, 1, &shaderCode, nullptr);
     GLint success;
-    glCompileShader(shaderID);
-    glGetShaderiv(shaderID, GL_COMPILE_STATUS, &success);
+    glCompileShader(shaderModuleID);
+    glGetShaderiv(shaderModuleID, GL_COMPILE_STATUS, &success);
     if (success == GL_FALSE) {
-        cerr << "Failed to compile " << Utilities::PrintShaderType(shaderType) << " '" << shaderFileName << "'." << endl;
-        Utilities::PrintShaderInfoLog(shaderID);
-        glDeleteShader(shaderID);
+        cerr << "Failed to compile " << Utilities::PrintShaderType(moduleType) << " '" << moduleFileName << "'." << endl;
+        Utilities::PrintShaderInfoLog(shaderModuleID);
+        glDeleteShader(shaderModuleID);
     }
-    glAttachShader(shaderProgramID, shaderID);
-    glDeleteShader(shaderID);
+    glAttachShader(shaderID, shaderModuleID);
+    glDeleteShader(shaderModuleID);
 }
 
 
-void ShaderProgram::ActivateProgram() const {
-    LinkProgram();
-    ValidateProgram();
+void Shader::ActivateShader() const {
+    LinkShaderModules();
+    ValidateShader();
 }
 
 
-void ShaderProgram::UseProgram() const {
-    glUseProgram(shaderProgramID);
+void Shader::BindShader() const {
+    glUseProgram(shaderID);
 }
 
 
-void ShaderProgram::UnuseProgram() {
+void Shader::UnbindShader() {
     glUseProgram(0);
 }
 
 
-void ShaderProgram::DeleteProgram() {
-    if (shaderProgramID != 0) {
-        UnuseProgram();
-        glDeleteProgram(shaderProgramID);
-        shaderProgramID = 0;
+void Shader::DeleteShader() {
+    if (shaderID != 0) {
+        UnbindShader();
+        glDeleteProgram(shaderID);
+        shaderID = 0;
     }
 }
 
 
-ShaderProgram::~ShaderProgram() {
-    DeleteProgram();
+Shader::~Shader() {
+    DeleteShader();
 }
 
 
-void ShaderProgram::LinkProgram() const {
+void Shader::LinkShaderModules() const {
     GLint success;
-    glLinkProgram(shaderProgramID);
-    glGetProgramiv(shaderProgramID, GL_LINK_STATUS, &success);
+    glLinkProgram(shaderID);
+    glGetProgramiv(shaderID, GL_LINK_STATUS, &success);
     if (success == GL_FALSE) {
-        cerr << "Failed to link shader program." << endl;
-        Utilities::PrintShaderInfoLog(shaderProgramID);
+        cerr << "Failed to link shader modules." << endl;
+        Utilities::PrintShaderInfoLog(shaderID);
     }
 }
 
 
-void ShaderProgram::ValidateProgram() const {
+void Shader::ValidateShader() const {
     GLint success;
     GLuint testVAO;
     glGenVertexArrays(1, &testVAO);
     glBindVertexArray(testVAO);
-    glValidateProgram(shaderProgramID);
-    glGetProgramiv(shaderProgramID, GL_VALIDATE_STATUS, &success);
+    glValidateProgram(shaderID);
+    glGetProgramiv(shaderID, GL_VALIDATE_STATUS, &success);
     if (success == GL_FALSE) {
-        cerr << "Failed to validate shader program." << endl;
-        Utilities::PrintShaderInfoLog(shaderProgramID);
+        cerr << "Failed to validate shader." << endl;
+        Utilities::PrintShaderInfoLog(shaderID);
     }
     glBindVertexArray(0);
     glDeleteVertexArrays(1, &testVAO);
 }
 
 
-GLint ShaderProgram::GetUniformLocation(const char* name) {
+GLint Shader::GetUniformLocation(const char* name) {
     const string key(name);
     if (uniformLocations.contains(key)) {
         return uniformLocations[key];
     }
-    const GLint location = glGetUniformLocation(shaderProgramID, name);
+    const GLint location = glGetUniformLocation(shaderID, name);
     if (location == -1) {
         cerr << "Failed to get uniform location " << name << "." << endl;
     }
@@ -105,7 +106,7 @@ GLint ShaderProgram::GetUniformLocation(const char* name) {
 }
 
 
-std::string ShaderProgram::ReadShaderFile(const char* filePath) {
+std::string Shader::ReadShaderModuleFile(const char* filePath) {
     ifstream fileStream(filePath, ios::in | ios::ate);
     if (!fileStream.is_open()) {
         cerr << "Failed to read file " << filePath << "." << endl;
@@ -122,10 +123,10 @@ std::string ShaderProgram::ReadShaderFile(const char* filePath) {
 }
 
 
-void ShaderProgram::ParseIncludes(string& shaderSource) {
+void Shader::ParseIncludes(string& shaderModule) {
     unordered_set<string> includedFiles;
     vector<istringstream> sourceStack;
-    sourceStack.emplace_back(shaderSource);
+    sourceStack.emplace_back(shaderModule);
     stringstream finalOutput;
     while (!sourceStack.empty()) {
         istringstream& currentSource = sourceStack.back();
@@ -141,7 +142,7 @@ void ShaderProgram::ParseIncludes(string& shaderSource) {
                 string includeFileName = line.substr(firstQuote + 1, lastQuote - firstQuote - 1);
                 filesystem::path includePath = shaderDirectory / includeFileName;
                 if (includedFiles.contains(includePath.string())) {
-                    cerr << "Warning: Shader include loop detected for " << includePath << endl;
+                    cerr << "Warning: Shader #include-loop detected for " << includePath << endl;
                     continue;
                 }
                 if (ifstream includeFile(includePath); includeFile) {
@@ -156,5 +157,5 @@ void ShaderProgram::ParseIncludes(string& shaderSource) {
         }
         else finalOutput << line << '\n';
     }
-    shaderSource = finalOutput.str();
+    shaderModule = finalOutput.str();
 }

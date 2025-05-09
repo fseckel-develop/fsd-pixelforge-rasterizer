@@ -6,15 +6,18 @@
 #include "../Geometry/Curves/NURBS.h"
 
 
-// TODO: Including CurveManager in all Curve-using logic
+/// Extension of the InstanceManager class for managing
+/// curve instances and ensuring their uniqueness.
 class CurveManager final : public InstanceManager<Curve, CurveManager> {
 public:
+    /// Computes the hash for a curve instance.
+    /// @param curve The curve instance to hash.
+    /// @return Hash value for the curve.
     static size_t Hash(const Curve& curve) {
         size_t seed = typeid(curve).hash_code();
-        CombineHashes(seed, hash<int>{}(curve.GetType()));
-        CombineHashes(seed, hash<int>{}(curve.GetForm()));
+        CombineHashes(seed, std::hash<int>{}(curve.GetForm()));
         for (const auto& controlPoint : curve.GetControlPoints()) {
-            CombineHashes(seed, hash<vec3>{}(controlPoint));
+            CombineHashes(seed, std::hash<glm::vec3>{}(controlPoint));
         }
         if (auto* bezierCurve = dynamic_cast<const BezierCurve*>(&curve)) {
             CombineHashes(seed, HashCurve(*bezierCurve));
@@ -28,9 +31,12 @@ public:
         return seed;
     }
 
+    /// Compares two curve instances for equality.
+    /// @param left The first curve to compare.
+    /// @param right The second curve to compare.
+    /// @return True if the curves are equal, false otherwise.
     static bool Equals(const Curve& left, const Curve& right) {
         if (typeid(left) != typeid(right)) return false;
-        if (left.GetType() != right.GetType()) return false;
         if (left.GetForm() != right.GetForm()) return false;
         if (left.GetControlPoints() != right.GetControlPoints()) return false;
         if (auto* leftBezier = dynamic_cast<const BezierCurve*>(&left)) {
@@ -59,40 +65,52 @@ public:
     }
 
 private:
+    /// Computes the hash for a Bézier curve instance.
+    /// @param curve Bézier curve instance to hash.
+    /// @return The computed hash value for the Bézier curve instance.
     static size_t HashCurve(const BezierCurve& curve) {
         size_t seed = 0;
         for (const auto& derivativePoint : curve.GetDerivativePoints(0)) {
-            CombineHashes(seed, hash<vec3>{}(derivativePoint));
+            CombineHashes(seed, std::hash<glm::vec3>{}(derivativePoint));
         }
         for (const auto& derivativePoint : curve.GetDerivativePoints(1)) {
-            CombineHashes(seed, hash<vec3>{}(derivativePoint));
+            CombineHashes(seed, std::hash<glm::vec3>{}(derivativePoint));
         }
         return seed;
     }
 
+    /// Computes the hash for a B-spline curve instance.
+    /// @param curve B-spline curve instance to hash.
+    /// @return The computed hash value for the B-spline curve instance.
     static size_t HashCurve(const BSpline& curve) {
         size_t seed = 0;
         for (const auto& knot : curve.GetKnotVector()) {
-            CombineHashes(seed, hash<float>{}(knot));
+            CombineHashes(seed, std::hash<float>{}(knot));
         }
         return seed;
     }
 
+    /// Computes the hash for a Hermite spline curve instance.
+    /// @param curve Hermite spline curve instance to hash.
+    /// @return The computed hash value for the Hermite spline curve instance.
     static size_t HashCurve(const HermiteSpline& curve) {
         size_t seed = 0;
         for (const auto& tangent : curve.GetTangents()) {
-            CombineHashes(seed, hash<vec3>{}(tangent));
+            CombineHashes(seed, std::hash<glm::vec3>{}(tangent));
         }
         return seed;
     }
 
+    /// Computes the hash for a NURBS curve instance.
+    /// @param curve NURBS curve instance to hash.
+    /// @return The computed hash value for the NURBS curve instance.
     static size_t HashCurve(const NURBS& curve) {
         size_t seed = 0;
         for (const auto& knot : curve.GetKnotVector()) {
-            CombineHashes(seed, hash<float>{}(knot));
+            CombineHashes(seed, std::hash<float>{}(knot));
         }
         for (const auto& weights : curve.GetWeights()) {
-            CombineHashes(seed, hash<float>{}(weights));
+            CombineHashes(seed, std::hash<float>{}(weights));
         }
         return seed;
     }

@@ -1,26 +1,22 @@
 #include "Material.h"
 #include "../../Managers/TextureManager.h"
+using namespace std; using namespace glm;
 
 
-Material::Material() {
-    this->diffuseMap = nullptr;
-    this->specularMap = nullptr;
+Material::Material():
+    ambient(vec4(0.0f)),
+    diffuse(vec4(0.0f)),
+    specular(vec4(0.0f)),
+    shininess(0.0f) {
 }
 
 
-Material::Material(const string& path) {
+Material::Material(const string& path):
+    ambient(vec4(0.0f)),
+    diffuse(vec4(0.0f)),
+    specular(vec4(0.0f)),
+    shininess(0.0f) {
     this->diffuseMap = TextureManager::GetOrCreate(make_shared<Texture>(path));
-    this->specularMap = nullptr;
-}
-
-
-Material::Material(const shared_ptr<Texture>& diffuseMap, const shared_ptr<Texture>& specularMap, const vec4 ambient, const vec4 diffuse, const vec4 specular, const float shininess) {
-    this->diffuseMap = TextureManager::GetOrCreate(diffuseMap);
-    this->specularMap = TextureManager::GetOrCreate(specularMap);
-    this->ambient = ambient;
-    this->diffuse = diffuse;
-    this->specular = specular;
-    this->shininess = shininess;
 }
 
 
@@ -34,17 +30,17 @@ void Material::SetSpecularMap(const shared_ptr<Texture>& specularMap) {
 }
 
 
-void Material::SetAmbientColor(const vec4 ambientColor) {
+void Material::SetAmbientColor(const vec4& ambientColor) {
     this->ambient = ambientColor;
 }
 
 
-void Material::SetDiffuseColor(const vec4 diffuseColor) {
+void Material::SetDiffuseColor(const vec4& diffuseColor) {
     this->diffuse = diffuseColor;
 }
 
 
-void Material::SetSpecularColor(const vec4 specularColor) {
+void Material::SetSpecularColor(const vec4& specularColor) {
     this->specular = specularColor;
 }
 
@@ -54,27 +50,27 @@ void Material::SetShininess(const float shininess) {
 }
 
 
-shared_ptr<Texture> Material::GetDiffuseMap() const {
+const shared_ptr<Texture>& Material::GetDiffuseMap() const {
     return this->diffuseMap;
 }
 
 
-shared_ptr<Texture> Material::GetSpecularMap() const {
+const shared_ptr<Texture>& Material::GetSpecularMap() const {
     return this->specularMap;
 }
 
 
-vec4 Material::GetAmbient() const {
+const vec4& Material::GetAmbient() const {
     return this->ambient;
 }
 
 
-vec4 Material::GetDiffuse() const {
+const vec4& Material::GetDiffuse() const {
     return this->diffuse;
 }
 
 
-vec4 Material::GetSpecular() const {
+const vec4& Material::GetSpecular() const {
     return this->specular;
 }
 

@@ -1,4 +1,5 @@
 #include "Cylinder.h"
+using namespace std; using namespace glm;
 
 
 Cylinder::Cylinder(const float radius, const float height, const uint sectorCount):

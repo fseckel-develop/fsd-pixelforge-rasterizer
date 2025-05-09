@@ -1,19 +1,39 @@
 #pragma once
 #include "BSpline.h"
-#include <vector>
 #include <GLM/glm.hpp>
-using namespace std; using namespace glm;
+#include <vector>
 
 
+/// Extension of the BSpline class representing a non-uniform
+/// rational B-Spline (NURBS) by adding support for weights.
 class NURBS final : public BSpline {
 public:
-    explicit NURBS(const vector<vec3>&, const vector<float>&, int, CurveForm = OPEN);
-    [[nodiscard]] const vector<float>& GetWeights() const;
+    /// Constructs a NURBS curve with given control points and weights and a degree.
+    /// @param controlPoints The list of control points defining the curve.
+    /// @param weights The weights associated with each control point.
+    /// @param degree The degree of the curve.
+    /// @param form Whether the curve is open or forms a loop.
+    explicit NURBS(const std::vector<glm::vec3>& controlPoints, const std::vector<float>& weights, int degree, CurveForm form = OPEN);
+
+    /// Adds a new control point with default weight of 1.0 and recomputes the knot vector.
+    /// @param point New control point.
+    void AddControlPoint(const glm::vec3& point) override;
+
+    /// Adds a new control point and weight and recomputes the knot vector.
+    /// @param point New control point.
+    /// @param weight Weight of the new control point.
+    void AddControlPointWithWeight(const glm::vec3& point, float weight);
+
+    /// Gets the weights used by the curve.
+    /// @return Reference to the vector of weights.
+    [[nodiscard]] const std::vector<float>& GetWeights() const;
 
 private:
-    vector<float> weights;
-    [[nodiscard]] vec3 Position(float) const override;
-    [[nodiscard]] vec3 Velocity(float) const override;
-    [[nodiscard]] vec3 Acceleration(float) const override;
-    [[nodiscard]] vec3 Sample(float, EvaluationType) const override;
+    std::vector<float> weights; ///< Weight associated with each control point.
+
+    /// Computes a curve sample based on the evaluation type.
+    /// @param t Parameter value to evaluate.
+    /// @param type Evaluation type: POSITION, VELOCITY or ACCELERATION.
+    /// @return The evaluated point or derivative at t.
+    [[nodiscard]] glm::vec3 EvaluateSpline(float t, EvaluationType type) const override;
 };

@@ -1,5 +1,6 @@
 #include "Shell.h"
 #include "../../Utilities.h"
+using namespace std; using namespace glm;
 
 
 Shell::Shell(Curve* outlineCurve, Curve* beltCurve, const uint stackCount, const uint sectorCount):

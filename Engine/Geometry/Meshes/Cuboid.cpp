@@ -1,4 +1,5 @@
 #include "Cuboid.h"
+using namespace std; using namespace glm;
 
 
 Cuboid::Cuboid(const float width, const float height, const float depth):

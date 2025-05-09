@@ -1,12 +1,12 @@
 #include "Light.h"
-#include <stdexcept>
+using namespace glm;
 
 
 Light::Light():
     type(AMBIENT),
-    ambient(LightAttribute(vec3(1.0f), 1.0f)),
-    diffuse(LightAttribute(vec3(1.0f), 1.0f)),
-    specular(LightAttribute(vec3(1.0f), 1.0f)) {
+    ambient(LightComponent(vec3(1.0f), 1.0f)),
+    diffuse(LightComponent(vec3(1.0f), 1.0f)),
+    specular(LightComponent(vec3(1.0f), 1.0f)) {
 }
 
 
@@ -30,21 +30,21 @@ void Light::SetIntensity(const float intensity) {
 void Light::SetAmbient(const vec3& color, const float intensity) {
     const vec3 clampedColor = { clamp(color.r, 0.0f, 1.0f), clamp(color.g, 0.0f, 1.0f), clamp(color.b, 0.0f, 1.0f) };
     const float clampedIntensity = clamp(intensity, 0.0f, 1.0f);
-    ambient = LightAttribute(clampedColor, clampedIntensity);
+    ambient = LightComponent(clampedColor, clampedIntensity);
 }
 
 
 void Light::SetDiffuse(const vec3& color, const float intensity) {
     const vec3 clampedColor = { clamp(color.r, 0.0f, 1.0f), clamp(color.g, 0.0f, 1.0f), clamp(color.b, 0.0f, 1.0f) };
     const float clampedIntensity = clamp(intensity, 0.0f, 1.0f);
-    diffuse = LightAttribute(clampedColor, clampedIntensity);
+    diffuse = LightComponent(clampedColor, clampedIntensity);
 }
 
 
 void Light::SetSpecular(const vec3& color, const float intensity) {
     const vec3 clampedColor = { clamp(color.r, 0.0f, 1.0f), clamp(color.g, 0.0f, 1.0f), clamp(color.b, 0.0f, 1.0f) };
     const float clampedIntensity = clamp(intensity, 0.0f, 1.0f);
-    specular = LightAttribute(clampedColor, clampedIntensity);
+    specular = LightComponent(clampedColor, clampedIntensity);
 }
 
 
@@ -53,16 +53,16 @@ Light::Type Light::GetType() const {
 }
 
 
-LightAttribute Light::GetAmbient() const {
+LightComponent Light::GetAmbient() const {
     return ambient;
 }
 
 
-LightAttribute Light::GetDiffuse() const {
+LightComponent Light::GetDiffuse() const {
     return diffuse;
 }
 
 
-LightAttribute Light::GetSpecular() const {
+LightComponent Light::GetSpecular() const {
     return specular;
 }

@@ -1,6 +1,7 @@
 #include "Arrow.h"
 #include "Cone.h"
 #include "Cylinder.h"
+using namespace std; using namespace glm;
 
 
 Arrow::Arrow(const float shaftLength, const float shaftRadius, const uint sectorCount):
@@ -17,11 +18,11 @@ Arrow::Arrow(const float shaftLength, const float shaftRadius, const uint sector
 
 void Arrow::CalculatePositions() {
     std::vector<vec3> vertices;
-    Cylinder shaft(shaftRadius, shaftLength, sectorCount);
+    const Cylinder shaft(shaftRadius, shaftLength, sectorCount);
     auto shaftVertices = shaft.GetVertexData().GetAttribute<vec3>(POSITION);
     vertices.insert(vertices.end(), shaftVertices.begin(), shaftVertices.end());
     const auto indexOffset = static_cast<uint32_t>(vertices.size());
-    Cone tip = Cone::ConeByRadius(tipLength, tipRadius, sectorCount);
+    const Cone tip = Cone::ConeByRadius(tipLength, tipRadius, sectorCount);
     auto tipVertices = tip.GetVertexData().GetAttribute<vec3>(POSITION);
     for (auto& vertex : tipVertices) {
         vertex.z += shaftLength;
@@ -32,8 +33,7 @@ void Arrow::CalculatePositions() {
     vector<uint32_t> indices;
     auto shaftIndices = shaft.GetIndices();
     indices.insert(indices.end(), shaftIndices.begin(), shaftIndices.end());
-    const auto coneIndices = tip.GetIndices();
-    for (const auto index : coneIndices) {
+    for (const auto index : tip.GetIndices()) {
         indices.push_back(index + indexOffset);
     }
     this->indices = indices;

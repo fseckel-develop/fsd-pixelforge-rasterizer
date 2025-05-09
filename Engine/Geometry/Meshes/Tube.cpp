@@ -2,6 +2,7 @@
 #include <Eigen/Dense>
 #include <GLM/gtc/quaternion.hpp>
 #include "../../Utilities.h"
+using namespace std; using namespace glm;
 
 
 Tube::Tube(Curve* spineCurve, Curve* beltCurve, const uint stackCount, const uint sectorCount):
@@ -54,24 +55,6 @@ void Tube::CalculateIndices() {
 }
 
 
-vector<quat> Tube::ComputeBeltRotations() const {
-    vector<mat3> frames;
-    const float tStep = (spineCurve->GetTMax() - spineCurve->GetTMin()) / static_cast<float>(stackCount);
-    float t = spineCurve->GetTMin();
-    for (uint i = 0; i <= stackCount; i++) {
-        const mat3 frame = spineCurve->ComputeRotMinFrame(t);
-        frames.emplace_back(frame);
-        t += tStep;
-    }
-    vector<quat> beltRotations;
-    for (const auto& frame : frames) {
-        quat beltRotation = normalize(quat_cast(frame * transpose(beltBase)));
-        beltRotations.emplace_back(beltRotation);
-    }
-    return beltRotations;
-}
-
-
 void Tube::ComputeBeltBase() {
     beltBase[0] = ComputeBeltNormal();
     beltBase[1] = ComputeBeltRadiant(beltBase[0]);
@@ -107,4 +90,22 @@ vec3 Tube::ComputeBeltNormal() const {
 vec3 Tube::ComputeBeltRadiant(const vec3 normal) const {
     const vec3 radiant = beltCurve->Evaluate(beltCurve->GetTMin()) - beltCurve->GetCentroid();
     return normalize(cross(cross(normal, radiant), normal));
+}
+
+
+vector<quat> Tube::ComputeBeltRotations() const {
+    vector<mat3> frames;
+    const float tStep = (spineCurve->GetTMax() - spineCurve->GetTMin()) / static_cast<float>(stackCount);
+    float t = spineCurve->GetTMin();
+    for (uint i = 0; i <= stackCount; i++) {
+        const mat3 frame = spineCurve->ComputeRotMinFrame(t);
+        frames.emplace_back(frame);
+        t += tStep;
+    }
+    vector<quat> beltRotations;
+    for (const auto& frame : frames) {
+        quat beltRotation = normalize(quat_cast(frame * transpose(beltBase)));
+        beltRotations.emplace_back(beltRotation);
+    }
+    return beltRotations;
 }

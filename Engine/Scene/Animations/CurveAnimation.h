@@ -1,23 +1,35 @@
 #pragma once
 #include "Animation.h"
-#include <GLM/glm.hpp>
-#include <GLM/gtc/quaternion.hpp>
 #include <memory>
 class Curve;
-using namespace std; using namespace glm;
 
 
+/// Extension of the Animation class which moves
+/// object along an associated Curve over time.
 class CurveAnimation final : public Animation {
 public:
-    explicit CurveAnimation(Mode);
-    explicit CurveAnimation(const shared_ptr<Curve>&, float, Mode = BOUNCE);
-    void SetCurve(const shared_ptr<Curve>&);
-    [[nodiscard]] shared_ptr<Curve> GetCurve() const;
+    /// Constructs a curve animation with the specified mode.
+    /// @param mode The playback mode (ONCE, LOOP, BOUNCE).
+    explicit CurveAnimation(Mode mode);
+
+    /// Constructs a curve animation with a specified curve and duration.
+    /// @param curve A shared pointer to the curve to follow.
+    /// @param duration The total duration of the animation.
+    /// @param mode The playback mode (ONCE, LOOP, BOUNCE).
+    explicit CurveAnimation(const std::shared_ptr<Curve>& curve, float duration, Mode mode = BOUNCE);
+
+    /// Sets the curve for the animation.
+    /// @param curve Shared pointer to the curve to use as trajectory.
+    void SetCurve(const std::shared_ptr<Curve>& curve);
+
+    /// Retrieves the current curve used in the animation.
+    /// @return Shared pointer to the curve being followed by the animation.
+    [[nodiscard]] std::shared_ptr<Curve> GetCurve() const;
+
+    /// Calculates the current offset based on the progress on the associated curve.
+    /// @return Transform combining translation and rotation along the curve.
     [[nodiscard]] Transform GetOffset() override;
 
 private:
-    shared_ptr<Curve> curve;
-    quat lastRotation = quat(1.0f, 0.0f, 0.0f, 0.0f);
-    vec3 lastTangent = vec3(1.0f, 0.0f, 0.0f);
-    vec3 lastNormal = vec3(0.0f, 1.0f, 0.0f);
+    std::shared_ptr<Curve> curve; ///< The curve used for animated translation and rotation.
 };

@@ -10,13 +10,13 @@ public:
 private:
     Curve* spineCurve;
     Curve* beltCurve;
-    mat3 beltBase = mat3();
+    glm::mat3 beltBase = glm::mat3();
     uint stackCount;
     uint sectorCount;
     void CalculatePositions() override;
     void CalculateIndices() override;
     void ComputeBeltBase();
-    vec3 ComputeBeltNormal() const;
-    vec3 ComputeBeltRadiant(vec3) const;
-    vector<quat> ComputeBeltRotations() const;
+    glm::vec3 ComputeBeltNormal() const;
+    glm::vec3 ComputeBeltRadiant(glm::vec3) const;
+    std::vector<glm::quat> ComputeBeltRotations() const;
 };

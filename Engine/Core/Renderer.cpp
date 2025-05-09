@@ -3,74 +3,42 @@
 #include "../Utilities.h"
 #include "../Geometry/Meshes/Mesh.h"
 #include "../Graphics/Pipeline/VertexArray.h"
-#include "../Graphics/Pipeline/ShaderProgram.h"
+#include "../Graphics/Pipeline/Shader.h"
 #include "../Graphics/Texturing/Material.h"
+using namespace std; using namespace glm;
 
 
-unordered_map<string, shared_ptr<ShaderProgram>> Renderer::shaderPrograms;
-shared_ptr<ShaderProgram> Renderer::currentProgram = nullptr;
-vector<shared_ptr<LightUnit>> Renderer::fallbackLightUnits;
+unordered_map<string, shared_ptr<Shader>> Renderer::shaders;
+shared_ptr<Shader> Renderer::currentShader = nullptr;
 shared_ptr<Material> Renderer::fallbackMaterial = nullptr;
+vector<shared_ptr<LightUnit>> Renderer::fallbackLightUnits;
+bool Renderer::useFallbackLights = true;
 
 
 void Renderer::Initialize() {
-    InitializeShaderProgram("White");
-    InitializeShaderProgram("Emissive");
-    InitializeShaderProgram("Lighting");
+    InitializeShader("White");
+    InitializeShader("Emissive");
+    InitializeShader("Lighting");
     fallbackMaterial = make_shared<Material>(WhiteRubber());
     fallbackLightUnits = {
         LightUnit_("FallBack1").withLight(AmbientLight_()),
-        LightUnit_("FallBack2").withLight(DirectionalLight_().withDirection(vec3(1.0f, -2.0f, -2.0f)))
+        LightUnit_("FallBack2").withLight(DirectionalLight_().withDirection({1.0f, -2.0f, -2.0f}))
     };
 }
 
 
-void Renderer::InitializeShaderProgram(const string& name) {
-    const auto program = make_shared<ShaderProgram>();
+void Renderer::InitializeShader(const string& name) {
+    const auto program = make_shared<Shader>();
     const string vertexShader = name + ".vert";
     const string fragmentShader = name + ".frag";
-    program->AddShader(GL_VERTEX_SHADER, vertexShader.c_str());
-    program->AddShader(GL_FRAGMENT_SHADER, fragmentShader.c_str());
-    program->ActivateProgram();
-    shaderPrograms[name] = program;
+    program->AddModule(GL_VERTEX_SHADER, vertexShader.c_str());
+    program->AddModule(GL_FRAGMENT_SHADER, fragmentShader.c_str());
+    program->ActivateShader();
+    shaders[name] = program;
 }
 
 
-void Renderer::Render(const shared_ptr<Mesh>& mesh, const RenderMode mode) {
-    PrepareFrameGL(mode);
-    DrawMesh(mesh);
-}
-
-
-void Renderer::Render(const shared_ptr<LightUnit>& light, const RenderMode mode) {
-    light->UpdateSelfAndChildren(Input::GetDeltaTime());
-    PrepareFrameGL(mode);
-    DrawLightUnit(light);
-}
-
-
-void Renderer::Render(const shared_ptr<RenderUnit>& renderUnit, const Lighting lighting, const RenderMode mode) {
-    renderUnit->UpdateSelfAndChildren(Input::GetDeltaTime());
-    PrepareFrameGL(mode);
-    DrawRenderUnit(renderUnit, lighting);
-}
-
-
-void Renderer::Render(const shared_ptr<Model>& model, const RenderMode mode) {
-    model->UpdateSelfAndChildren(Input::GetDeltaTime());
-    PrepareFrameGL(mode);
-    DrawModel(model);
-}
-
-
-void Renderer::Render(const shared_ptr<Scene>& scene, const RenderMode mode) {
-    scene->UpdateSelfAndChildren(Input::GetDeltaTime());
-    PrepareFrameGL(mode);
-    DrawScene(scene);
-}
-
-
-void Renderer::PrepareFrameGL(const RenderMode mode, const vec4 clearColor) {
+void Renderer::PrepareFrame(const RenderMode mode, const vec4 clearColor) {
     glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glPolygonMode(GL_FRONT_AND_BACK, mode == WIREFRAME ? GL_LINE : GL_FILL);
@@ -81,57 +49,57 @@ void Renderer::PrepareFrameGL(const RenderMode mode, const vec4 clearColor) {
 }
 
 
-void Renderer::SetShaderProgram(const string& name) {
-    if (shaderPrograms.contains(name) && currentProgram != shaderPrograms.at(name)) {
-        ShaderProgram::UnuseProgram();
-        currentProgram = shaderPrograms.at(name);
+void Renderer::SetShader(const string& name) { // NOLINT
+    if (shaders.contains(name) && currentShader != shaders.at(name)) {
+        Shader::UnbindShader();
+        currentShader = shaders.at(name);
     }
 }
 
 
-void Renderer::SetCameraUniforms() {
-    currentProgram->SetUniform("viewMatrix", Camera::GetViewMatrix());
-    currentProgram->SetUniform("projectionMatrix", Camera::GetProjectionMatrix());
-    currentProgram->SetUniform("cameraPosition", Camera::GetPosition());
+void Renderer::SetCameraUniforms() { // NOLINT
+    currentShader->SetUniform("viewMatrix", Camera::GetViewMatrix());
+    currentShader->SetUniform("projectionMatrix", Camera::GetProjectionMatrix());
+    currentShader->SetUniform("cameraPosition", Camera::GetPosition());
 }
 
 
-void Renderer::SetLightingUniforms(const vector<shared_ptr<LightUnit>>& lightNodes) {
-    if (currentProgram != shaderPrograms.at("Lighting")) SetShaderProgram("Lighting");
-    currentProgram->SetUniform("lightCount", static_cast<int>(lightNodes.size()));
+void Renderer::SetLightingUniforms(const vector<shared_ptr<LightUnit>>& lightNodes) { // NOLINT
+    if (currentShader != shaders.at("Lighting")) SetShader("Lighting");
+    currentShader->SetUniform("lightCount", static_cast<int>(lightNodes.size()));
     for (size_t i = 0; i < lightNodes.size(); i++) {
         auto light = lightNodes.at(i)->GetLight();
-        currentProgram->SetUniform(ArrayElement("lights", i, "type"), static_cast<int>(light->GetType()));
-        currentProgram->SetUniform(ArrayElement("lights", i, "ambient.color"), light->GetAmbient().color);
-        currentProgram->SetUniform(ArrayElement("lights", i, "ambient.intensity"), light->GetAmbient().intensity);
-        currentProgram->SetUniform(ArrayElement("lights", i, "diffuse.color"), light->GetDiffuse().color);
-        currentProgram->SetUniform(ArrayElement("lights", i, "diffuse.intensity"), light->GetDiffuse().intensity);
-        currentProgram->SetUniform(ArrayElement("lights", i, "specular.color"), light->GetSpecular().color);
-        currentProgram->SetUniform(ArrayElement("lights", i, "specular.intensity"), light->GetSpecular().intensity);
+        currentShader->SetUniform(Utilities::UniformArray("lights", i, "type"), static_cast<int>(light->GetType()));
+        currentShader->SetUniform(Utilities::UniformArray("lights", i, "ambient.color"), light->GetAmbient().color);
+        currentShader->SetUniform(Utilities::UniformArray("lights", i, "ambient.intensity"), light->GetAmbient().intensity);
+        currentShader->SetUniform(Utilities::UniformArray("lights", i, "diffuse.color"), light->GetDiffuse().color);
+        currentShader->SetUniform(Utilities::UniformArray("lights", i, "diffuse.intensity"), light->GetDiffuse().intensity);
+        currentShader->SetUniform(Utilities::UniformArray("lights", i, "specular.color"), light->GetSpecular().color);
+        currentShader->SetUniform(Utilities::UniformArray("lights", i, "specular.intensity"), light->GetSpecular().intensity);
         switch (light->GetType()) {
             case Light::AMBIENT: break;
             case Light::DIRECTIONAL: {
                 const auto directionalLight = dynamic_pointer_cast<DirectionalLight>(light);
-                currentProgram->SetUniform(ArrayElement("lights", i, "direction"), lightNodes.at(i)->GetCurrentDirection());
+                currentShader->SetUniform(Utilities::UniformArray("lights", i, "direction"), lightNodes.at(i)->GetCurrentDirection());
                 break;
             }
             case Light::POSITIONAL: {
-                const auto positionalLight = dynamic_pointer_cast<PositionalLight>(light);
-                currentProgram->SetUniform(ArrayElement("lights", i, "position"), lightNodes.at(i)->GetCurrentPosition());
-                currentProgram->SetUniform(ArrayElement("lights", i, "attenuation.constant"), positionalLight->GetAttenuation().constant);
-                currentProgram->SetUniform(ArrayElement("lights", i, "attenuation.linear"), positionalLight->GetAttenuation().linear);
-                currentProgram->SetUniform(ArrayElement("lights", i, "attenuation.quadratic"), positionalLight->GetAttenuation().quadratic);
+                const auto positionalLight = std::dynamic_pointer_cast<PositionalLight>(light);
+                currentShader->SetUniform(Utilities::UniformArray("lights", i, "position"), lightNodes.at(i)->GetCurrentPosition());
+                currentShader->SetUniform(Utilities::UniformArray("lights", i, "attenuation.constant"), positionalLight->GetAttenuation().constant);
+                currentShader->SetUniform(Utilities::UniformArray("lights", i, "attenuation.linear"), positionalLight->GetAttenuation().linear);
+                currentShader->SetUniform(Utilities::UniformArray("lights", i, "attenuation.quadratic"), positionalLight->GetAttenuation().quadratic);
                 break;
             }
             case Light::SPOT: {
-                const auto spotLight = dynamic_pointer_cast<SpotLight>(light);
-                currentProgram->SetUniform(ArrayElement("lights", i, "direction"), lightNodes.at(i)->GetCurrentDirection());
-                currentProgram->SetUniform(ArrayElement("lights", i, "position"), lightNodes.at(i)->GetCurrentPosition());
-                currentProgram->SetUniform(ArrayElement("lights", i, "attenuation.constant"), spotLight->GetAttenuation().constant);
-                currentProgram->SetUniform(ArrayElement("lights", i, "attenuation.linear"), spotLight->GetAttenuation().linear);
-                currentProgram->SetUniform(ArrayElement("lights", i, "attenuation.quadratic"), spotLight->GetAttenuation().quadratic);
-                currentProgram->SetUniform(ArrayElement("lights", i, "innerCutoff"), spotLight->GetInnerCutoff());
-                currentProgram->SetUniform(ArrayElement("lights", i, "outerCutoff"), spotLight->GetOuterCutoff());
+                const auto spotLight = std::dynamic_pointer_cast<SpotLight>(light);
+                currentShader->SetUniform(Utilities::UniformArray("lights", i, "direction"), lightNodes.at(i)->GetCurrentDirection());
+                currentShader->SetUniform(Utilities::UniformArray("lights", i, "position"), lightNodes.at(i)->GetCurrentPosition());
+                currentShader->SetUniform(Utilities::UniformArray("lights", i, "attenuation.constant"), spotLight->GetAttenuation().constant);
+                currentShader->SetUniform(Utilities::UniformArray("lights", i, "attenuation.linear"), spotLight->GetAttenuation().linear);
+                currentShader->SetUniform(Utilities::UniformArray("lights", i, "attenuation.quadratic"), spotLight->GetAttenuation().quadratic);
+                currentShader->SetUniform(Utilities::UniformArray("lights", i, "innerCutoff"), spotLight->GetInnerCutoff());
+                currentShader->SetUniform(Utilities::UniformArray("lights", i, "outerCutoff"), spotLight->GetOuterCutoff());
                 break;
             }
         }
@@ -139,87 +107,87 @@ void Renderer::SetLightingUniforms(const vector<shared_ptr<LightUnit>>& lightNod
 }
 
 
-void Renderer::SetMaterialUniforms(const shared_ptr<Material>& material) {
-    if (currentProgram != shaderPrograms.at("Lighting")) SetShaderProgram("Lighting");
+void Renderer::SetMaterialUniforms(const shared_ptr<Material>& material) { // NOLINT
+    if (currentShader != shaders.at("Lighting")) SetShader("Lighting");
     if (material->GetDiffuseMap()) {
-        currentProgram->SetUniform("material.useDiffuseMap", true);
-        currentProgram->SetUniform("material.diffuseMap", material->GetDiffuseMap()->BindTexture());
+        currentShader->SetUniform("material.useDiffuseMap", true);
+        currentShader->SetUniform("material.diffuseMap", material->GetDiffuseMap()->BindTexture());
     } else {
-        currentProgram->SetUniform("material.useDiffuseMap", false);
+        currentShader->SetUniform("material.useDiffuseMap", false);
     }
     if (material->GetSpecularMap()) {
-        currentProgram->SetUniform("material.useSpecularMap", true);
-        currentProgram->SetUniform("material.specularMap", material->GetSpecularMap()->BindTexture());
+        currentShader->SetUniform("material.useSpecularMap", true);
+        currentShader->SetUniform("material.specularMap", material->GetSpecularMap()->BindTexture());
     } else {
-        currentProgram->SetUniform("material.useSpecularMap", false);
+        currentShader->SetUniform("material.useSpecularMap", false);
     }
-    currentProgram->SetUniform("material.ambient", material->GetAmbient());
-    currentProgram->SetUniform("material.diffuse", material->GetDiffuse());
-    currentProgram->SetUniform("material.specular", material->GetSpecular());
-    currentProgram->SetUniform("material.shininess", material->GetShininess());
+    currentShader->SetUniform("material.ambient", material->GetAmbient());
+    currentShader->SetUniform("material.diffuse", material->GetDiffuse());
+    currentShader->SetUniform("material.specular", material->GetSpecular());
+    currentShader->SetUniform("material.shininess", material->GetShininess());
 }
 
 
-void Renderer::DrawMesh(const shared_ptr<Mesh>& mesh) {
-    SetShaderProgram("White");
+void Renderer::DrawMesh(const shared_ptr<Mesh>& mesh) { // NOLINT
+    SetShader("White");
     SetCameraUniforms();
-    currentProgram->SetUniform("modelMatrix", mat4(1.0f));
+    currentShader->SetUniform("modelMatrix", mat4(1.0f));
     Draw(mesh);
 }
 
 
-void Renderer::DrawLightUnit(const shared_ptr<LightUnit>& lightUnit) {
-    if (lightUnit->ToBeRendered()) {
-        SetShaderProgram("Emissive");
-        currentProgram->SetUniform("modelMatrix", lightUnit->GetModelMatrix());
-        currentProgram->SetUniform("viewMatrix", Camera::GetViewMatrix());
-        currentProgram->SetUniform("projectionMatrix", Camera::GetProjectionMatrix());
-        currentProgram->SetUniform("emissive.color", lightUnit->GetLight()->GetAmbient().color);
-        currentProgram->SetUniform("emissive.intensity", lightUnit->GetLight()->GetAmbient().intensity);
+void Renderer::DrawLightUnit(const shared_ptr<LightUnit>& lightUnit) { // NOLINT
+    if (lightUnit->GetMesh()) {
+        SetShader("Emissive");
+        currentShader->SetUniform("modelMatrix", lightUnit->GetModelMatrix());
+        currentShader->SetUniform("viewMatrix", Camera::GetViewMatrix());
+        currentShader->SetUniform("projectionMatrix", Camera::GetProjectionMatrix());
+        currentShader->SetUniform("emissive.color", lightUnit->GetLight()->GetAmbient().color);
+        currentShader->SetUniform("emissive.intensity", lightUnit->GetLight()->GetAmbient().intensity);
         Draw(lightUnit->GetMesh());
     }
 }
 
 
-void Renderer::DrawRenderUnit(const shared_ptr<RenderUnit>& renderUnit, const Lighting lighting) {
-    SetShaderProgram("Lighting");
+void Renderer::DrawRenderUnit(const shared_ptr<RenderUnit>& renderUnit) { // NOLINT
+    SetShader("Lighting");
     SetCameraUniforms();
-    currentProgram->SetUniform("modelMatrix", renderUnit->GetModelMatrix());
-    if (lighting == NONE) SetLightingUniforms(fallbackLightUnits);
+    currentShader->SetUniform("modelMatrix", renderUnit->GetModelMatrix());
+    if (useFallbackLights) SetLightingUniforms(fallbackLightUnits);
     SetMaterialUniforms(renderUnit->GetMaterial() ? renderUnit->GetMaterial() : fallbackMaterial);
     Draw(renderUnit->GetMesh());
 }
 
 
-void Renderer::DrawModel(const shared_ptr<Model>& model) {
+void Renderer::DrawModel(const shared_ptr<Model>& model) { // NOLINT
     for (const auto& lightUnit : model->GetLightUnits()) {
         DrawLightUnit(lightUnit);
     }
-    const bool hasLightUnits = !model->GetLightUnits().empty();
-    SetLightingUniforms(hasLightUnits ? model->GetLightUnits() : fallbackLightUnits);
+    useFallbackLights = model->GetLightUnits().empty();
+    SetLightingUniforms(useFallbackLights ? fallbackLightUnits : model->GetLightUnits());
     for (const auto& renderUnit : model->GetRenderUnits()) {
-        DrawRenderUnit(renderUnit, hasLightUnits ? MODEL_LIGHT : NONE);
+        DrawRenderUnit(renderUnit);
     }
 }
 
 
 
-void Renderer::DrawScene(const shared_ptr<Scene>& scene) {
+void Renderer::DrawScene(const shared_ptr<Scene>& scene) { // NOLINT
     for (const auto& lightUnit : scene->GetAllLightUnits()) {
         DrawLightUnit(lightUnit);
     }
-    const bool hasLightUnits = !scene->GetAllLightUnits().empty();
-    SetLightingUniforms(hasLightUnits ? scene->GetAllLightUnits() : fallbackLightUnits);
+    useFallbackLights = scene->GetAllLightUnits().empty();
+    SetLightingUniforms(useFallbackLights ? fallbackLightUnits : scene->GetAllLightUnits());
     for (const auto& model : scene->GetModels()) {
         for (const auto& renderUnit : model->GetRenderUnits()) {
-            DrawRenderUnit(renderUnit, hasLightUnits ? SCENE_LIGHT : NONE);
+            DrawRenderUnit(renderUnit);
         }
     }
 }
 
 
-void Renderer::Draw(const shared_ptr<Mesh>& mesh) {
-    currentProgram->UseProgram();
+void Renderer::Draw(const shared_ptr<Mesh>& mesh) { // NOLINT
+    currentShader->BindShader();
     mesh->GetVAO()->BindVAO();
     if (mesh->GetIndices().empty()) {
         glDrawArrays(GL_TRIANGLES, 0, mesh->GetVertexCount());

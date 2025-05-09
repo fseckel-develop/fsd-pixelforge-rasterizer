@@ -1,8 +1,9 @@
 #include "FunctionCurve.h"
+using namespace std; using namespace glm;
 
 
 FunctionCurve::FunctionCurve(Function xF, Function yF, Function zF):
-    Curve(FUNCTION, {}, 0, OPEN),
+    Curve({}, 0, OPEN),
     xFunction(std::move(xF)),
     yFunction(std::move(yF)),
     zFunction(std::move(zF)) {

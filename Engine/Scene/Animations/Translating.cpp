@@ -1,12 +1,13 @@
 #include "Translating.h"
 #include "../Transforms/Transform.h"
 #include "../../Utilities.h"
+using namespace glm;
 
 
 Translating::Translating(const Mode mode):
     Animation(mode),
-    totalDistance(1.0f),
-    direction(vec3(0.0f, 0.0f, 1.0f)) {
+    direction(vec3(0.0f, 0.0f, 1.0f)),
+    totalDistance(1.0f) {
 }
 
 

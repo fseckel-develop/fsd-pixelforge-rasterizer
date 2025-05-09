@@ -2,9 +2,7 @@
 
 /// Pipeline
 #include "Graphics/Pipeline/IndexBuffer.h"
-#include "Graphics/Pipeline/ShaderProgram.h"
-#include "Graphics/Pipeline/ShaderStorageBuffer.h"
-#include "Graphics/Pipeline/UniformBuffer.h"
+#include "Graphics/Pipeline/Shader.h"
 #include "Graphics/Pipeline/VertexArray.h"
 #include "Graphics/Pipeline/VertexBuffer.h"
 #include "Graphics/Pipeline/VertexBufferLayout.h"

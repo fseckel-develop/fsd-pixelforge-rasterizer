@@ -19,7 +19,6 @@ set(SOURCE_FILES
         Engine/Core/Application.cpp
         Engine/Core/Camera.cpp
         Engine/Core/Input.cpp
-        Engine/Core/Menu.cpp
         Engine/Core/Renderer.cpp
         Engine/Core/Window.cpp
 
@@ -52,9 +51,7 @@ set(SOURCE_FILES
 
         # Graphics/Pipeline
         Engine/Graphics/Pipeline/IndexBuffer.cpp
-        Engine/Graphics/Pipeline/ShaderProgram.cpp
-        Engine/Graphics/Pipeline/ShaderStorageBuffer.cpp
-        Engine/Graphics/Pipeline/UniformBuffer.cpp
+        Engine/Graphics/Pipeline/Shader.cpp
         Engine/Graphics/Pipeline/VertexArray.cpp
         Engine/Graphics/Pipeline/VertexBuffer.cpp
         Engine/Graphics/Pipeline/VertexBufferLayout.cpp
@@ -67,7 +64,6 @@ set(SOURCE_FILES
         # Scene/Animations
         Engine/Scene/Animations/Animation.cpp
         Engine/Scene/Animations/CurveAnimation.cpp
-        Engine/Scene/Animations/Easing.cpp
         Engine/Scene/Animations/KeyframeAnimation.cpp
         Engine/Scene/Animations/Orbiting.cpp
         Engine/Scene/Animations/Rotating.cpp

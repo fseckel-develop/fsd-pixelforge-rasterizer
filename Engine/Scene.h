@@ -3,7 +3,6 @@
 /// Animations
 #include "Scene/Animations/Animation.h"
 #include "Scene/Animations/CurveAnimation.h"
-#include "Scene/Animations/Easing.h"
 #include "Scene/Animations/KeyframeAnimation.h"
 #include "Scene/Animations/Orbiting.h"
 #include "Scene/Animations/Rotating.h"
