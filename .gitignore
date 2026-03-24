@@ -1,5 +1,7 @@
-cmake-build-debug
-
+# Custom
+/build/
+.idea/
+.vscode/
 
 # Prerequisites
 *.d

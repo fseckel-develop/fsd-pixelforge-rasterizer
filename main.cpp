@@ -1,7 +1,0 @@
-#include "Engine/Core/Application.h"
-
-
-int main() {
-    Application::Run();
-    return 0;
-}

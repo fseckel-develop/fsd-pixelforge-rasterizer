@@ -1,0 +1,29 @@
+#pragma once
+
+/// Curves
+#include <pixelforge/geometry/curves/bspline.hpp>
+#include <pixelforge/geometry/curves/bezier_curve.hpp>
+#include <pixelforge/geometry/curves/curve.hpp>
+#include <pixelforge/geometry/curves/function_curve.hpp>
+#include <pixelforge/geometry/curves/hermite_spline.hpp>
+#include <pixelforge/geometry/curves/lagrange_curve.hpp>
+#include <pixelforge/geometry/curves/nurbs.hpp>
+
+/// Meshes
+#include <pixelforge/geometry/meshes/arrow.hpp>
+#include <pixelforge/geometry/meshes/cone.hpp>
+#include <pixelforge/geometry/meshes/cube.hpp>
+#include <pixelforge/geometry/meshes/cuboid.hpp>
+#include <pixelforge/geometry/meshes/cylinder.hpp>
+#include <pixelforge/geometry/meshes/frustum.hpp>
+#include <pixelforge/geometry/meshes/mesh.hpp>
+#include <pixelforge/geometry/meshes/points.hpp>
+#include <pixelforge/geometry/meshes/polygon.hpp>
+#include <pixelforge/geometry/meshes/rounded_cube.hpp>
+#include <pixelforge/geometry/meshes/shell.hpp>
+#include <pixelforge/geometry/meshes/sphere.hpp>
+#include <pixelforge/geometry/meshes/sphere_sector.hpp>
+#include <pixelforge/geometry/meshes/sphere_segment.hpp>
+#include <pixelforge/geometry/meshes/sphere_wedge.hpp>
+#include <pixelforge/geometry/meshes/torus.hpp>
+#include <pixelforge/geometry/meshes/tube.hpp>

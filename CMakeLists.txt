@@ -1,146 +1,77 @@
-cmake_minimum_required(VERSION 3.29)
-project(PixelForge)
+cmake_minimum_required(VERSION 3.25)
+
+project(fsd-pixelforge-rasterizer
+        VERSION 0.1.0
+        DESCRIPTION "Modern C++ rasterizer and graphics playground"
+        LANGUAGES CXX
+)
+
+include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
+
+option(PIXELFORGE_BUILD_EXAMPLES "Build PixelForge examples" ON)
+option(PIXELFORGE_BUILD_TESTS "Build PixelForge tests" ON)
+option(PIXELFORGE_WARNINGS_AS_ERRORS "Treat warnings as errors" OFF)
+option(PIXELFORGE_INSTALL "Enable install and package export" OFF)
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Setting Header Files
-set(HEADER_FILES
-        Engine/Core.h
-        Engine/Geometry.h
-        Engine/Graphics.h
-        Engine/Managers.h
-        Engine/Scene.h
-        Engine/Utilities.h
-)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-# Setting Source Files
-set(SOURCE_FILES
-        # Core
-        Engine/Core/Application.cpp
-        Engine/Core/Camera.cpp
-        Engine/Core/Input.cpp
-        Engine/Core/Renderer.cpp
-        Engine/Core/Window.cpp
+include(Dependencies)
+include(CompilerWarnings)
 
-        # Geometry/Curves
-        Engine/Geometry/Curves/BezierCurve.cpp
-        Engine/Geometry/Curves/BSpline.cpp
-        Engine/Geometry/Curves/Curve.cpp
-        Engine/Geometry/Curves/FunctionCurve.cpp
-        Engine/Geometry/Curves/HermiteSpline.cpp
-        Engine/Geometry/Curves/LagrangeCurve.cpp
-        Engine/Geometry/Curves/NURBS.cpp
-        # Geometry/Meshes
-        Engine/Geometry/Meshes/Arrow.cpp
-        Engine/Geometry/Meshes/Cone.cpp
-        Engine/Geometry/Meshes/Cube.cpp
-        Engine/Geometry/Meshes/Cuboid.cpp
-        Engine/Geometry/Meshes/Cylinder.cpp
-        Engine/Geometry/Meshes/Frustum.cpp
-        Engine/Geometry/Meshes/Mesh.cpp
-        Engine/Geometry/Meshes/Points.cpp
-        Engine/Geometry/Meshes/Polygon.cpp
-        Engine/Geometry/Meshes/RoundedCube.cpp
-        Engine/Geometry/Meshes/Shell.cpp
-        Engine/Geometry/Meshes/Sphere.cpp
-        Engine/Geometry/Meshes/SphereSector.cpp
-        Engine/Geometry/Meshes/SphereSegment.cpp
-        Engine/Geometry/Meshes/SphereWedge.cpp
-        Engine/Geometry/Meshes/Torus.cpp
-        Engine/Geometry/Meshes/Tube.cpp
+add_subdirectory(src)
 
-        # Graphics/Pipeline
-        Engine/Graphics/Pipeline/IndexBuffer.cpp
-        Engine/Graphics/Pipeline/Shader.cpp
-        Engine/Graphics/Pipeline/VertexArray.cpp
-        Engine/Graphics/Pipeline/VertexBuffer.cpp
-        Engine/Graphics/Pipeline/VertexBufferLayout.cpp
-        Engine/Graphics/Pipeline/VertexData.cpp
-        # Graphics/Texturing
-        Engine/Graphics/Texturing/CubeMap.cpp
-        Engine/Graphics/Texturing/Material.cpp
-        Engine/Graphics/Texturing/Texture.cpp
+if(PIXELFORGE_BUILD_EXAMPLES)
+    add_subdirectory(examples)
+endif()
 
-        # Scene/Animations
-        Engine/Scene/Animations/Animation.cpp
-        Engine/Scene/Animations/CurveAnimation.cpp
-        Engine/Scene/Animations/KeyframeAnimation.cpp
-        Engine/Scene/Animations/Orbiting.cpp
-        Engine/Scene/Animations/Rotating.cpp
-        Engine/Scene/Animations/Scaling.cpp
-        Engine/Scene/Animations/Translating.cpp
-        # Scene/Lights
-        Engine/Scene/Lights/AmbientLight.cpp
-        Engine/Scene/Lights/DirectionalLight.cpp
-        Engine/Scene/Lights/Light.cpp
-        Engine/Scene/Lights/PositionalLight.cpp
-        Engine/Scene/Lights/SpotLight.cpp
-        # Scene/SceneNodes
-        Engine/Scene/SceneNodes/AnimationNode.cpp
-        Engine/Scene/SceneNodes/Group.cpp
-        Engine/Scene/SceneNodes/LightUnit.cpp
-        Engine/Scene/SceneNodes/Model.cpp
-        Engine/Scene/SceneNodes/RenderUnit.cpp
-        Engine/Scene/SceneNodes/Scene.cpp
-        Engine/Scene/SceneNodes/SceneNode.cpp
-        Engine/Scene/SceneNodes/TransformNode.cpp
-        # Scene/Transforms
-        Engine/Scene/Transforms/Rotation.cpp
-        Engine/Scene/Transforms/Scale.cpp
-        Engine/Scene/Transforms/Transform.cpp
-        Engine/Scene/Transforms/Translation.cpp
-)
+if(PIXELFORGE_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
+endif()
 
-# Adding main Executable
-add_executable(PixelForge
-        main.cpp
-        ${HEADER_FILES}
-        ${SOURCE_FILES}
-)
-
-# Including Directories for Dependencies
-target_include_directories(PixelForge PRIVATE
-        ${CMAKE_SOURCE_DIR}/dependencies/EIGEN/include
-        ${CMAKE_SOURCE_DIR}/dependencies/GLEW/include
-        ${CMAKE_SOURCE_DIR}/dependencies/GLFW/include
-        ${CMAKE_SOURCE_DIR}/dependencies/GLM/include
-        ${CMAKE_SOURCE_DIR}/dependencies/IMGUI/include
-        ${CMAKE_SOURCE_DIR}/dependencies/SOIL2/include
-)
-
-# Defining Paths for Libraries
-set(GLEW_LIB ${CMAKE_SOURCE_DIR}/dependencies/GLEW/lib/libGLEW.a)
-set(GLFW_LIB ${CMAKE_SOURCE_DIR}/dependencies/GLFW/lib/libglfw3.a)
-set(SOIL2_LIB ${CMAKE_SOURCE_DIR}/dependencies/SOIL2/lib/libsoil2.a)
-
-# Debugging Messages
-message(STATUS "GLEW Library: ${GLEW_LIB}")
-message(STATUS "GLFW Library: ${GLFW_LIB}")
-message(STATUS "SOIL2 Library: ${SOIL2_LIB}")
-
-# Linking Libraries
-find_package(OpenGL REQUIRED)
-target_link_libraries(PixelForge PRIVATE
-        ${GLEW_LIB}
-        ${GLFW_LIB}
-        ${SOIL2_LIB}
-        OpenGL::GL
-)
-
-# Pedantic compilation
-target_compile_options(PixelForge PRIVATE -Wall -Wextra -pedantic)
-
-# Platform-specific Setup
-if (APPLE)
-    target_compile_options(PixelForge PRIVATE -Wno-deprecated-declarations)
-    find_library(COCOA_FRAMEWORK Cocoa REQUIRED)
-    find_library(IOKIT_FRAMEWORK IOKit REQUIRED)
-    find_library(COREFOUNDATION_FRAMEWORK CoreFoundation REQUIRED)
-    find_library(COREVIDEO_FRAMEWORK CoreVideo REQUIRED)
-    target_link_libraries(PixelForge PRIVATE
-            ${COCOA_FRAMEWORK}
-            ${IOKIT_FRAMEWORK}
-            ${COREFOUNDATION_FRAMEWORK}
-            ${COREVIDEO_FRAMEWORK}
+if(PIXELFORGE_INSTALL)
+    install(TARGETS pixelforge
+            EXPORT pixelforgeTargets
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+            INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
     )
-endif ()
+
+    install(DIRECTORY include/
+            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    )
+
+    install(DIRECTORY assets/
+            DESTINATION ${CMAKE_INSTALL_DATADIR}/pixelforge
+    )
+
+    install(EXPORT pixelforgeTargets
+            FILE pixelforgeTargets.cmake
+            NAMESPACE pixelforge::
+            DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/PixelForge
+    )
+
+    configure_package_config_file(
+            ${CMAKE_CURRENT_SOURCE_DIR}/cmake/PixelForgeConfig.cmake.in
+            ${CMAKE_CURRENT_BINARY_DIR}/PixelForgeConfig.cmake
+            INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/PixelForge
+    )
+
+    write_basic_package_version_file(
+            ${CMAKE_CURRENT_BINARY_DIR}/PixelForgeConfigVersion.cmake
+            VERSION ${PROJECT_VERSION}
+            COMPATIBILITY SameMajorVersion
+    )
+
+    install(FILES
+            ${CMAKE_CURRENT_BINARY_DIR}/PixelForgeConfig.cmake
+            ${CMAKE_CURRENT_BINARY_DIR}/PixelForgeConfigVersion.cmake
+            DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/PixelForge
+    )
+endif()
