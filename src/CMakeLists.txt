@@ -1,19 +1,22 @@
 set(PIXELFORGE_SOURCES
+        # Builders Module
         builders/compiler/animation_compiler.cpp
         builders/compiler/light_compiler.cpp
         builders/compiler/light_unit_compiler.cpp
         builders/compiler/model_compiler.cpp
         builders/compiler/render_unit_compiler.cpp
         builders/compiler/scene_compiler.cpp
-
         builders/legacy/detail/scene_node_registry.cpp
 
+        # Core Module
         core/application.cpp
         core/camera.cpp
+        core/context.cpp
         core/input.cpp
         core/renderer.cpp
         core/window.cpp
 
+        # Geometry Module
         geometry/curves/bezier_curve.cpp
         geometry/curves/bspline.cpp
         geometry/curves/curve.cpp
@@ -40,6 +43,9 @@ set(PIXELFORGE_SOURCES
         geometry/meshes/torus.cpp
         geometry/meshes/tube.cpp
 
+        geometry/utilities.cpp
+
+        # Graphics Module
         graphics/pipeline/index_buffer.cpp
         graphics/pipeline/shader.cpp
         graphics/pipeline/vertex_array.cpp
@@ -51,6 +57,9 @@ set(PIXELFORGE_SOURCES
         graphics/texturing/material.cpp
         graphics/texturing/texture.cpp
 
+        graphics/debug.cpp
+
+        # Scene Module
         scene/animation/animation.cpp
         scene/animation/curve_animation.cpp
         scene/animation/keyframe_animation.cpp
@@ -58,8 +67,6 @@ set(PIXELFORGE_SOURCES
         scene/animation/rotation.cpp
         scene/animation/scaling.cpp
         scene/animation/translation.cpp
-
-        scene/debug/scene_node_printer.cpp
 
         scene/lighting/ambient_light.cpp
         scene/lighting/directional_light.cpp
@@ -80,6 +87,8 @@ set(PIXELFORGE_SOURCES
         scene/transform/scale.cpp
         scene/transform/transform.cpp
         scene/transform/translate.cpp
+
+        scene/utilities.cpp
 )
 
 add_library(pixelforge STATIC)

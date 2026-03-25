@@ -1,5 +1,5 @@
 #include <pixelforge/scene/lighting/spot_light.hpp>
-#include <pixelforge/utilities.hpp>
+#include <pixelforge/scene/utilities.hpp>
 
 
 namespace pixelforge::scene::lighting {
@@ -18,7 +18,7 @@ namespace pixelforge::scene::lighting {
 
     SpotLight::SpotLight(const vec3& position, const vec3& direction):
         PositionalLight(position),
-        direction_(Utilities::validateDirection(direction, "SpotLight::SpotLight")),
+        direction_(utilities::validateDirection(direction, "SpotLight::SpotLight")),
         innerCutoff_(cos(radians(5.0f))),
         outerCutoff_(cos(radians(15.0f))) {
         this->type_ = SPOT;
@@ -26,7 +26,7 @@ namespace pixelforge::scene::lighting {
 
 
     void SpotLight::setDirection(const vec3& direction) {
-        this->direction_ = Utilities::validateDirection(direction, "SpotLight::SetDirection");
+        this->direction_ = utilities::validateDirection(direction, "SpotLight::SetDirection");
     }
 
 

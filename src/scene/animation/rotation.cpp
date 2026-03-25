@@ -1,6 +1,6 @@
 #include <pixelforge/scene/animation/rotation.hpp>
 #include <pixelforge/scene/transform/transform.hpp>
-#include <pixelforge/utilities.hpp>
+#include <pixelforge/scene/utilities.hpp>
 
 
 namespace pixelforge::scene::animation {
@@ -21,13 +21,13 @@ namespace pixelforge::scene::animation {
     Rotation::Rotation(const Mode mode, const float duration, const vec3& axis, const float angle):
         Animation(mode, duration),
         rotationAxis_() {
-        this->rotationAxis_ = Utilities::validateDirection(axis, "Rotation::Rotation");
+        this->rotationAxis_ = utilities::validateDirection(axis, "Rotation::Rotation");
         this->totalAngle_ = radians(angle);
     }
 
 
     void Rotation::setRotationAxis(const vec3& axis) {
-        this->rotationAxis_ = Utilities::validateDirection(axis, "Rotation::SetRotationAxis");
+        this->rotationAxis_ = utilities::validateDirection(axis, "Rotation::SetRotationAxis");
     }
 
 

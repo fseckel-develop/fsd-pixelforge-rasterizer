@@ -1,5 +1,4 @@
 #include <pixelforge/core/camera.hpp>
-#include <pixelforge/utilities.hpp>
 #include <pixelforge/geometry/meshes/mesh.hpp>
 #include <pixelforge/graphics/texturing/material.hpp>
 
@@ -19,6 +18,26 @@
 
 
 namespace pixelforge::core {
+
+    namespace {
+
+        /// Generates a string representation of a uniform array element.
+        /// @param uniform The name of the array uniform.
+        /// @param index The index of the array element.
+        /// @param attribute The attribute name (if any).
+        /// @return A string representing the array element.
+        const char* getUniformArray(const char* uniform, const size_t index, const char* attribute = nullptr) {
+            static char buffer[1024];
+            if (attribute == nullptr) {
+                snprintf(buffer, sizeof(buffer), "%s[%lu]", uniform, index);
+            } else {
+                snprintf(buffer, sizeof(buffer), "%s[%lu].%s", uniform, index, attribute);
+            }
+            return buffer;
+        }
+
+    } // namespace
+
 
     using namespace scene::lighting;
     using std::unordered_map;
@@ -96,37 +115,37 @@ namespace pixelforge::core {
         currentShader_->setUniform("lightCount", static_cast<int>(lightNodes.size()));
         for (size_t i = 0; i < lightNodes.size(); i++) {
             auto light = lightNodes.at(i)->getLight();
-            currentShader_->setUniform(Utilities::getUniformArray("lights", i, "type"), static_cast<int>(light->getType()));
-            currentShader_->setUniform(Utilities::getUniformArray("lights", i, "ambient.color"), light->getAmbient().color);
-            currentShader_->setUniform(Utilities::getUniformArray("lights", i, "ambient.intensity"), light->getAmbient().intensity);
-            currentShader_->setUniform(Utilities::getUniformArray("lights", i, "diffuse.color"), light->getDiffuse().color);
-            currentShader_->setUniform(Utilities::getUniformArray("lights", i, "diffuse.intensity"), light->getDiffuse().intensity);
-            currentShader_->setUniform(Utilities::getUniformArray("lights", i, "specular.color"), light->getSpecular().color);
-            currentShader_->setUniform(Utilities::getUniformArray("lights", i, "specular.intensity"), light->getSpecular().intensity);
+            currentShader_->setUniform(getUniformArray("lights", i, "type"), static_cast<int>(light->getType()));
+            currentShader_->setUniform(getUniformArray("lights", i, "ambient.color"), light->getAmbient().color);
+            currentShader_->setUniform(getUniformArray("lights", i, "ambient.intensity"), light->getAmbient().intensity);
+            currentShader_->setUniform(getUniformArray("lights", i, "diffuse.color"), light->getDiffuse().color);
+            currentShader_->setUniform(getUniformArray("lights", i, "diffuse.intensity"), light->getDiffuse().intensity);
+            currentShader_->setUniform(getUniformArray("lights", i, "specular.color"), light->getSpecular().color);
+            currentShader_->setUniform(getUniformArray("lights", i, "specular.intensity"), light->getSpecular().intensity);
             switch (light->getType()) {
                 case Light::AMBIENT: break;
                 case Light::DIRECTIONAL: {
                     const auto directionalLight = dynamic_pointer_cast<DirectionalLight>(light);
-                    currentShader_->setUniform(Utilities::getUniformArray("lights", i, "direction"), lightNodes.at(i)->getCurrentDirection());
+                    currentShader_->setUniform(getUniformArray("lights", i, "direction"), lightNodes.at(i)->getCurrentDirection());
                     break;
                 }
                 case Light::POSITIONAL: {
                     const auto positionalLight = dynamic_pointer_cast<PositionalLight>(light);
-                    currentShader_->setUniform(Utilities::getUniformArray("lights", i, "position"), lightNodes.at(i)->getCurrentPosition());
-                    currentShader_->setUniform(Utilities::getUniformArray("lights", i, "attenuation.constant"), positionalLight->getAttenuation().constant);
-                    currentShader_->setUniform(Utilities::getUniformArray("lights", i, "attenuation.linear"), positionalLight->getAttenuation().linear);
-                    currentShader_->setUniform(Utilities::getUniformArray("lights", i, "attenuation.quadratic"), positionalLight->getAttenuation().quadratic);
+                    currentShader_->setUniform(getUniformArray("lights", i, "position"), lightNodes.at(i)->getCurrentPosition());
+                    currentShader_->setUniform(getUniformArray("lights", i, "attenuation.constant"), positionalLight->getAttenuation().constant);
+                    currentShader_->setUniform(getUniformArray("lights", i, "attenuation.linear"), positionalLight->getAttenuation().linear);
+                    currentShader_->setUniform(getUniformArray("lights", i, "attenuation.quadratic"), positionalLight->getAttenuation().quadratic);
                     break;
                 }
                 case Light::SPOT: {
                     const auto spotLight = dynamic_pointer_cast<SpotLight>(light);
-                    currentShader_->setUniform(Utilities::getUniformArray("lights", i, "direction"), lightNodes.at(i)->getCurrentDirection());
-                    currentShader_->setUniform(Utilities::getUniformArray("lights", i, "position"), lightNodes.at(i)->getCurrentPosition());
-                    currentShader_->setUniform(Utilities::getUniformArray("lights", i, "attenuation.constant"), spotLight->getAttenuation().constant);
-                    currentShader_->setUniform(Utilities::getUniformArray("lights", i, "attenuation.linear"), spotLight->getAttenuation().linear);
-                    currentShader_->setUniform(Utilities::getUniformArray("lights", i, "attenuation.quadratic"), spotLight->getAttenuation().quadratic);
-                    currentShader_->setUniform(Utilities::getUniformArray("lights", i, "innerCutoff"), spotLight->getInnerCutoff());
-                    currentShader_->setUniform(Utilities::getUniformArray("lights", i, "outerCutoff"), spotLight->getOuterCutoff());
+                    currentShader_->setUniform(getUniformArray("lights", i, "direction"), lightNodes.at(i)->getCurrentDirection());
+                    currentShader_->setUniform(getUniformArray("lights", i, "position"), lightNodes.at(i)->getCurrentPosition());
+                    currentShader_->setUniform(getUniformArray("lights", i, "attenuation.constant"), spotLight->getAttenuation().constant);
+                    currentShader_->setUniform(getUniformArray("lights", i, "attenuation.linear"), spotLight->getAttenuation().linear);
+                    currentShader_->setUniform(getUniformArray("lights", i, "attenuation.quadratic"), spotLight->getAttenuation().quadratic);
+                    currentShader_->setUniform(getUniformArray("lights", i, "innerCutoff"), spotLight->getInnerCutoff());
+                    currentShader_->setUniform(getUniformArray("lights", i, "outerCutoff"), spotLight->getOuterCutoff());
                     break;
                 }
             }

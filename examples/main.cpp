@@ -4,6 +4,7 @@
 #include <pixelforge/graphics.hpp>
 #include <pixelforge/scene/animation/animation.hpp>
 #include <pixelforge/scene/transform/scale.hpp>
+#include <pixelforge/scene/utilities.hpp>
 
 using pixelforge::builders::AmbientLight;
 using pixelforge::builders::LightUnit;
@@ -84,6 +85,8 @@ std::shared_ptr<pixelforge::scene::nodes::Scene> buildDemoScene() {
 int main() {
     Application::run([] {
         const auto scene = buildDemoScene();
+        pixelforge::scene::utilities::printSceneSummary(scene);
+        pixelforge::scene::utilities::printSceneNodeTree(scene);
         return scene;
     });
 }

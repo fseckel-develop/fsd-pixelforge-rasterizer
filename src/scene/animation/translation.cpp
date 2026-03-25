@@ -1,6 +1,6 @@
 #include <pixelforge/scene/animation/translation.hpp>
 #include <pixelforge/scene/transform/transform.hpp>
-#include <pixelforge/utilities.hpp>
+#include <pixelforge/scene/utilities.hpp>
 
 
 namespace pixelforge::scene::animation {
@@ -20,7 +20,7 @@ namespace pixelforge::scene::animation {
         Animation(mode, duration),
         direction_() {
         this->totalDistance_ = distance;
-        this->direction_ = Utilities::validateDirection(direction, "Translation::Translation");
+        this->direction_ = utilities::validateDirection(direction, "Translation::Translation");
     }
 
 
@@ -30,7 +30,7 @@ namespace pixelforge::scene::animation {
 
 
     void Translation::setDirection(const vec3& direction) {
-        this->direction_ = Utilities::validateDirection(direction, "Translation::SetDirection");
+        this->direction_ = utilities::validateDirection(direction, "Translation::SetDirection");
     }
 
 

@@ -2,7 +2,7 @@
 #include <pixelforge/core/application.hpp>
 #include <pixelforge/core/window.hpp>
 #include <pixelforge/core/camera.hpp>
-#include <pixelforge/utilities.hpp>
+#include <pixelforge/core/context.hpp>
 #include <pixelforge/geometry/meshes/mesh.hpp>
 #include <pixelforge/scene/nodes/light_unit.hpp>
 #include <pixelforge/scene/nodes/render_unit.hpp>
@@ -16,9 +16,9 @@
 namespace pixelforge::core {
 
     void Application::initialize() {
-        Utilities::initializeGLFW();
+        context::initializeGLFW();
         Window::create(1400, 900, "PixelForge");
-        Utilities::initializeGLEW();
+        context::initializeGLEW();
         Camera::turnOn({0.0f, 0.0f, 5.0f});
         Input::enable();
         Renderer::initialize();

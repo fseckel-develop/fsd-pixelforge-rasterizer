@@ -1,5 +1,5 @@
 #include <pixelforge/geometry/meshes/tube.hpp>
-#include <pixelforge/utilities.hpp>
+#include <pixelforge/geometry/utilities.hpp>
 #include <Eigen/Dense>
 #include <GLM/gtc/quaternion.hpp>
 
@@ -27,15 +27,15 @@ namespace pixelforge::geometry {
     void Tube::calculatePositions() {
         vector<vec3> vertices;
         vector<vec3> beltSamples = beltCurve_->sample(sectorCount_, Curve::POSITION);
-        Utilities::translate(beltSamples, -beltCurve_->getCentroid());
+        utilities::translate(beltSamples, -beltCurve_->getCentroid());
         const vector<quat> beltRotations = computeBeltRotations();
         vector<vec3> firstBelt;
         const float tStep = (spineCurve_->getTMax() - spineCurve_->getTMin()) / static_cast<float>(stackCount_);
         float t = spineCurve_->getTMin();
         for (uint i = 0; i <= stackCount_; i++) {
             const vec3 spinePoint = spineCurve_->evaluate(t);
-            vector<vec3> belt = Utilities::getRotatedCopy(beltSamples, beltRotations[i]);
-            Utilities::translate(belt, spinePoint);
+            vector<vec3> belt = utilities::getRotatedCopy(beltSamples, beltRotations[i]);
+            utilities::translate(belt, spinePoint);
             vertices.insert(vertices.end(), belt.begin(), belt.end());
             t += tStep;
         }

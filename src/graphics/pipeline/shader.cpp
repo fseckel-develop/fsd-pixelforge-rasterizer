@@ -1,7 +1,8 @@
-#include <pixelforge/utilities.hpp>
+#include "graphics/pipeline/shader.hpp"
+#include "graphics/debug.hpp"
 #include <fstream>
 #include <sstream>
-#include "graphics/pipeline/shader.hpp"
+#include <iostream>
 
 
 namespace pixelforge::graphics {
@@ -38,8 +39,8 @@ namespace pixelforge::graphics {
         glCompileShader(shaderModuleID);
         glGetShaderiv(shaderModuleID, GL_COMPILE_STATUS, &success);
         if (success == GL_FALSE) {
-            cerr << "Failed to compile " << Utilities::printShaderType(moduleType) << " '" << moduleFileName << "'." << endl;
-            Utilities::printShaderInfoLog(shaderModuleID);
+            cerr << "Failed to compile " << debug::getShaderTypeName(moduleType) << " '" << moduleFileName << "'." << endl;
+            debug::printShaderInfoLog(shaderModuleID);
             glDeleteShader(shaderModuleID);
         }
         glAttachShader(shaderID_, shaderModuleID);
@@ -83,7 +84,7 @@ namespace pixelforge::graphics {
         glGetProgramiv(shaderID_, GL_LINK_STATUS, &success);
         if (success == GL_FALSE) {
             cerr << "Failed to link shader modules." << endl;
-            Utilities::printShaderInfoLog(shaderID_);
+            debug::printShaderInfoLog(shaderID_);
         }
     }
 
@@ -97,7 +98,7 @@ namespace pixelforge::graphics {
         glGetProgramiv(shaderID_, GL_VALIDATE_STATUS, &success);
         if (success == GL_FALSE) {
             cerr << "Failed to validate shader." << endl;
-            Utilities::printShaderInfoLog(shaderID_);
+            debug::printShaderInfoLog(shaderID_);
         }
         glBindVertexArray(0);
         glDeleteVertexArrays(1, &testVAO);

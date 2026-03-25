@@ -1,6 +1,6 @@
 #include <pixelforge/geometry/meshes/rounded_cube.hpp>
 #include <pixelforge/geometry/curves/bspline.hpp>
-#include <pixelforge/utilities.hpp>
+#include <pixelforge/geometry/utilities.hpp>
 
 
 namespace pixelforge::geometry {
@@ -20,7 +20,7 @@ namespace pixelforge::geometry {
         };
         beltCurve_ = new BSpline(controlPoints, 3, Curve::LOOP);
         const float s = sideLength / 2.0f;
-        Utilities::scale(controlPoints, vec3(s));
+        utilities::scale(controlPoints, vec3(s));
         outlineCurve_ = new BSpline(controlPoints, 3, Curve::LOOP);
         outlineCurve_->setParameterRange(vec3(-s, 0.0f, 0.0f), vec3(s, 0.0f, 0.0f));
         stackCount_ = precision;

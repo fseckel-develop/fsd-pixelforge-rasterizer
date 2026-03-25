@@ -1,5 +1,5 @@
 #include <pixelforge/scene/lighting/directional_light.hpp>
-#include <pixelforge/utilities.hpp>
+#include <pixelforge/scene/utilities.hpp>
 
 
 namespace pixelforge::scene::lighting {
@@ -14,13 +14,13 @@ namespace pixelforge::scene::lighting {
 
 
     DirectionalLight::DirectionalLight(const vec3& direction):
-        direction_(Utilities::validateDirection(direction, "DirectionalLight::DirectionalLight")) {
+        direction_(utilities::validateDirection(direction, "DirectionalLight::DirectionalLight")) {
         this->type_ = DIRECTIONAL;
     }
 
 
     void DirectionalLight::setDirection(const vec3& direction) {
-        this->direction_ = Utilities::validateDirection(direction, "DirectionalLight::setDirection");
+        this->direction_ = utilities::validateDirection(direction, "DirectionalLight::setDirection");
     }
 
 

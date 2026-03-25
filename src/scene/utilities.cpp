@@ -1,4 +1,4 @@
-#include "../../../include/pixelforge/scene/debug/scene_node_printer.hpp"
+#include <pixelforge/scene/utilities.hpp>
 #include <pixelforge/scene/nodes/group.hpp>
 #include <pixelforge/scene/nodes/light_unit.hpp>
 #include <pixelforge/scene/nodes/model.hpp>
@@ -9,7 +9,7 @@
 #include <string>
 
 
-namespace pixelforge::scene::debug {
+namespace pixelforge::scene::utilities {
 
     namespace {
 
@@ -80,6 +80,7 @@ namespace pixelforge::scene::debug {
 
     } // namespace
 
+
     void printSceneNodeTree(const std::shared_ptr<nodes::SceneNode>& node) {
         std::cout << "\n=== Scene Node Tree ===\n";
         printSceneNodeRecursive(node, 0);
@@ -101,4 +102,11 @@ namespace pixelforge::scene::debug {
         std::cout << "=== End Scene Summary ===\n\n";
     }
 
-} // namespace pixelforge::scene::debug
+    glm::vec3 validateDirection(const glm::vec3& direction, const std::string& context) {
+        if (glm::length(direction) < 1e-6f) {
+            throw std::invalid_argument("Invalid zero direction vector" + (context.empty() ? "" : " in " + context));
+        }
+        return glm::normalize(direction);
+    }
+
+} // namespace pixelforge::scene::utilities
