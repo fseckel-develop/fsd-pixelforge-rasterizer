@@ -1,21 +1,19 @@
 #define GLEW_STATIC
-#include <pixelforge/core.hpp>
-#include <pixelforge/builders.hpp>
-#include <pixelforge/geometry.hpp>
-#include <pixelforge/scene.hpp>
+#include <pixelforge/core/application.hpp>
+#include <pixelforge/core/window.hpp>
+#include <pixelforge/core/camera.hpp>
 #include <pixelforge/utilities.hpp>
+#include <pixelforge/geometry/meshes/mesh.hpp>
+#include <pixelforge/scene/nodes/light_unit.hpp>
+#include <pixelforge/scene/nodes/render_unit.hpp>
+#include <pixelforge/scene/nodes/model.hpp>
+#include <pixelforge/scene/nodes/scene.hpp>
 #include "core/input.hpp"
 #include "core/renderer.hpp"
 #include "managers/texture_manager.hpp"
 
 
 namespace pixelforge::core {
-
-    using namespace geometry;
-    using namespace graphics;
-    using namespace scene::nodes;
-    using namespace scene::lighting;
-
 
     void Application::initialize() {
         Utilities::initializeGLFW();
@@ -28,45 +26,18 @@ namespace pixelforge::core {
     }
 
 
-    void Application::run() {
+    template <Renderable ObjectT>
+    void Application::runImpl(const std::function<std::shared_ptr<ObjectT>()>& objectFactory) {
         initialize();
-
-        const auto scene = Scene_("Scene")
-        .with(Model_("Model")
-            .with(LightUnit_("Ambient")
-                .withLight(AmbientLight_().withIntensity(0.5f)))
-            .with(LightUnit_("Light")
-                .withLight(PositionalLight_())
-                .withAnimation(Orbiting_(scene::animation::Animation::LOOP)
-                    .withDuration(3.0f).withRadius(4.0f).withRotationAxis({0.0f, -1.0f, 0.0f}))
-                .withNodeScale(0.15f))
-            .with(RenderUnit_("Sphere")
-                .withMesh(Sphere())
-                .withMaterial(Gold())
-                .withAnimation(Rotation_(scene::animation::Animation::LOOP)
-                    .withDuration(5.0f).withRotationAxis({1.0f, 0.0f, 1.0f}))
-                .withAnimation(Orbiting_(scene::animation::Animation::LOOP)
-                    .withDuration(8.0f).withRadius(2.0f).withRotationAxis({0.0f, 1.0f, 0.0f})))
-            .with(RenderUnit_("Cube", "Sphere")
-                .withMesh("Cube.obj")
-                .withMaterial(Silver())
-                .withTransform(scene::transform::Scale(0.5f))
-                .withAnimation(Orbiting_(scene::animation::Animation::LOOP)
-                    .withDuration(4.0f).withRadius(2.0f).withRotationAxis({0.5, 1.5f, -2.0})))
-            .with(RenderUnit_("Cylinder", "Cube")
-                .withMesh("Cylinder.obj")
-                .withMaterial(Bronze())
-                .withNodeScale(0.5f)
-                .withAnimation(Orbiting_(scene::animation::Animation::LOOP)
-                    .withDuration(6.0f).withRadius(1.5f).withRotationAxis({0.5, -1.5f, 2.0}))))
-        .build();
-
-        while (!Window::shouldClose()) {
-            Input::timeStep();
-            Camera::update();
-            Renderer::render(scene);
-            Window::swapBuffers();
-            Input::pollEvents();
+        {
+            const auto object = objectFactory();
+            while (!Window::shouldClose()) {
+                Input::timeStep();
+                Camera::update();
+                Renderer::render(object);
+                Window::swapBuffers();
+                Input::pollEvents();
+            }
         }
         shutDown();
     }
@@ -78,3 +49,20 @@ namespace pixelforge::core {
     }
 
 } // namespace pixelforge::core
+
+
+// Explicit template instantiations
+template void pixelforge::core::Application::runImpl<pixelforge::geometry::Mesh>(
+    const std::function<std::shared_ptr<geometry::Mesh>()>&);
+
+template void pixelforge::core::Application::runImpl<pixelforge::scene::nodes::LightUnit>(
+    const std::function<std::shared_ptr<scene::nodes::LightUnit>()>&);
+
+template void pixelforge::core::Application::runImpl<pixelforge::scene::nodes::RenderUnit>(
+    const std::function<std::shared_ptr<scene::nodes::RenderUnit>()>&);
+
+template void pixelforge::core::Application::runImpl<pixelforge::scene::nodes::Model>(
+    const std::function<std::shared_ptr<scene::nodes::Model>()>&);
+
+template void pixelforge::core::Application::runImpl<pixelforge::scene::nodes::Scene>(
+    const std::function<std::shared_ptr<scene::nodes::Scene>()>&);
