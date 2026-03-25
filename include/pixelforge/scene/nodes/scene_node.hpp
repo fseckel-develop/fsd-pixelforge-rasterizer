@@ -19,7 +19,7 @@ namespace pixelforge::scene::nodes {
 
         /// Adds a child node to this node.
         /// @param child The child node to add.
-        void AddChild(const std::shared_ptr<SceneNode>& child);
+        void addChild(const std::shared_ptr<SceneNode>& child);
 
         /// Removes a child node from this node.
         /// @param child The child node to remove.

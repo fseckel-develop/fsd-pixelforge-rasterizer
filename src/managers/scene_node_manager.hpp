@@ -43,10 +43,14 @@ namespace pixelforge::management {
             }
             const auto parent = getNodeByName(parentName);
             if (!parent) {
-                std::cerr << "Parent node '" << parentName << "' not found!" << std::endl;
-                return;
+                throw std::runtime_error("Parent node '" + parentName + "' not found!");
             }
-            parent->AddChild(node);
+            parent->addChild(node);
+        }
+
+        /// Clears the complete scene node registry.
+        static void clear() {
+            nodeMap_.clear();
         }
 
     private:

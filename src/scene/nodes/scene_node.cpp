@@ -25,7 +25,7 @@ namespace pixelforge::scene::nodes {
     }
 
 
-    void SceneNode::AddChild(const shared_ptr<SceneNode>& child) {
+    void SceneNode::addChild(const shared_ptr<SceneNode>& child) {
         if (!child or child.get() == this) return;
         if (find(children_, child) != children_.end()) return;
         if (child->isAncestorOf(shared_from_this())) return;
@@ -50,9 +50,9 @@ namespace pixelforge::scene::nodes {
         if (!node) return;
         if (const auto oldParent = getParent()) {
             oldParent->removeChild(shared_from_this());
-            oldParent->AddChild(node);
+            oldParent->addChild(node);
         }
-        node->AddChild(shared_from_this());
+        node->addChild(shared_from_this());
     }
 
 

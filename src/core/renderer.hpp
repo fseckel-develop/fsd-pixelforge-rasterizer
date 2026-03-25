@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include "input.hpp"
+#include <pixelforge/utilities.hpp>
 
 namespace pixelforge::geometry { class Mesh; }
 namespace pixelforge::graphics { class Material; class Shader; }

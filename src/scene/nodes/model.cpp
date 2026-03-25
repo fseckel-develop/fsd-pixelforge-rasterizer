@@ -18,9 +18,9 @@ namespace pixelforge::scene::nodes {
     void Model::addLightUnit(const shared_ptr<LightUnit>& lightUnit) {
         lightUnits_.push_back(lightUnit);
         if (const auto root = lightUnit->getRoot()) {
-            AddChild(root);
+            addChild(root);
         } else {
-            AddChild(lightUnit);
+            addChild(lightUnit);
         }
     }
 
@@ -28,9 +28,9 @@ namespace pixelforge::scene::nodes {
     void Model::addRenderUnit(const shared_ptr<RenderUnit>& renderUnit) {
         renderUnits_.push_back(renderUnit);
         if (const auto root = renderUnit->getRoot()) {
-            AddChild(root);
+            addChild(root);
         } else {
-            AddChild(renderUnit);
+            addChild(renderUnit);
         }
     }
 

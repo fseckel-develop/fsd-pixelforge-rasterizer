@@ -1,4 +1,13 @@
 set(PIXELFORGE_SOURCES
+        builders/compiler/animation_compiler.cpp
+        builders/compiler/light_compiler.cpp
+        builders/compiler/light_unit_compiler.cpp
+        builders/compiler/model_compiler.cpp
+        builders/compiler/render_unit_compiler.cpp
+        builders/compiler/scene_compiler.cpp
+
+        builders/legacy/detail/scene_node_registry.cpp
+
         core/application.cpp
         core/camera.cpp
         core/input.cpp
@@ -50,7 +59,7 @@ set(PIXELFORGE_SOURCES
         scene/animation/scaling.cpp
         scene/animation/translation.cpp
 
-        scene/builders/detail/scene_node_registry.cpp
+        scene/debug/scene_node_printer.cpp
 
         scene/lighting/ambient_light.cpp
         scene/lighting/directional_light.cpp

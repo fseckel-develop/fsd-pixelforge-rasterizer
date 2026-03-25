@@ -2,7 +2,6 @@
 #include <pixelforge/utilities.hpp>
 #include <pixelforge/geometry/meshes/mesh.hpp>
 #include <pixelforge/graphics/texturing/material.hpp>
-#include <pixelforge/builders.hpp>
 
 #include <pixelforge/scene/nodes/scene.hpp>
 #include <pixelforge/scene/nodes/model.hpp>
@@ -42,11 +41,15 @@ namespace pixelforge::core {
         initializeShader("emissive");
         initializeShader("lighting");
         fallbackMaterial_ = make_shared<graphics::Material>(graphics::WhiteRubber());
+        auto ambientUnit = make_shared<scene::nodes::LightUnit>("FallBack1");
+            ambientUnit->setLight(make_shared<AmbientLight>());
+        const auto directionalLight = make_shared<DirectionalLight>();
+            directionalLight->setDirection({1.0f, -2.0f, -2.0f});
+        auto directionalUnit = make_shared<scene::nodes::LightUnit>("FallBack2");
+            directionalUnit->setLight(directionalLight);
         fallbackLightUnits_ = {
-            scene::nodes::LightUnitBuilder("FallBack1").withLight(
-                AmbientLightBuilder().build()),
-            scene::nodes::LightUnitBuilder("FallBack2").withLight(
-                DirectionalLightBuilder().withDirection({1.0f, -2.0f, -2.0f}).build())
+            ambientUnit,
+            directionalUnit
         };
     }
 

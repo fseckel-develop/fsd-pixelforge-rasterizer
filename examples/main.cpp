@@ -1,45 +1,89 @@
-#include <pixelforge/core/application.hpp>
 #include <pixelforge/builders.hpp>
+#include <pixelforge/core/application.hpp>
 #include <pixelforge/geometry.hpp>
-using namespace pixelforge::builders;
+#include <pixelforge/graphics.hpp>
+#include <pixelforge/scene/animation/animation.hpp>
+#include <pixelforge/scene/transform/scale.hpp>
+
+using pixelforge::builders::AmbientLight;
+using pixelforge::builders::LightUnit;
+using pixelforge::builders::Model;
+using pixelforge::builders::Orbiting;
+using pixelforge::builders::PositionalLight;
+using pixelforge::builders::RenderUnit;
+using pixelforge::builders::Rotation;
+using pixelforge::builders::Scene;
+using pixelforge::core::Application;
 
 
 std::shared_ptr<pixelforge::scene::nodes::Scene> buildDemoScene() {
-    const auto scene = SceneBuilder("Scene")
-        .with(ModelBuilder("Model")
-            .with(LightUnitBuilder("Ambient")
-                .withLight(AmbientLightBuilder().withIntensity(0.5f)))
-            .with(LightUnitBuilder("Light")
-                .withLight(PositionalLightBuilder())
-                .withAnimation(OrbitingBuilder(pixelforge::scene::animation::Animation::LOOP)
-                    .withDuration(3.0f).withRadius(4.0f).withRotationAxis({0.0f, -1.0f, 0.0f}))
-                .withNodeScale(0.15f))
-            .with(RenderUnitBuilder("Sphere")
-                .withMesh(pixelforge::geometry::Sphere())
-                .withMaterial(pixelforge::graphics::Gold())
-                .withAnimation(RotationBuilder(pixelforge::scene::animation::Animation::LOOP)
-                    .withDuration(5.0f).withRotationAxis({1.0f, 0.0f, 1.0f}))
-                .withAnimation(OrbitingBuilder(pixelforge::scene::animation::Animation::LOOP)
-                    .withDuration(8.0f).withRadius(2.0f).withRotationAxis({0.0f, 1.0f, 0.0f})))
-            .with(RenderUnitBuilder("Cube", "Sphere")
-                .withMesh("Cube.obj")
-                .withMaterial(pixelforge::graphics::Silver())
-                .withTransform(pixelforge::scene::transform::Scale(0.5f))
-                .withAnimation(OrbitingBuilder(pixelforge::scene::animation::Animation::LOOP)
-                    .withDuration(4.0f).withRadius(2.0f).withRotationAxis({0.5, 1.5f, -2.0})))
-            .with(RenderUnitBuilder("Cylinder", "Cube")
-                .withMesh("Cylinder.obj")
-                .withMaterial(pixelforge::graphics::Bronze())
-                .withNodeScale(0.5f)
-                .withAnimation(OrbitingBuilder(pixelforge::scene::animation::Animation::LOOP)
-                    .withDuration(6.0f).withRadius(1.5f).withRotationAxis({0.5, -1.5f, 2.0}))))
+    return Scene("Scene")
+        .lightUnit("Ambient", [](auto& lightUnit) {
+            lightUnit.light(
+                AmbientLight()
+                    .intensity(0.5f)
+            );
+        })
+        .model("Model", [](auto& model) {
+            model.lightUnit("Light", [](auto& lightUnit) {
+                lightUnit.light(
+                    PositionalLight()
+                );
+                lightUnit.animation(
+                    Orbiting(pixelforge::scene::animation::Animation::LOOP)
+                        .duration(3.0f)
+                        .radius(4.0f)
+                        .rotationAxis({0.0f, -1.0f, 0.0f})
+                );
+                lightUnit.nodeScale(0.15f);
+            });
+            model.renderUnit("Sphere", [](auto& renderUnit) {
+                renderUnit.mesh(pixelforge::geometry::Sphere());
+                renderUnit.material(pixelforge::graphics::Gold());
+                renderUnit.animation(
+                    Rotation(pixelforge::scene::animation::Animation::LOOP)
+                        .duration(5.0f)
+                        .rotationAxis({1.0f, 0.0f, 1.0f})
+                );
+                renderUnit.animation(
+                    Orbiting(pixelforge::scene::animation::Animation::LOOP)
+                        .duration(8.0f)
+                        .radius(2.0f)
+                        .rotationAxis({0.0f, 1.0f, 0.0f})
+                );
+            });
+            model.renderUnit("Cube", [](auto& renderUnit) {
+                renderUnit.parent("Sphere");
+                renderUnit.mesh("Cube.obj");
+                renderUnit.material(pixelforge::graphics::Silver());
+                renderUnit.transform(pixelforge::scene::transform::Scale(0.5f));
+                renderUnit.animation(
+                    Orbiting(pixelforge::scene::animation::Animation::LOOP)
+                        .duration(4.0f)
+                        .radius(2.0f)
+                        .rotationAxis({0.5f, 1.5f, -2.0f})
+                );
+            });
+            model.renderUnit("Cylinder", [](auto& renderUnit) {
+                renderUnit.parent("Cube");
+                renderUnit.mesh("Cylinder.obj");
+                renderUnit.material(pixelforge::graphics::Bronze());
+                renderUnit.nodeScale(0.5f);
+                renderUnit.animation(
+                    Orbiting(pixelforge::scene::animation::Animation::LOOP)
+                        .duration(6.0f)
+                        .radius(1.5f)
+                        .rotationAxis({0.5f, -1.5f, 2.0f})
+                );
+            });
+        })
         .build();
-    return scene;
 }
 
 
 int main() {
-    pixelforge::core::Application::run([] {
-        return buildDemoScene();
+    Application::run([] {
+        const auto scene = buildDemoScene();
+        return scene;
     });
 }

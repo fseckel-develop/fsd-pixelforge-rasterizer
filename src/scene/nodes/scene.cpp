@@ -19,9 +19,9 @@ namespace pixelforge::scene::nodes {
         if (!model) return;
         models_.push_back(model);
         if (const auto root = model->getRoot()) {
-            AddChild(root);
+            addChild(root);
         } else {
-            AddChild(model);
+            addChild(model);
         }
     }
 
@@ -30,9 +30,9 @@ namespace pixelforge::scene::nodes {
         if (!lightUnit) return;
         globalLightUnits_.push_back(lightUnit);
         if (const auto root = lightUnit->getRoot()) {
-            AddChild(root);
+            addChild(root);
         } else {
-            AddChild(lightUnit);
+            addChild(lightUnit);
         }
     }
 
