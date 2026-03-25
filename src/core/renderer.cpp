@@ -1,11 +1,22 @@
 #include <pixelforge/core/camera.hpp>
-#include <pixelforge/core/renderer.hpp>
-#include <pixelforge/scene.hpp>
 #include <pixelforge/utilities.hpp>
 #include <pixelforge/geometry/meshes/mesh.hpp>
-#include <pixelforge/graphics/pipeline/vertex_array.hpp>
-#include <pixelforge/graphics/pipeline/shader.hpp>
 #include <pixelforge/graphics/texturing/material.hpp>
+#include <pixelforge/builders.hpp>
+
+#include <pixelforge/scene/nodes/scene.hpp>
+#include <pixelforge/scene/nodes/model.hpp>
+#include <pixelforge/scene/nodes/render_unit.hpp>
+#include <pixelforge/scene/nodes/light_unit.hpp>
+
+#include <pixelforge/scene/lighting/ambient_light.hpp>
+#include <pixelforge/scene/lighting/directional_light.hpp>
+#include <pixelforge/scene/lighting/positional_light.hpp>
+#include <pixelforge/scene/lighting/spot_light.hpp>
+
+#include "core/renderer.hpp"
+#include "graphics/pipeline/vertex_array.hpp"
+#include "graphics/pipeline/shader.hpp"
 
 
 namespace pixelforge::core {
@@ -32,8 +43,10 @@ namespace pixelforge::core {
         initializeShader("lighting");
         fallbackMaterial_ = make_shared<graphics::Material>(graphics::WhiteRubber());
         fallbackLightUnits_ = {
-            scene::nodes::LightUnit_("FallBack1").withLight(AmbientLight_()),
-            scene::nodes::LightUnit_("FallBack2").withLight(DirectionalLight_().withDirection({1.0f, -2.0f, -2.0f}))
+            scene::nodes::LightUnitBuilder("FallBack1").withLight(
+                AmbientLightBuilder().build()),
+            scene::nodes::LightUnitBuilder("FallBack2").withLight(
+                DirectionalLightBuilder().withDirection({1.0f, -2.0f, -2.0f}).build())
         };
     }
 

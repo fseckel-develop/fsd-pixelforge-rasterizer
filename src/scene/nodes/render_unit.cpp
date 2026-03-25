@@ -1,6 +1,6 @@
 #include <pixelforge/scene/nodes/render_unit.hpp>
-#include <pixelforge/managers/mesh_manager.hpp>
-#include <pixelforge/managers/material_manager.hpp>
+#include "managers/mesh_manager.hpp"
+#include "managers/material_manager.hpp"
 
 
 namespace pixelforge::scene::nodes {

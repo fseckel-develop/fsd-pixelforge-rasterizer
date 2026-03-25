@@ -1,5 +1,5 @@
 #include <pixelforge/scene/nodes/animation_node.hpp>
-#include <pixelforge/managers/animation_manager.hpp>
+#include "managers/animation_manager.hpp"
 
 
 namespace pixelforge::scene::nodes {

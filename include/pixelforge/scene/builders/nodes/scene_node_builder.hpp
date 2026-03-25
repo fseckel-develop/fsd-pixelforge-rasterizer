@@ -1,10 +1,8 @@
 #pragma once
-#include <pixelforge/managers/scene_node_manager.hpp>
+#include <pixelforge/scene/builders/detail/scene_node_registry.hpp>
 
 
 namespace pixelforge::scene::nodes {
-
-    using management::SceneNodeManager;
 
     /// Base class template for creating fluent-style builders for specific SceneNode types.
     /// @tparam NodeT The specific SceneNode subclass to build.
@@ -16,12 +14,12 @@ namespace pixelforge::scene::nodes {
         /// @param name The name of the scene node.
         /// @param parentName The name of the parent node (optional).
         explicit SceneNodeBuilder(const std::string& name, const std::string& parentName = "") {
-            if (SceneNodeManager::getNodeByName(name)) {
+            if (builders::detail::hasSceneNode(name)) {
                 throw std::runtime_error("SceneNode with name '" + name + "' already exists!");
             }
-            const auto node = SceneNodeManager::registerNode(std::make_shared<NodeT>(name));
+            const auto node = builders::detail::registerSceneNode(std::make_shared<NodeT>(name));
             sceneNode_ = std::static_pointer_cast<NodeT>(node);
-            if (!parentName.empty()) SceneNodeManager::setParent(sceneNode_, parentName);
+            if (!parentName.empty()) builders::detail::setParent(sceneNode_, parentName);
         }
 
         /// Sets the name of the scene node being built.

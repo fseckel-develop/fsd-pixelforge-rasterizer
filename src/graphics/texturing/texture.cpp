@@ -1,8 +1,8 @@
 #include <pixelforge/graphics/texturing/texture.hpp>
-#include <pixelforge/managers/texture_manager.hpp>
 #include <SOIL2/SOIL2.h>
 #include <fstream>
 #include <iostream>
+#include "managers/texture_manager.hpp"
 
 
 namespace pixelforge::graphics {

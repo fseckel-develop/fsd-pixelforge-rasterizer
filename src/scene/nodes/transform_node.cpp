@@ -1,7 +1,7 @@
 #include <pixelforge/scene/nodes/transform_node.hpp>
 #include <pixelforge/scene/nodes/animation_node.hpp>
-#include <pixelforge/managers/scene_node_manager.hpp>
 #include <ranges>
+#include "managers/scene_node_manager.hpp"
 
 
 namespace pixelforge::scene::nodes {

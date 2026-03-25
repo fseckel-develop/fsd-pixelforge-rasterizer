@@ -1,6 +1,6 @@
-#include <pixelforge/graphics/pipeline/vertex_array.hpp>
-#include <pixelforge/graphics/pipeline/vertex_buffer.hpp>
-#include <pixelforge/graphics/pipeline/index_buffer.hpp>
+#include "graphics/pipeline/vertex_array.hpp"
+#include "graphics/pipeline/vertex_buffer.hpp"
+#include "graphics/pipeline/index_buffer.hpp"
 
 
 namespace pixelforge::graphics {

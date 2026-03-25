@@ -1,7 +1,7 @@
 #pragma once
 #include <pixelforge/scene/builders/nodes/scene_node_builder.hpp>
+#include <pixelforge/scene/builders/animation/animation_builder.hpp>
 #include <pixelforge/scene/builders/transform_builder.hpp>
-#include <pixelforge/scene/nodes/transform_node.hpp>
 
 
 namespace pixelforge::scene::nodes {

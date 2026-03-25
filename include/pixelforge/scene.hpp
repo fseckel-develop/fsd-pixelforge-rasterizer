@@ -9,31 +9,6 @@
 #include <pixelforge/scene/animation/scaling.hpp>
 #include <pixelforge/scene/animation/translation.hpp>
 
-/// Builders
-#include <pixelforge/scene/builders/animation/animation_builder.hpp>
-#include <pixelforge/scene/builders/animation/curve_animation_builder.hpp>
-#include <pixelforge/scene/builders/animation/keyframe_animation_builder.hpp>
-#include <pixelforge/scene/builders/animation/orbiting_builder.hpp>
-#include <pixelforge/scene/builders/animation/rotation_builder.hpp>
-#include <pixelforge/scene/builders/animation/scaling_builder.hpp>
-#include <pixelforge/scene/builders/animation/translation_builder.hpp>
-
-#include <pixelforge/scene/builders/lighting/ambient_light_builder.hpp>
-#include <pixelforge/scene/builders/lighting/directional_light_builder.hpp>
-#include <pixelforge/scene/builders/lighting/light_builder.hpp>
-#include <pixelforge/scene/builders/lighting/positional_light_builder.hpp>
-#include <pixelforge/scene/builders/lighting/spot_light_builder.hpp>
-
-#include <pixelforge/scene/builders/nodes/group_builder.hpp>
-#include <pixelforge/scene/builders/nodes/light_unit_builder.hpp>
-#include <pixelforge/scene/builders/nodes/model_builder.hpp>
-#include <pixelforge/scene/builders/nodes/render_unit_builder.hpp>
-#include <pixelforge/scene/builders/nodes/scene_builder.hpp>
-#include <pixelforge/scene/builders/nodes/scene_node_builder.hpp>
-#include <pixelforge/scene/builders/nodes/transform_node_builder.hpp>
-
-#include <pixelforge/scene/builders/transform_builder.hpp>
-
 /// Lights
 #include <pixelforge/scene/lighting/ambient_light.hpp>
 #include <pixelforge/scene/lighting/directional_light.hpp>

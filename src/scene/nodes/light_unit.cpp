@@ -1,7 +1,7 @@
 #include <pixelforge/scene/nodes/light_unit.hpp>
 #include <pixelforge/scene/transform/translate.hpp>
-#include <pixelforge/managers/mesh_manager.hpp>
-#include <pixelforge/managers/light_manager.hpp>
+#include "managers/mesh_manager.hpp"
+#include "managers/light_manager.hpp"
 
 
 namespace pixelforge::scene::nodes {

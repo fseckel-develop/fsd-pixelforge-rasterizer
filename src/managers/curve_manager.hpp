@@ -1,9 +1,9 @@
 #pragma once
-#include <pixelforge/managers/instance_manager.hpp>
 #include <pixelforge/geometry/curves/bezier_curve.hpp>
 #include <pixelforge/geometry/curves/bspline.hpp>
 #include <pixelforge/geometry/curves/hermite_spline.hpp>
 #include <pixelforge/geometry/curves/nurbs.hpp>
+#include "managers/instance_manager.hpp"
 
 
 namespace pixelforge::management {

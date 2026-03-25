@@ -1,9 +1,9 @@
 #pragma once
-#include <pixelforge/core/input.hpp>
 #include <GLM/glm.hpp>
 #include <unordered_map>
 #include <string>
 #include <vector>
+#include "input.hpp"
 
 namespace pixelforge::geometry { class Mesh; }
 namespace pixelforge::graphics { class Material; class Shader; }

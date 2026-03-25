@@ -1,9 +1,9 @@
 #pragma once
-#include <pixelforge/managers/instance_manager.hpp>
 #include <pixelforge/scene/lighting/ambient_light.hpp>
 #include <pixelforge/scene/lighting/directional_light.hpp>
 #include <pixelforge/scene/lighting/positional_light.hpp>
 #include <pixelforge/scene/lighting/spot_light.hpp>
+#include "managers/instance_manager.hpp"
 
 
 namespace pixelforge::management {

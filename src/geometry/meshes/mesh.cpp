@@ -1,9 +1,9 @@
 #include <pixelforge/geometry/meshes/mesh.hpp>
-#include <pixelforge/graphics/pipeline/vertex_array.hpp>
-#include <pixelforge/graphics/pipeline/vertex_buffer.hpp>
-#include <pixelforge/graphics/pipeline/index_buffer.hpp>
 #include <fstream>
 #include <sstream>
+#include "graphics/pipeline/vertex_array.hpp"
+#include "graphics/pipeline/vertex_buffer.hpp"
+#include "graphics/pipeline/index_buffer.hpp"
 
 
 namespace pixelforge::geometry {

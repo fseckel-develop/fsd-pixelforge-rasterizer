@@ -1,5 +1,5 @@
 #include <pixelforge/graphics/texturing/material.hpp>
-#include <pixelforge/managers/texture_manager.hpp>
+#include "managers/texture_manager.hpp"
 
 
 namespace pixelforge::graphics {

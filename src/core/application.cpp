@@ -1,9 +1,12 @@
 #define GLEW_STATIC
 #include <pixelforge/core.hpp>
+#include <pixelforge/builders.hpp>
 #include <pixelforge/geometry.hpp>
-#include <pixelforge/managers.hpp>
 #include <pixelforge/scene.hpp>
 #include <pixelforge/utilities.hpp>
+#include "core/input.hpp"
+#include "core/renderer.hpp"
+#include "managers/texture_manager.hpp"
 
 
 namespace pixelforge::core {

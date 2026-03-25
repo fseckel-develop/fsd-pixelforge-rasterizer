@@ -1,12 +1,12 @@
 #pragma once
-#include <pixelforge/managers/instance_manager.hpp>
-#include <pixelforge/managers/curve_manager.hpp>
 #include <pixelforge/scene/animation/curve_animation.hpp>
 #include <pixelforge/scene/animation/keyframe_animation.hpp>
 #include <pixelforge/scene/animation/orbiting.hpp>
 #include <pixelforge/scene/animation/rotation.hpp>
 #include <pixelforge/scene/animation/scaling.hpp>
 #include <pixelforge/scene/animation/translation.hpp>
+#include "managers/instance_manager.hpp"
+#include "managers/curve_manager.hpp"
 
 
 namespace pixelforge::management {

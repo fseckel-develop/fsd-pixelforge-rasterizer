@@ -50,6 +50,8 @@ set(PIXELFORGE_SOURCES
         scene/animation/scaling.cpp
         scene/animation/translation.cpp
 
+        scene/builders/detail/scene_node_registry.cpp
+
         scene/lighting/ambient_light.cpp
         scene/lighting/directional_light.cpp
         scene/lighting/light.cpp
@@ -87,11 +89,12 @@ target_include_directories(pixelforge
 )
 
 target_link_libraries(pixelforge
-        PRIVATE
-        glm::glm
-        eigen::eigen
+        PUBLIC
         OpenGL::GL
+        glm::glm
         glew::glew
+        PRIVATE
+        eigen::eigen
         glfw::glfw
         soil2::soil2
 )

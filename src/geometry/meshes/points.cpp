@@ -1,6 +1,6 @@
 #include <pixelforge/geometry/meshes/points.hpp>
-#include <pixelforge/graphics/pipeline/vertex_array.hpp>
-#include <pixelforge/graphics/pipeline/vertex_buffer.hpp>
+#include "graphics/pipeline/vertex_array.hpp"
+#include "graphics/pipeline/vertex_buffer.hpp"
 
 
 namespace pixelforge::geometry {

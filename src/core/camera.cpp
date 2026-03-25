@@ -1,8 +1,8 @@
 #include <pixelforge/core/camera.hpp>
 #include <pixelforge/core/window.hpp>
-#include <pixelforge/core/input.hpp>
 #include <GLFW/glfw3.h>
 #include <GLM/gtc/matrix_transform.hpp>
+#include "input.hpp"
 
 
 namespace pixelforge::core {

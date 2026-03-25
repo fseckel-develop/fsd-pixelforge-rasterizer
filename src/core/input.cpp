@@ -1,6 +1,6 @@
 #include <pixelforge/core/window.hpp>
-#include <pixelforge/core/input.hpp>
 #include <iostream>
+#include "core/input.hpp"
 
 
 namespace pixelforge::core {

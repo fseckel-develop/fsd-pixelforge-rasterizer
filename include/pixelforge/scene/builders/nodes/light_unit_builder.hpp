@@ -1,11 +1,10 @@
 #pragma once
 #include <pixelforge/scene/builders/nodes/transform_node_builder.hpp>
+#include <pixelforge/scene/builders/lighting/light_builder.hpp>
 #include <pixelforge/scene/nodes/light_unit.hpp>
 
 
 namespace pixelforge::scene::nodes {
-
-    using lighting::IsLightBuilder;
 
     /// Extension of the TransformNodeBuilder class for
     /// building a light unit using a fluent interface.
@@ -30,7 +29,7 @@ namespace pixelforge::scene::nodes {
         /// @param builder Light builder to create and set the light.
         /// @tparam BuilderT The type of the light builder.
         /// @return Reference to the current builder for fluent chaining.
-        template<IsLightBuilder BuilderT>
+        template<lighting::IsLightBuilder BuilderT>
         auto& withLight(const BuilderT& builder) {
             this->sceneNode_->setLight(builder.build());
             return *this;
