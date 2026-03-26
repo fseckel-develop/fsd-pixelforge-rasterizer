@@ -36,6 +36,12 @@ set_target_properties(soil2 PROPERTIES
         INTERFACE_INCLUDE_DIRECTORIES "${PROJECT_SOURCE_DIR}/external/SOIL2/include"
 )
 
+# Header-only: doctest
+add_library(doctest INTERFACE)
+target_include_directories(doctest INTERFACE
+        ${PROJECT_SOURCE_DIR}/external/doctest
+)
+
 find_package(OpenGL REQUIRED)
 
 if(APPLE)
