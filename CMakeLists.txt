@@ -10,8 +10,8 @@ include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
 option(PIXELFORGE_BUILD_EXAMPLES "Build PixelForge examples" ON)
-option(PIXELFORGE_BUILD_TESTS "Build PixelForge tests" ON)
-option(PIXELFORGE_BUILD_GL_TESTS "Build OpenGL-backed tests" ON)
+option(PIXELFORGE_BUILD_TESTS "Build PixelForge tests" OFF)
+option(PIXELFORGE_BUILD_GL_TESTS "Build OpenGL-backed tests" OFF)
 option(PIXELFORGE_WARNINGS_AS_ERRORS "Treat warnings as errors" OFF)
 option(PIXELFORGE_INSTALL "Enable install and package export" OFF)
 
