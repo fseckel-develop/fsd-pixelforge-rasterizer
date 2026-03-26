@@ -29,7 +29,7 @@ namespace pixelforge::scene::animation {
     }
 
 
-    Transform KeyframeAnimation::getOffset() {
+    Transform KeyframeAnimation::getOffset() const {
         if (keyframes_.empty()) return {};
         if (keyframes_.size() == 1) return keyframes_.front().transform;
         return interpolate(getProgress());

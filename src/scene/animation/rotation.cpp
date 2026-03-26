@@ -42,11 +42,11 @@ namespace pixelforge::scene::animation {
 
 
     float Rotation::getTotalAngle() const {
-        return totalAngle_;
+        return glm::degrees(totalAngle_);
     }
 
 
-    Transform Rotation::getOffset() {
+    Transform Rotation::getOffset() const {
         Transform offset;
         const float angle = totalAngle_ * getProgress();
         const mat4 rotationMatrix = rotate(mat4(1.0f), angle, rotationAxis_);

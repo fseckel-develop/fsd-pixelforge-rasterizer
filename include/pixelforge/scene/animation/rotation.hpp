@@ -39,7 +39,7 @@ namespace pixelforge::scene::animation {
 
         /// Computes the current rotation transform based on the animation progress.
         /// @return Transform containing the progress-weighted rotation.
-        [[nodiscard]] transform::Transform getOffset() override;
+        [[nodiscard]] transform::Transform getOffset() const override;
 
     protected:
         glm::vec3 rotationAxis_; ///< The axis of rotation (normalized).

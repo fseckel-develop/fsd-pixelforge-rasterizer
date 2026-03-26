@@ -31,7 +31,7 @@ namespace pixelforge::scene::animation {
     }
 
 
-    Transform Orbiting::getOffset() {
+    Transform Orbiting::getOffset() const {
         Transform offset;
         const float currentAngle = totalAngle_ * getProgress();
         auto radiant = vec3(1.0f, 0.0f, 0.0f);

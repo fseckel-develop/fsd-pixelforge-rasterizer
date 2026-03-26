@@ -44,7 +44,7 @@ namespace pixelforge::scene::animation {
     }
 
 
-    Transform Translation::getOffset() {
+    Transform Translation::getOffset() const {
         Transform offset;
         offset.setTranslation(getProgress() * totalDistance_ * direction_);
         return offset;

@@ -42,7 +42,7 @@ namespace pixelforge::scene::animation {
 
         /// Computes the current interpolated transform based on the animation progress.
         /// @return Transform that blends between the two surrounding keyframes.
-        [[nodiscard]] transform::Transform getOffset() override;
+        [[nodiscard]] transform::Transform getOffset() const override;
 
     private:
         std::vector<Keyframe> keyframes_; ///< List of keyframes defining the animation.

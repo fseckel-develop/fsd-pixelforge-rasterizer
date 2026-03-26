@@ -40,7 +40,7 @@ namespace pixelforge::scene::animation {
 
         /// Calculates the current translation offset based on the animation progress.
         /// @return Transform containing the progress-weighted translation.
-        [[nodiscard]] transform::Transform getOffset() override;
+        [[nodiscard]] transform::Transform getOffset() const override;
 
     private:
         glm::vec3 direction_; ///< Direction in which the translation occurs.

@@ -32,7 +32,7 @@ namespace pixelforge::scene::animation {
 
         /// Computes the current transform combining orbital translation and rotation.
         /// @return Transform containing both translation along the orbit and corresponding rotation.
-        [[nodiscard]] transform::Transform getOffset() override;
+        [[nodiscard]] transform::Transform getOffset() const override;
 
     private:
         float radius_; ///< Radius of the circular orbit.

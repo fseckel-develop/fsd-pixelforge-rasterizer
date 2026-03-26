@@ -36,7 +36,7 @@ namespace pixelforge::scene::animation {
     }
 
 
-    Transform Scaling::getOffset() {
+    Transform Scaling::getOffset() const {
         Transform offset;
         const float t = getProgress();
         offset.setScale(mix(vec3(1.0f), targetScale_, t));

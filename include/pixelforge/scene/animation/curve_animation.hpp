@@ -30,7 +30,7 @@ namespace pixelforge::scene::animation {
 
         /// Calculates the current offset based on the progress on the associated curve.
         /// @return Transform combining translation and rotation along the curve.
-        [[nodiscard]] transform::Transform getOffset() override;
+        [[nodiscard]] transform::Transform getOffset() const override;
 
     private:
         std::shared_ptr<geometry::Curve> curve_; ///< The curve used for animated translation and rotation.

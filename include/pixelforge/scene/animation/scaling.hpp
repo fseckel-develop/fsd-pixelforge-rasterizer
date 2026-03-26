@@ -34,7 +34,7 @@ namespace pixelforge::scene::animation {
 
         /// @brief Computes the current scaling transformation based on the animation progress.
         /// @return Transform containing the progress-weighted scaling.
-        [[nodiscard]] transform::Transform getOffset() override;
+        [[nodiscard]] transform::Transform getOffset() const override;
 
     private:
         glm::vec3 targetScale_; ///< The final target scale reached at 100% animation progress.

@@ -71,7 +71,7 @@ namespace pixelforge::scene::animation {
 
         /// Computes the animated transform at the current time. To be overridden.
         /// @return Transform object representing the offset.
-        [[nodiscard]] virtual transform::Transform getOffset() = 0;
+        [[nodiscard]] virtual transform::Transform getOffset() const = 0;
 
         /// Virtual destructor.
         virtual ~Animation() = default;

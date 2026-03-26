@@ -33,7 +33,7 @@ namespace pixelforge::scene::animation {
     }
 
 
-    Transform CurveAnimation::getOffset() {
+    Transform CurveAnimation::getOffset() const {
         Transform offset;
         const float t = getProgress() * (curve_->getTMax() - curve_->getTMin()) + curve_->getTMin();
         offset.setTranslation(curve_->evaluate(t));
