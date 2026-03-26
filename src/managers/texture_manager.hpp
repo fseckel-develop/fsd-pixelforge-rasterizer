@@ -30,6 +30,7 @@ namespace pixelforge::management {
 
         /// Initializes the texture manager by querying available texture units.
         static void initialize() {
+            textureUnits_.clear(); // ensure fresh state
             GLint maxUnits;
             glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &maxUnits);
             textureUnits_.resize(maxUnits, {GL_TEXTURE0, false});
@@ -67,6 +68,19 @@ namespace pixelforge::management {
                     return;
                 }
             }
+        }
+
+        /// Clears all tracked texture units entirely.
+        /// Requires a subsequent call to initialize() before usage.
+        static void clearUnits() {
+            textureUnits_.clear();
+        }
+
+        /// Clears all managed textures and resets all texture unit state.
+        /// After this call, initialize() must be called before using texture units again.
+        static void clear() {
+            InstanceManager::clear();
+            clearUnits();
         }
 
     private:

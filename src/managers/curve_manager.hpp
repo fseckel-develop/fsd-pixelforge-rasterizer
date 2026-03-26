@@ -23,12 +23,12 @@ namespace pixelforge::management {
             }
             if (auto* bezierCurve = dynamic_cast<const geometry::BezierCurve*>(&curve)) {
                 combineHashes(seed, hashCurve(*bezierCurve));
+            } else if (auto* nurbs = dynamic_cast<const geometry::NURBS*>(&curve)) {
+                combineHashes(seed, hashCurve(*nurbs));
             } else if (auto* bspline = dynamic_cast<const geometry::BSpline*>(&curve)) {
                 combineHashes(seed, hashCurve(*bspline));
             } else if (auto* hermiteSpline = dynamic_cast<const geometry::HermiteSpline*>(&curve)) {
                 combineHashes(seed, hashCurve(*hermiteSpline));
-            } else if (auto* nurbs = dynamic_cast<const geometry::NURBS*>(&curve)) {
-                combineHashes(seed, hashCurve(*nurbs));
             }
             return seed;
         }
@@ -47,6 +47,12 @@ namespace pixelforge::management {
                 return leftBezier->getDerivativePoints(0) == rightBezier->getDerivativePoints(0) &&
                     leftBezier->getDerivativePoints(1) == rightBezier->getDerivativePoints(1);
             }
+            if (auto* leftNurbs = dynamic_cast<const geometry::NURBS*>(&left)) {
+                auto* rightNurbs = dynamic_cast<const geometry::NURBS*>(&right);
+                if (!rightNurbs) return false;
+                return leftNurbs->getKnotVector() == rightNurbs->getKnotVector() &&
+                    leftNurbs->getWeights() == rightNurbs->getWeights();
+            }
             if (auto* leftBSpline = dynamic_cast<const geometry::BSpline*>(&left)) {
                 auto* rightBSpline = dynamic_cast<const geometry::BSpline*>(&right);
                 if (!rightBSpline) return false;
@@ -56,12 +62,6 @@ namespace pixelforge::management {
                 auto* rightHermite = dynamic_cast<const geometry::HermiteSpline*>(&right);
                 if (!rightHermite) return false;
                 return leftHermite->getTangents() == rightHermite->getTangents();
-            }
-            if (auto* leftNurbs = dynamic_cast<const geometry::NURBS*>(&left)) {
-                auto* rightNurbs = dynamic_cast<const geometry::NURBS*>(&right);
-                if (!rightNurbs) return false;
-                return leftNurbs->getKnotVector() == rightNurbs->getKnotVector() &&
-                    leftNurbs->getWeights() == rightNurbs->getWeights();
             }
             return true;
         }

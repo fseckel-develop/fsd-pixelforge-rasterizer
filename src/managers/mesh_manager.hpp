@@ -18,6 +18,9 @@ namespace pixelforge::management {
                 combineHashes(seed, std::hash<uint8_t>{}(byte));
             }
             combineHashes(seed, std::hash<GLsizei>{}(mesh.getVertexCount()));
+            for (const auto index : mesh.getIndices()) {
+                combineHashes(seed, std::hash<GLuint>{}(index));
+            }
             return seed;
         }
 
@@ -31,6 +34,7 @@ namespace pixelforge::management {
             if (leftData.getVertexCount() != rightData.getVertexCount()) return false;
             if (leftData.getAttributes() != rightData.getAttributes()) return false;
             if (leftData.getInterleavedBuffer() != rightData.getInterleavedBuffer()) return false;
+            if (left.getIndices() != right.getIndices()) return false;
             return true;
         }
     };

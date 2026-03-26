@@ -25,6 +25,11 @@ namespace pixelforge::management {
             return instance;
         }
 
+        /// Clears the complete instance registry.
+        static void clear() {
+            getInstanceSet().clear();
+        }
+
     protected:
         /// Custom hash function for instances of the type InstanceT
         /// using the Hash()-function of the derived instance manager.

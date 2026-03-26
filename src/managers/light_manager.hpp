@@ -26,10 +26,10 @@ namespace pixelforge::management {
             combineHashes(seed, std::hash<float>{}(light.getSpecular().intensity));
             if (auto* directionalLight = dynamic_cast<const scene::lighting::DirectionalLight*>(&light)) {
                 combineHashes(seed, hashLight(*directionalLight));
-            } else if (auto* positionalLight = dynamic_cast<const scene::lighting::PositionalLight*>(&light)) {
-                combineHashes(seed, hashLight(*positionalLight));
             } else if (auto* spotLight = dynamic_cast<const scene::lighting::SpotLight*>(&light)) {
                 combineHashes(seed, hashLight(*spotLight));
+            } else if (auto* positionalLight = dynamic_cast<const scene::lighting::PositionalLight*>(&light)) {
+                combineHashes(seed, hashLight(*positionalLight));
             }
             return seed;
         }
@@ -54,14 +54,6 @@ namespace pixelforge::management {
                 if (!rightDirectional) return false;
                 return leftDirectional->getDirection() == rightDirectional->getDirection();
             }
-            if (auto* leftPositional = dynamic_cast<const scene::lighting::PositionalLight*>(&left)) {
-                auto* rightPositional = dynamic_cast<const scene::lighting::PositionalLight*>(&right);
-                if (!rightPositional) return false;
-                return leftPositional->getPosition() == rightPositional->getPosition() &&
-                    leftPositional->getAttenuation().constant == rightPositional->getAttenuation().constant &&
-                    leftPositional->getAttenuation().linear == rightPositional->getAttenuation().linear &&
-                    leftPositional->getAttenuation().quadratic == rightPositional->getAttenuation().quadratic;
-            }
             if (auto* leftSpot = dynamic_cast<const scene::lighting::SpotLight*>(&left)) {
                 auto* rightSpot = dynamic_cast<const scene::lighting::SpotLight*>(&right);
                 if (!rightSpot) return false;
@@ -71,7 +63,15 @@ namespace pixelforge::management {
                     leftSpot->getAttenuation().linear == rightSpot->getAttenuation().linear &&
                     leftSpot->getAttenuation().quadratic == rightSpot->getAttenuation().quadratic;
             }
-            return false;
+            if (auto* leftPositional = dynamic_cast<const scene::lighting::PositionalLight*>(&left)) {
+                auto* rightPositional = dynamic_cast<const scene::lighting::PositionalLight*>(&right);
+                if (!rightPositional) return false;
+                return leftPositional->getPosition() == rightPositional->getPosition() &&
+                    leftPositional->getAttenuation().constant == rightPositional->getAttenuation().constant &&
+                    leftPositional->getAttenuation().linear == rightPositional->getAttenuation().linear &&
+                    leftPositional->getAttenuation().quadratic == rightPositional->getAttenuation().quadratic;
+            }
+            return true; // AmbientLight and any other pure-base-equivalent types
         }
 
     private:
@@ -101,6 +101,8 @@ namespace pixelforge::management {
             size_t seed = 0;
             combineHashes(seed, std::hash<glm::vec3>{}(light.getPosition()));
             combineHashes(seed, std::hash<glm::vec3>{}(light.getDirection()));
+            combineHashes(seed, std::hash<float>{}(light.getInnerCutoff()));
+            combineHashes(seed, std::hash<float>{}(light.getOuterCutoff()));
             combineHashes(seed, std::hash<float>{}(light.getAttenuation().constant));
             combineHashes(seed, std::hash<float>{}(light.getAttenuation().linear));
             combineHashes(seed, std::hash<float>{}(light.getAttenuation().quadratic));

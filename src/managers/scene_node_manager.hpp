@@ -1,6 +1,5 @@
 #pragma once
 #include <pixelforge/scene/nodes/scene_node.hpp>
-#include <iostream>
 #include <unordered_map>
 #include <stdexcept>
 
@@ -14,6 +13,9 @@ namespace pixelforge::management {
         /// @param node The scene node instance to register.
         /// @return Hash value for the scene node.
         static std::shared_ptr<scene::nodes::SceneNode> registerNode(const std::shared_ptr<scene::nodes::SceneNode>& node) {
+            if (!node) {
+                throw std::runtime_error("Cannot register null SceneNode!");
+            }
             const auto name = node->getName();
             if (getNodeByName(name)) {
                 throw std::runtime_error("SceneNode with name '" + name + "' already exists! Different name needed!");
@@ -38,6 +40,9 @@ namespace pixelforge::management {
         /// @param parentName The name of the desired parent node.
         /// @throws std::runtime_error If the node name matches the parent name.
         static void setParent(const std::shared_ptr<scene::nodes::SceneNode>& node, const std::string& parentName) {
+            if (!node) {
+                throw std::runtime_error("Cannot set parent for null SceneNode!");
+            }
             if (node->getName() == parentName) {
                 throw std::runtime_error("Cannot set node '" + parentName + "' as its own parent!");
             }
