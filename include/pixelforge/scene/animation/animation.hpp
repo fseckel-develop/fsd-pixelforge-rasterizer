@@ -7,6 +7,9 @@ namespace pixelforge::scene::animation {
     /// Base class for time-based transforming animations.
     class Animation {
     public:
+        /// Enumeration for playback status of an animation.
+        enum PlaybackState { STOPPED, PLAYING, PAUSED };
+
         /// Enumeration for how the animation progresses.
         enum Mode { ONCE, LOOP, BOUNCE };
 
@@ -31,7 +34,7 @@ namespace pixelforge::scene::animation {
         /// @param mode The new playback mode (ONCE, LOOP, BOUNCE).
         void setMode(Mode mode);
 
-        /// Starts or resumes the animation from beginning or pause.
+        /// Starts the stopped animation from beginning, or resumes when paused.
         void play();
 
         /// Pauses the animation, preserving its current state.
@@ -77,8 +80,7 @@ namespace pixelforge::scene::animation {
         Mode mode_;                 ///< Playback mode (ONCE, LOOP, BOUNCE).
         float duration_;            ///< Total duration of the animation in seconds.
         float elapsedTime_ = 0.0f;  ///< Time accumulated since animation started.
-        bool isPlaying_ = true;     ///< Indicates whether the animation is currently playing.
-        bool isPaused_ = false;     ///< Indicates whether the animation is paused.
+        PlaybackState playbackState_ = PLAYING; ///< The current playback state.
 
         /// Computes normalized progress (0.0 to 1.0) based on elapsed time and mode.
         /// @return The current progress of the animation.

@@ -30,30 +30,30 @@ namespace pixelforge::scene::animation {
 
 
     void Animation::play() {
-        if (!isPlaying_ || isPaused_) {
-            isPlaying_ = true;
-            isPaused_ = false;
+        const bool finished = (mode_ == ONCE && elapsedTime_ >= duration_); // NOLINT
+        if (playbackState_ == STOPPED || finished) {
+            elapsedTime_ = 0.0f;
         }
+        playbackState_ = PLAYING;
     }
 
 
     void Animation::pause() {
-        if (isPlaying_) {
-            isPaused_ = true;
+        if (playbackState_ == PLAYING) {
+            playbackState_ = PAUSED;
         }
     }
 
 
     void Animation::resume() {
-        if (isPaused_) {
-            isPaused_ = false;
+        if (playbackState_ == PAUSED) {
+            playbackState_ = PLAYING;
         }
     }
 
 
     void Animation::stop() {
-        isPlaying_ = false;
-        isPaused_ = false;
+        playbackState_ = STOPPED;
         elapsedTime_ = 0.0f;
     }
 
@@ -64,7 +64,7 @@ namespace pixelforge::scene::animation {
 
 
     void Animation::update(const float timeDelta) {
-        if (isPlaying_) {
+        if (playbackState_ == PLAYING) {
             elapsedTime_ += timeDelta;
         }
     }
@@ -81,14 +81,14 @@ namespace pixelforge::scene::animation {
 
 
     bool Animation::isPlaying() const {
-        if (!isPlaying_ || isPaused_) return false;
+        if (playbackState_ != PLAYING) return false;
         if (mode_ == LOOP || mode_ == BOUNCE) return true;
         return elapsedTime_ < duration_;
     }
 
 
     bool Animation::isPaused() const {
-        return isPaused_;
+        return playbackState_ == PAUSED;
     }
 
 
