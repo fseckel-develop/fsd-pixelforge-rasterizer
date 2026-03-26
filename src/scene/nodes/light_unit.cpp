@@ -19,12 +19,13 @@ namespace pixelforge::scene::nodes {
 
     LightUnit::LightUnit(const string& name):
         TransformNode(name) {
+        setLight(std::make_shared<lighting::AmbientLight>());
     }
 
 
     LightUnit::LightUnit(const string& name, const shared_ptr<Light>& light):
         TransformNode(name) {
-        setLight(light);
+        setLight(light ? light : make_shared<lighting::AmbientLight>());
     }
 
 
@@ -55,7 +56,18 @@ namespace pixelforge::scene::nodes {
 
 
     mat4 LightUnit::getModelMatrix() const {
-        return (getGlobalTransform() * nodeScale_ * Translate(light_->getPosition())).toMatrix();
+        if (!light_) {
+            return (getGlobalTransform() * nodeScale_).toMatrix();
+        }
+        switch (light_->getType()) {
+            case Light::POSITIONAL:
+            case Light::SPOT:
+                return (getGlobalTransform() * nodeScale_ * Translate(light_->getPosition())).toMatrix();
+            case Light::AMBIENT:
+            case Light::DIRECTIONAL:
+            default:
+                return (getGlobalTransform() * nodeScale_).toMatrix();
+        }
     }
 
 

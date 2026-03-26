@@ -31,6 +31,7 @@ namespace pixelforge::scene::nodes {
         void markGlobalTransformDirty();
 
         /// Adds an animation to this node, wrapping it in an animation node if needed.
+        /// The animation node then is set as the parent of the transform node.
         /// @param animation The animation to be added.
         virtual void addAnimation(const std::shared_ptr<animation::Animation>& animation);
 

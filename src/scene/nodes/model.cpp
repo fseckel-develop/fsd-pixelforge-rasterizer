@@ -17,21 +17,13 @@ namespace pixelforge::scene::nodes {
 
     void Model::addLightUnit(const shared_ptr<LightUnit>& lightUnit) {
         lightUnits_.push_back(lightUnit);
-        if (const auto root = lightUnit->getRoot()) {
-            addChild(root);
-        } else {
-            addChild(lightUnit);
-        }
+        addChild(lightUnit->getRoot());
     }
 
 
     void Model::addRenderUnit(const shared_ptr<RenderUnit>& renderUnit) {
         renderUnits_.push_back(renderUnit);
-        if (const auto root = renderUnit->getRoot()) {
-            addChild(root);
-        } else {
-            addChild(renderUnit);
-        }
+        addChild(renderUnit->getRoot());
     }
 
 
