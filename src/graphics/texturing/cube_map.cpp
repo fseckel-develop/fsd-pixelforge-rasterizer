@@ -15,26 +15,51 @@ namespace pixelforge::graphics {
 
 
     const path cubeMapDirectory = path(PIXELFORGE_ASSET_DIR) / "textures" / "cube_maps";
-    CubeMap::CubeMap(const vector<string>& faces) {
-        this->filePath_ = cubeMapDirectory / faces[0];
-        this->textureID_ = 0;
-        this->textureType_ = GL_TEXTURE_CUBE_MAP;
-        this->textureUnit_ = management::TextureManager::noUnit();
+    CubeMap::CubeMap(const std::string& baseName) {
+        const path baseDirectory = cubeMapDirectory / baseName;
+        const std::vector<std::pair<std::string, GLenum>> faces = {
+            { baseName + "_right",  GL_TEXTURE_CUBE_MAP_POSITIVE_X },
+            { baseName + "_left",   GL_TEXTURE_CUBE_MAP_NEGATIVE_X },
+            { baseName + "_top",    GL_TEXTURE_CUBE_MAP_POSITIVE_Y },
+            { baseName + "_bottom", GL_TEXTURE_CUBE_MAP_NEGATIVE_Y },
+            { baseName + "_front",  GL_TEXTURE_CUBE_MAP_POSITIVE_Z },
+            { baseName + "_back",   GL_TEXTURE_CUBE_MAP_NEGATIVE_Z }
+        };
+        filePath_ = baseDirectory.string();
+        textureID_ = 0;
+        textureType_ = GL_TEXTURE_CUBE_MAP;
+        textureUnit_ = management::TextureManager::noUnit();
         glGenTextures(1, &textureID_);
         glBindTexture(textureType_, textureID_);
         int width, height;
-        for (size_t i = 0; i < faces.size(); i++) {
-            if (unsigned char* data = SOIL_load_image(faces[i].c_str(), &width, &height, nullptr, SOIL_LOAD_RGBA)) {
-                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-                SOIL_free_image_data(data);
+        bool hadMissingFace = false;
+        const std::vector<std::string> extensions = {".jpg", ".png", ".tga"};
+        for (const auto& [fileName, target] : faces) {
+            unsigned char* data = nullptr;
+            for (const auto& ext : extensions) {
+                path fullPath = baseDirectory / (fileName + ext);
+                data = SOIL_load_image(fullPath.c_str(), &width, &height, nullptr, SOIL_LOAD_RGBA);
+                if (data) break;
             }
-            else cerr << "Failed to load cube-map face: " << faces[i] << endl;
+            if (data) {
+                glTexImage2D(target, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+                SOIL_free_image_data(data);
+            } else {
+                hadMissingFace = true;
+                constexpr unsigned char fallback[] = {255, 0, 255, 255}; // magenta
+                glTexImage2D(target, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, fallback);
+            }
         }
+#ifndef NDEBUG
+        if (hadMissingFace) {
+            cerr << "CubeMap '" << baseName << "' used fallback for one or more faces." << endl;
+        }
+#endif
         glTexParameteri(textureType_, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
         glTexParameteri(textureType_, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(textureType_, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexParameteri(textureType_, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(textureType_, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(textureType_, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(textureType_, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glBindTexture(textureType_, 0);
     }
 

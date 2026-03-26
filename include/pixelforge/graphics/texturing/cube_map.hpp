@@ -11,8 +11,8 @@ namespace pixelforge::graphics {
     class CubeMap final : public Texture {
     public:
         /// Constructs a CubeMap from six image file paths.
-        /// @param faces Vector of six file paths in the order: +X, -X, +Y, -Y, +Z, -Z.
-        explicit CubeMap(const std::vector<std::string>& faces);
+        /// @param baseName base name of the cube map file set.
+        explicit CubeMap(const std::string& baseName);
 
         /// Sets texture wrapping mode for the R, S and T coordinates.
         /// @param wrapR Wrapping mode for the R coordinate.

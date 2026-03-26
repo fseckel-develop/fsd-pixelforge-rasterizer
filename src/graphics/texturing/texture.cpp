@@ -33,12 +33,17 @@ namespace pixelforge::graphics {
             glTexImage2D(textureType_, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
             glGenerateMipmap(textureType_);
             SOIL_free_image_data(data);
+        } else {
+#ifndef NDEBUG
+            cerr << "Failed to load texture: " << filePath_ << ". Using fallback" << endl;
+#endif
+            constexpr unsigned char fallback[] = {255, 0, 255, 255}; // magenta
+            glTexImage2D(textureType_, 0, format, 1, 1, 0, format, GL_UNSIGNED_BYTE, fallback);
         }
-        else cerr << "Failed to load texture: " << filePath_ << endl;
         glTexParameteri(textureType_, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
         glTexParameteri(textureType_, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
         glTexParameteri(textureType_, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(textureType_, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(textureType_, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glBindTexture(textureType_, 0);
     }
 
