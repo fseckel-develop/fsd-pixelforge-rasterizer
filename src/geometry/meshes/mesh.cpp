@@ -56,7 +56,7 @@ namespace pixelforge::geometry {
         VAO_ = make_shared<graphics::VertexArray>();
         const auto VBO = graphics::VertexBuffer(vertexData_);
         VAO_->addVertexBuffer(VBO);
-        const auto IBO = graphics::IndexBuffer(indices_);
+        auto IBO = graphics::IndexBuffer(indices_);
         VAO_->setIndexBuffer(IBO);
         uploadedToGPU_ = true;
     }

@@ -9,8 +9,25 @@ namespace pixelforge::graphics {
         glGenBuffers(1, &indexBufferID_);
         bindIBO();
         const auto size = static_cast<GLsizeiptr>(data.size() * sizeof(GLuint));
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, &data[0], GL_STATIC_DRAW);
+        const void* bufferData = data.empty() ? nullptr : data.data();
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, bufferData, GL_STATIC_DRAW);
         unbindIBO();
+    }
+
+
+    IndexBuffer::IndexBuffer(IndexBuffer&& other) noexcept :
+        indexBufferID_(other.indexBufferID_) {
+        other.indexBufferID_ = 0;
+    }
+
+
+    IndexBuffer& IndexBuffer::operator=(IndexBuffer&& other) noexcept {
+        if (this != &other) {
+            deleteIBO();
+            indexBufferID_ = other.indexBufferID_;
+            other.indexBufferID_ = 0;
+        }
+        return *this;
     }
 
 
@@ -24,8 +41,11 @@ namespace pixelforge::graphics {
     }
 
 
-    void IndexBuffer::deleteIBO() const {
-        glDeleteBuffers(1, &indexBufferID_);
+    void IndexBuffer::deleteIBO() {
+        if (indexBufferID_ != 0) {
+            glDeleteBuffers(1, &indexBufferID_);
+            indexBufferID_ = 0;
+        }
     }
 
 

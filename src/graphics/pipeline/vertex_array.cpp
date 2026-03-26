@@ -40,7 +40,7 @@ namespace pixelforge::graphics {
             );
             glEnableVertexAttribArray(element.index);
         }
-        vertexBuffers_.push_back(vertexBuffer);
+        vertexBuffers_.push_back(&vertexBuffer);
         unbindVAO();
         VertexBuffer::unbindVBO();
     }
@@ -54,7 +54,7 @@ namespace pixelforge::graphics {
     }
 
 
-    const vector<VertexBuffer>& VertexArray::getVertexBuffers() const {
+    const std::vector<const VertexBuffer*>& VertexArray::getVertexBuffers() const {
         return vertexBuffers_;
     }
 
@@ -69,12 +69,11 @@ namespace pixelforge::graphics {
     }
 
 
-    void VertexArray::deleteVAO() const {
-        indexBuffer_->deleteIBO();
-        for (const auto& vertexBuffer : vertexBuffers_) {
-            vertexBuffer.deleteVBO();
+    void VertexArray::deleteVAO() {
+        if (vertexArrayID_ != 0) {
+            glDeleteVertexArrays(1, &vertexArrayID_);
+            vertexArrayID_ = 0;
         }
-        glDeleteVertexArrays(1, &vertexArrayID_);
     }
 
 

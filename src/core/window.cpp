@@ -66,12 +66,16 @@ namespace pixelforge::core {
 
 
     float Window::getAspectRatio() {
+        if (bufferHeight_ == 0) return 0.0f;
         return static_cast<float>(bufferWidth_) / static_cast<float>(bufferHeight_);
     }
 
 
     void Window::close() {
-        glfwDestroyWindow(window_);
+        if (window_) {
+            glfwDestroyWindow(window_);
+            window_ = nullptr;
+        }
     }
 
 

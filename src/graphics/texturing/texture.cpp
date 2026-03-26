@@ -75,12 +75,15 @@ namespace pixelforge::graphics {
     void Texture::unbindTexture() {
         glBindTexture(textureType_, 0);
         management::TextureManager::releaseUnit(textureUnit_);
+        textureUnit_ = management::TextureManager::noUnit();
     }
 
 
     void Texture::deleteTexture() {
-        glDeleteTextures(1, &textureID_);
-        textureID_ = 0;
+        if (textureID_ != 0) {
+            glDeleteTextures(1, &textureID_);
+            textureID_ = 0;
+        }
     }
 
 
@@ -101,6 +104,10 @@ namespace pixelforge::graphics {
 
     GLenum Texture::getUnit() const {
         return textureUnit_;
+    }
+
+    Texture::~Texture() {
+        deleteTexture();
     }
 
 } // namespace pixelforge::graphics

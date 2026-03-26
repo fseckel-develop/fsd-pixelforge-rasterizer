@@ -17,6 +17,24 @@ namespace pixelforge::graphics {
     }
 
 
+    VertexBuffer::VertexBuffer(VertexBuffer&& other) noexcept :
+        vertexBufferID_(other.vertexBufferID_),
+        bufferLayout_(std::move(other.bufferLayout_)) {
+        other.vertexBufferID_ = 0;
+    }
+
+
+    VertexBuffer& VertexBuffer::operator=(VertexBuffer&& other) noexcept {
+        if (this != &other) {
+            deleteVBO();
+            vertexBufferID_ = other.vertexBufferID_;
+            bufferLayout_ = std::move(other.bufferLayout_);
+            other.vertexBufferID_ = 0;
+        }
+        return *this;
+    }
+
+
     void VertexBuffer::createBufferLayout(const VertexData& vertexData) {
         for (const auto& [attribute, data] : vertexData.getAttributes()) {
             visit([&]<typename Type>([[maybe_unused]] const Type& attributeData) {
@@ -45,8 +63,11 @@ namespace pixelforge::graphics {
     }
 
 
-    void VertexBuffer::deleteVBO() const {
-        glDeleteBuffers(1, &vertexBufferID_);
+    void VertexBuffer::deleteVBO() {
+        if (vertexBufferID_ != 0) {
+            glDeleteBuffers(1, &vertexBufferID_);
+            vertexBufferID_ = 0;
+        }
     }
 
 

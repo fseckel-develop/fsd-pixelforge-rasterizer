@@ -34,21 +34,21 @@ namespace pixelforge::graphics {
 
         /// Gets the list of vertex buffers associated with the vertex array.
         /// @return List of vertex buffers.
-        [[nodiscard]] const std::vector<VertexBuffer>& getVertexBuffers() const;
+        [[nodiscard]] const std::vector<const VertexBuffer*>& getVertexBuffers() const;
 
         /// Gets the index buffer currently set for the vertex array.
         /// @return Pointer to the index buffer.
         [[nodiscard]] const IndexBuffer* getIndexBuffer() const;
 
-        /// Deletes the vertex array and associated buffers from GPU memory.
-        void deleteVAO() const;
+        /// Deletes the vertex array from GPU memory.
+        void deleteVAO();
 
-        /// Destructor. Automatically deletes the vertex array and associated buffers.
+        /// Destructor. Automatically deletes the vertex array.
         ~VertexArray();
 
     private:
         GLuint vertexArrayID_; ///< OpenGL handle for the vertex array object (VAO).
-        std::vector<VertexBuffer> vertexBuffers_; ///< List of vertex buffers attached to the vertex array.
+        std::vector<const VertexBuffer*> vertexBuffers_; ///< List of vertex buffers attached to the vertex array.
         const IndexBuffer* indexBuffer_; ///< Pointer to the index buffer.
     };
 

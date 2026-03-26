@@ -15,9 +15,13 @@ namespace pixelforge::graphics {
         visit([&](const auto& attributeData) { dataSize = attributeData.size(); }, data);
         if (attribute == POSITION) {
             vertexCount_ = dataSize;
-        } else if (vertexCount_ != dataSize) {
-            cerr << "Attribute not added! Data size and Vertex count not matching." << endl;
-            return;
+        } else {
+            if (!hasAttribute(POSITION)) {
+                return;
+            }
+            if (vertexCount_ != dataSize) {
+                return;
+            }
         }
         attributes_[attribute] = data;
         updateInterleavedData();

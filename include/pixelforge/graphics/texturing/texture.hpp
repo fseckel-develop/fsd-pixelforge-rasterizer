@@ -50,8 +50,8 @@ namespace pixelforge::graphics {
         /// @return The OpenGL enum for the texture unit (e.g. GL_TEXTURE0).
         [[nodiscard]] GLenum getUnit() const;
 
-        /// Virtual destructor for cleanup.
-        virtual ~Texture() = default;
+        /// Destructor. Automatically deletes the texture object from the GPU.
+        virtual ~Texture();
 
     protected:
         std::string filePath_; ///< Path to the texture file.

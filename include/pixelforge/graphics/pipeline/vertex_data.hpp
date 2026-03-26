@@ -25,6 +25,7 @@ namespace pixelforge::graphics {
         /// Sets or updates an attribute in the vertex data.
         /// @param attribute The type of vertex attribute.
         /// @param data The attribute data (glm::vec2 or glm::vec3).
+        /// @note POSITION must be added first to define the vertex count and spacial information.
         void setAttribute(VertexAttribute attribute, const AttributeData& data);
 
         /// Removes an attribute from the vertex data.
