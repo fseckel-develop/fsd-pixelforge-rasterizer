@@ -18,7 +18,6 @@ namespace pixelforge::geometry {
         this->tipLength_ = tipRadius_ / tan(radians(10.0f));
         this->sectorCount_ = sectorCount;
         generateMeshData();
-        Mesh::setupMesh();
     }
 
 

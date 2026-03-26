@@ -21,10 +21,6 @@ namespace pixelforge::geometry {
         /// @param invertY Whether to invert the Y texture coordinate.
         explicit Mesh(const std::string& fileName, bool invertY = true);
 
-        /// Sets the vertex array for this mesh.
-        /// @param vao Shared pointer to a vertex array.
-        void setVAO(const std::shared_ptr<graphics::VertexArray>& vao);
-
         /// Retrieves the vertex array associated with this mesh.
         /// @return Shared pointer to the vertex array.
         [[nodiscard]] const std::shared_ptr<graphics::VertexArray>& getVAO() const;
@@ -41,6 +37,9 @@ namespace pixelforge::geometry {
         /// @return The number of vertices.
         [[nodiscard]] GLsizei getVertexCount() const;
 
+        /// Sets up the vertex array and GPU buffers based on current vertex data.
+        virtual void uploadToGPU();
+
         /// Virtual destructor for cleanup.
         virtual ~Mesh() = default;
 
@@ -48,6 +47,7 @@ namespace pixelforge::geometry {
         std::shared_ptr<graphics::VertexArray> VAO_; ///< Vertex array managing the layout and buffers.
         graphics::VertexData vertexData_; ///< Container for all vertex attributes.
         std::vector<GLuint> indices_; ///< Index buffer data.
+        bool uploadedToGPU_ = false; ///< Flag to keep track of GPU upload.
 
         /// Clears and regenerates all vertex attributes and index data.
         void generateMeshData();
@@ -66,9 +66,6 @@ namespace pixelforge::geometry {
 
         /// Optional override to calculate triangle indices.
         virtual void calculateIndices() {}
-
-        /// Sets up the vertex array and GPU buffers based on current vertex data.
-        virtual void setupMesh();
 
         /// Regenerates the mesh data and updates GPU buffers.
         void updateMesh();

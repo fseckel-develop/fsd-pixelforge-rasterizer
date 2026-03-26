@@ -16,8 +16,8 @@ namespace pixelforge::geometry {
         this->sectorCount_ = sectorCount;
         if (outlineCurve && beltCurve) {
             generateMeshData();
-            Mesh::setupMesh();
         }
+        else throw std::invalid_argument("Shell::Shell(): invalid input");
     }
 
 

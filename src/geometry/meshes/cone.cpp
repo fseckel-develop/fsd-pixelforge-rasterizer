@@ -28,7 +28,6 @@ namespace pixelforge::geometry {
         this->halfAngle_ = halfAngle;
         this->sectorCount_ = sectorCount;
         generateMeshData();
-        Mesh::setupMesh();
     }
 
 

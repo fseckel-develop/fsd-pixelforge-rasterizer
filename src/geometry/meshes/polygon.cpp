@@ -16,7 +16,6 @@ namespace pixelforge::geometry {
         Points(vector<vec3>()) {
         vertexData_.clear();
         vertexData_.setAttribute(graphics::POSITION, curve.sample(sampleCount, type));
-        Points::setupMesh();
     }
 
 

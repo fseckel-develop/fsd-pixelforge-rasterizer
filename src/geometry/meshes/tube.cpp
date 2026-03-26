@@ -20,7 +20,6 @@ namespace pixelforge::geometry {
         this->sectorCount_ = sectorCount;
         computeBeltBase();
         generateMeshData();
-        Mesh::setupMesh();
     }
 
 

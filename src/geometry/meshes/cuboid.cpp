@@ -13,7 +13,6 @@ namespace pixelforge::geometry {
         this->height_ = height;
         this->depth_ = depth;
         generateMeshData();
-        Mesh::setupMesh();
     }
 
 

@@ -234,6 +234,8 @@ namespace pixelforge::core {
 
     void Renderer::draw(const shared_ptr<geometry::Mesh>& mesh) { // NOLINT
         currentShader_->bindShader();
+        mesh->uploadToGPU();
+        if (!mesh->getVAO()) return;
         mesh->getVAO()->bindVAO();
         if (mesh->getIndices().empty()) {
             glDrawArrays(GL_TRIANGLES, 0, mesh->getVertexCount());

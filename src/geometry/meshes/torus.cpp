@@ -15,7 +15,6 @@ namespace pixelforge::geometry {
         this->stackCount_ = stackCount;
         this->sectorCount_ = sectorCount;
         generateMeshData();
-        Mesh::setupMesh();
     }
 
 

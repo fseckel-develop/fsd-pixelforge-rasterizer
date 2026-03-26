@@ -16,7 +16,6 @@ namespace pixelforge::geometry {
         this->vertexData_.clear();
         vertexData_.setAttribute(graphics::POSITION, points);
         this->pointSize_ = pointSize;
-        Points::setupMesh();
     }
 
 
@@ -24,15 +23,15 @@ namespace pixelforge::geometry {
         Mesh(graphics::VertexData(), vector<GLuint>()) {
         this->vertexData_ = mesh.getVertexData();
         this->pointSize_ = pointSize;
-        Points::setupMesh();
     }
 
 
-    void Points::setupMesh() {
+    void Points::uploadToGPU() {
         if (!vertexData_.hasAttribute(graphics::POSITION)) return;
         VAO_ = make_shared<graphics::VertexArray>();
         const auto VBO = VertexBuffer(vertexData_);
         VAO_->addVertexBuffer(VBO);
+        uploadedToGPU_ = true;
     }
 
     // TODO: Refactor this into the Renderer class

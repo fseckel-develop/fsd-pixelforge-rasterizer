@@ -23,18 +23,11 @@ namespace pixelforge::geometry {
     Mesh::Mesh(graphics::VertexData vertexData, const vector<GLuint>& indices) {
         this->vertexData_ = std::move(vertexData);
         this->indices_ = indices;
-        Mesh::setupMesh();
     }
 
 
     Mesh::Mesh(const string& fileName, const bool invertY) {
         parseOBJ(fileName, invertY);
-        Mesh::setupMesh();
-    }
-
-
-    void Mesh::setVAO(const shared_ptr<graphics::VertexArray>& VAO) {
-        this->VAO_ = VAO;
     }
 
 
@@ -58,13 +51,14 @@ namespace pixelforge::geometry {
     }
 
 
-    void Mesh::setupMesh() {
-        if (!vertexData_.hasAttribute(graphics::POSITION)) return;
+    void Mesh::uploadToGPU() {
+        if (uploadedToGPU_ || !vertexData_.hasAttribute(graphics::POSITION)) return;
         VAO_ = make_shared<graphics::VertexArray>();
         const auto VBO = graphics::VertexBuffer(vertexData_);
         VAO_->addVertexBuffer(VBO);
         const auto IBO = graphics::IndexBuffer(indices_);
         VAO_->setIndexBuffer(IBO);
+        uploadedToGPU_ = true;
     }
 
 
@@ -80,8 +74,14 @@ namespace pixelforge::geometry {
 
     void Mesh::updateMesh() {
         generateMeshData();
-        VAO_->deleteVAO();
-        setupMesh();
+        if (uploadedToGPU_) {
+            if (VAO_) {
+                VAO_->deleteVAO();
+            }
+            VAO_.reset();
+            uploadedToGPU_ = false;
+            uploadToGPU();
+        }
     }
 
 

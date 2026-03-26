@@ -15,7 +15,6 @@ namespace pixelforge::geometry {
         this->height_ = height;
         this->sectorCount_ = sectorCount;
         generateMeshData();
-        Mesh::setupMesh();
     }
 
 

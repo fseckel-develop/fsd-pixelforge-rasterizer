@@ -11,7 +11,7 @@ namespace pixelforge::geometry {
 
     protected:
         float pointSize_;
-        void setupMesh() override;
+        void uploadToGPU() override;
     };
 
 } // namespace pixelforge::geometry

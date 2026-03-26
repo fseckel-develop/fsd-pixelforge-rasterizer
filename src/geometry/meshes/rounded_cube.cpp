@@ -26,7 +26,6 @@ namespace pixelforge::geometry {
         stackCount_ = precision;
         sectorCount_ = precision;
         generateMeshData();
-        Mesh::setupMesh();
     }
 
 } // namespace pixelforge::geometry
