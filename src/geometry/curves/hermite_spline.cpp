@@ -9,14 +9,14 @@ namespace pixelforge::geometry {
     using glm::vec3;
 
 
-    HermiteSpline::HermiteSpline(const std::vector<vec3>& points, std::vector<vec3>& tangents, const CurveForm form):
+    HermiteSpline::HermiteSpline(const std::vector<vec3>& points, const std::vector<vec3>& tangents, const CurveForm form):
         Curve(points, static_cast<int>(points.size()) - 1, form),
-        controlTangents_(std::move(tangents)) {
-        computeCentroid();
+        controlTangents_(tangents) {
         if (controlPoints_.size() != controlTangents_.size()) {
             cerr << "Number of tangents must match number of control points for Hermite Spline!" << endl;
             computeCatmullRomTangents();
         }
+        computeCentroid();
     }
 
 
@@ -98,11 +98,30 @@ namespace pixelforge::geometry {
             return vec3(0.0f);
         }
         const int pointCount = static_cast<int>(controlPoints_.size());
-        const float segmentF = t * (static_cast<float>(pointCount) - (curveForm_ == LOOP ? 0.0f : 1.0f));
-        const int segment = static_cast<int>(segmentF);
-        const float localT = segmentF - static_cast<float>(segment);
-        const int i0 = segment % pointCount;
-        const int i1 = (segment + 1) % pointCount;
+        int i0 = 0;
+        int i1 = 1;
+        float localT = 0.0f;
+        if (curveForm_ == LOOP) {
+            const float segmentF = t * static_cast<float>(pointCount);
+            const int segment = static_cast<int>(segmentF) % pointCount;
+            localT = segmentF - static_cast<float>(static_cast<int>(segmentF));
+            i0 = segment;
+            i1 = (segment + 1) % pointCount;
+        } else {
+            const int segmentCount = pointCount - 1;
+
+            if (t >= 1.0f) {
+                i0 = segmentCount - 1;
+                i1 = segmentCount;
+                localT = 1.0f;
+            } else {
+                const float segmentF = t * static_cast<float>(segmentCount);
+                const int segment = static_cast<int>(segmentF);
+                localT = segmentF - static_cast<float>(segment);
+                i0 = segment;
+                i1 = segment + 1;
+            }
+        }
         const vec3 p0 = controlPoints_[i0];
         const vec3 p1 = controlPoints_[i1];
         const vec3 m0 = controlTangents_[i0];

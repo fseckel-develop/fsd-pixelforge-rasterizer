@@ -12,7 +12,6 @@ namespace pixelforge::geometry {
 
     BSpline::BSpline(const vector<vec3>& points, const int degree, const CurveForm form):
         Curve(points, degree, form) {
-        computeCentroid();
         if (!controlPoints_.empty() && controlPoints_.size() <= static_cast<size_t>(this->degree_)) {
             cerr << "Invalid degree for BSpline" << endl;
             this->degree_ = static_cast<int>(controlPoints_.size()) - 1;
@@ -23,10 +22,11 @@ namespace pixelforge::geometry {
             }
         }
         generateKnotVector();
+        computeCentroid();
     }
 
 
-    void BSpline::addControlPoint(const glm::vec3 &point) {
+    void BSpline::addControlPoint(const vec3 &point) {
         controlPoints_.push_back(point);
         generateKnotVector();
     }
@@ -59,6 +59,7 @@ namespace pixelforge::geometry {
 
 
     float BSpline::basisFunctionForPosition(const int g, const int i, const float t) const {
+        if (g < 0) return 0.0f;
         std::vector N(g + 1, 0.0f);
         for (int j = 0; j <= g; ++j) {
             N[j] = (knotVector_[i + j] <= t && t < knotVector_[i + j + 1])
@@ -83,6 +84,7 @@ namespace pixelforge::geometry {
 
 
     float BSpline::basisFunctionForVelocity(const int g, const int i, const float t) const {
+        if (g < 1) return 0.0f;
         const float denomA = knotVector_[i + g] - knotVector_[i];
         const float denomB = knotVector_[i + g + 1] - knotVector_[i + 1];
         const float termA = (denomA != 0.0f)
@@ -96,6 +98,7 @@ namespace pixelforge::geometry {
 
 
     float BSpline::basisFunctionForAcceleration(const int g, const int i, const float t) const {
+        if (g < 2) return 0.0f;
         const float denomA = knotVector_[i + g] - knotVector_[i];
         const float denomB = knotVector_[i + g + 1] - knotVector_[i + 1];
         const float denomC = knotVector_[i + g + 2] - knotVector_[i + 2];

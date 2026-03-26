@@ -14,7 +14,7 @@ namespace pixelforge::geometry {
         /// @param points Control points to interpolate.
         /// @param tangents Tangents at each control point.
         /// @param form Whether the curve is open or forms a loop.
-        explicit HermiteSpline(const std::vector<glm::vec3>& points, std::vector<glm::vec3>& tangents, CurveForm form = OPEN);
+        explicit HermiteSpline(const std::vector<glm::vec3>& points, const std::vector<glm::vec3>& tangents, CurveForm form = OPEN);
 
         /// Constructs a Hermite spline with automatic Catmull-Rom tangents.
         /// @param points Control points to interpolate.
