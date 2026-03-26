@@ -63,18 +63,20 @@ namespace pixelforge::scene::nodes {
     }
 
 
-    void AnimationNode::updateSelf(const float timeDelta) {
-        updateAllAnimations(timeDelta);
+    Transform AnimationNode::getLocalTransform() const {
         Transform combinedAnimationOffset;
         for (const auto& animation : animations_) {
             combinedAnimationOffset = combinedAnimationOffset * animation->getOffset();
         }
-        Transform parentTransform;
-        if (const auto transformNode = findNextTransformAncestorFrom(shared_from_this())) {
-            parentTransform = transformNode->getGlobalTransform();
+        return localTransform_ * combinedAnimationOffset;
+    }
+
+
+    void AnimationNode::updateSelf(const float timeDelta) {
+        updateAllAnimations(timeDelta);
+        if (globalTransformDirty_) {
+            updateGlobalTransform();
         }
-        globalTransform_ = parentTransform * localTransform_ * combinedAnimationOffset;
-        globalTransformDirty_ = false;
     }
 
 

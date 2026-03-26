@@ -52,17 +52,20 @@ namespace pixelforge::scene::nodes {
         mutable transform::Transform globalTransform_; ///< Cached global transformation (from root to this node).
         mutable bool globalTransformDirty_ = true; ///< Indicates if the global transform needs recomputation.
 
+        /// Gets the current local transform.
+        /// @return The local transform of this node.
+        [[nodiscard]] virtual transform::Transform getLocalTransform() const;
+
         /// Updates this node’s transform state.
         void updateSelf(float /*timeDelta*/) override;
+
+        /// Computes the global transform by walking up the ancestor chain.
+        void updateGlobalTransform() const;
 
         /// Finds the next transform node ancestor of a given node.
         /// @param node Starting node to search from.
         /// @return Closest ancestor transform node or nullptr.
         static std::shared_ptr<TransformNode> findNextTransformAncestorFrom(const std::shared_ptr<SceneNode>& node);
-
-    private:
-        /// Computes the global transform by walking up the ancestor chain.
-        void updateGlobalTransform() const;
     };
 
 } // namespace pixelforge::scene::nodes

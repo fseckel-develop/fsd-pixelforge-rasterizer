@@ -90,6 +90,11 @@ namespace pixelforge::scene::nodes {
     }
 
 
+    Transform TransformNode::getLocalTransform() const {
+        return localTransform_;
+    }
+
+
     shared_ptr<TransformNode> TransformNode::findNextTransformAncestorFrom(const shared_ptr<SceneNode>& node) {
         auto current = node->getParent();
         while (current) {
@@ -103,16 +108,16 @@ namespace pixelforge::scene::nodes {
 
 
     void TransformNode::updateGlobalTransform() const { // NOLINT
-        vector<Transform> transformChain;
-        shared_ptr<SceneNode> current = const_cast<TransformNode*>(this)->shared_from_this();
+        std::vector<Transform> transformChain;
+        std::shared_ptr<SceneNode> current = const_cast<TransformNode*>(this)->shared_from_this();
         Transform baseTransform;
         while (current) {
-            if (const auto transformNode = dynamic_pointer_cast<TransformNode>(current)) {
+            if (const auto transformNode = std::dynamic_pointer_cast<TransformNode>(current)) {
                 if (!transformNode->isGlobalTransformDirty()) {
                     baseTransform = transformNode->getGlobalTransform();
                     break;
                 }
-                transformChain.push_back(transformNode->localTransform_);
+                transformChain.push_back(transformNode->getLocalTransform());
             }
             current = findNextTransformAncestorFrom(current);
         }

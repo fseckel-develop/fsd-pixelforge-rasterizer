@@ -42,6 +42,9 @@ namespace pixelforge::scene::nodes {
         void updateAllAnimations(float timeDelta);
 
     protected:
+        /// /// @copydoc TransformNode::getLocalTransform
+        [[nodiscard]] transform::Transform getLocalTransform() const override;
+
         /// Updates the node’s transform by applying all animations.
         /// @param timeDelta Time step passed from scene update.
         void updateSelf(float timeDelta) override;
