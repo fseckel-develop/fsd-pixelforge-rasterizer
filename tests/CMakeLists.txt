@@ -76,3 +76,43 @@ target_link_libraries(pixelforge-tests PRIVATE
 )
 
 add_test(NAME pixelforge-tests COMMAND pixelforge-tests)
+
+
+if(PIXELFORGE_BUILD_GL_TESTS)
+    set(PIXELFORGE_TEST_GL_SOURCES
+            test_main_gl_context.cpp
+
+            core/camera_tests.cpp
+            core/window_tests.cpp
+
+            graphics/pipeline/index_buffer_tests.cpp
+            graphics/pipeline/shader_tests.cpp
+            graphics/pipeline/vertex_array_tests.cpp
+            graphics/pipeline/vertex_buffer_layout_tests.cpp
+            graphics/pipeline/vertex_buffer_tests.cpp
+
+            graphics/texturing/cube_map_tests.cpp
+            graphics/texturing/material_tests.cpp
+            graphics/texturing/texture_tests.cpp
+
+            integration/material_texture_pipeline_tests.cpp
+
+            managers/texture_manager_tests.cpp
+    )
+
+    add_executable(pixelforge-tests-gl
+            ${PIXELFORGE_TEST_GL_SOURCES}
+    )
+
+    target_include_directories(pixelforge-tests-gl PRIVATE
+            ${CMAKE_SOURCE_DIR}/src
+    )
+
+    target_link_libraries(pixelforge-tests-gl PRIVATE
+            pixelforge::pixelforge
+            doctest
+            glfw
+    )
+
+    add_test(NAME pixelforge-tests-gl COMMAND pixelforge-tests-gl)
+endif()
