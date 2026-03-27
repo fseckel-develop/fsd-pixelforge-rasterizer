@@ -78,6 +78,7 @@ std::shared_ptr<pixelforge::scene::nodes::Scene> buildDemoScene() {
                 );
             });
         })
+        .cubeMap("test")
         .build();
 }
 

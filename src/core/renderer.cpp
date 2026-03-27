@@ -1,17 +1,16 @@
 #include <pixelforge/core/camera.hpp>
 #include <pixelforge/geometry/meshes/mesh.hpp>
+#include <pixelforge/geometry/meshes/cube.hpp>
 #include <pixelforge/graphics/texturing/material.hpp>
-
+#include <pixelforge/graphics/texturing/cube_map.hpp>
 #include <pixelforge/scene/nodes/scene.hpp>
 #include <pixelforge/scene/nodes/model.hpp>
 #include <pixelforge/scene/nodes/render_unit.hpp>
 #include <pixelforge/scene/nodes/light_unit.hpp>
-
 #include <pixelforge/scene/lighting/ambient_light.hpp>
 #include <pixelforge/scene/lighting/directional_light.hpp>
 #include <pixelforge/scene/lighting/positional_light.hpp>
 #include <pixelforge/scene/lighting/spot_light.hpp>
-
 #include "core/renderer.hpp"
 #include "graphics/pipeline/vertex_array.hpp"
 #include "graphics/pipeline/shader.hpp"
@@ -52,6 +51,7 @@ namespace pixelforge::core {
     shared_ptr<graphics::Shader> Renderer::currentShader_ = nullptr;
     shared_ptr<graphics::Material> Renderer::fallbackMaterial_ = nullptr;
     vector<shared_ptr<scene::nodes::LightUnit>> Renderer::fallbackLightUnits_;
+    shared_ptr<geometry::Mesh> Renderer::skyBoxMesh_ = nullptr;
     bool Renderer::useFallbackLights_ = true;
 
 
@@ -59,13 +59,18 @@ namespace pixelforge::core {
         initializeShader("white");
         initializeShader("emissive");
         initializeShader("lighting");
+        initializeShader("skybox");
+
         fallbackMaterial_ = make_shared<graphics::Material>(graphics::WhiteRubber());
+        skyBoxMesh_ = make_shared<geometry::Cube>();
+
         auto ambientUnit = make_shared<scene::nodes::LightUnit>("FallBack1");
-            ambientUnit->setLight(make_shared<AmbientLight>());
+        ambientUnit->setLight(make_shared<AmbientLight>());
         const auto directionalLight = make_shared<DirectionalLight>();
-            directionalLight->setDirection({1.0f, -2.0f, -2.0f});
+        directionalLight->setDirection({1.0f, -2.0f, -2.0f});
         auto directionalUnit = make_shared<scene::nodes::LightUnit>("FallBack2");
-            directionalUnit->setLight(directionalLight);
+        directionalUnit->setLight(directionalLight);
+
         fallbackLightUnits_ = {
             ambientUnit,
             directionalUnit
@@ -196,7 +201,7 @@ namespace pixelforge::core {
 
 
     void Renderer::drawRenderUnit(const shared_ptr<scene::nodes::RenderUnit>& renderUnit) { // NOLINT
-        setShader("Lighting");
+        setShader("lighting");
         setCameraUniforms();
         currentShader_->setUniform("modelMatrix", renderUnit->getModelMatrix());
         if (useFallbackLights_) setLightingUniforms(fallbackLightUnits_);
@@ -229,6 +234,25 @@ namespace pixelforge::core {
                 drawRenderUnit(renderUnit);
             }
         }
+        if (scene->hasCubeMap()) {
+            drawSkyBox(scene->getCubeMap());
+        }
+    }
+
+
+    void Renderer::drawSkyBox(const shared_ptr<graphics::CubeMap>& cubeMap) { // NOLINT
+        if (!cubeMap || !skyBoxMesh_) return;
+        setShader("skybox");
+        const auto view = glm::mat4(glm::mat3(Camera::getViewMatrix()));
+        currentShader_->setUniform("viewMatrix", view);
+        currentShader_->setUniform("projectionMatrix", Camera::getProjectionMatrix());
+        currentShader_->setUniform("skyBox", cubeMap->bindTexture());
+        glDepthFunc(GL_LEQUAL);
+        glCullFace(GL_FRONT);
+        draw(skyBoxMesh_);
+        glCullFace(GL_BACK);
+        glDepthFunc(GL_LESS);
+        cubeMap->unbindTexture();
     }
 
 

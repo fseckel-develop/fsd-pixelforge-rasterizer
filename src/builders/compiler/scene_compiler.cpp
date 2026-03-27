@@ -19,6 +19,9 @@ namespace pixelforge::scene::builders::compiler {
             auto model = buildModel(modelSpec);
             scene->addModel(model);
         }
+        if (!spec.cubeMapBaseName.empty()) {
+            scene->setCubeMap(spec.cubeMapBaseName);
+        }
         return scene;
     }
 

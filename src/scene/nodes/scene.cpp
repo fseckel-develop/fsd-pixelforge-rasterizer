@@ -1,6 +1,7 @@
 #include <pixelforge/scene/nodes/scene.hpp>
 #include <pixelforge/scene/nodes/model.hpp>
 #include <pixelforge/scene/nodes/light_unit.hpp>
+#include <pixelforge/graphics/texturing/cube_map.hpp>
 
 
 namespace pixelforge::scene::nodes {
@@ -28,6 +29,16 @@ namespace pixelforge::scene::nodes {
         addChild(lightUnit->getRoot());
     }
 
+    // TODO: Add instance management for cube maps
+    void Scene::setCubeMap(const shared_ptr<graphics::CubeMap>& cubeMap) {
+        cubeMap_ = cubeMap;
+    }
+
+    // TODO: Add instance management for cube maps
+    void Scene::setCubeMap(const string& cubeMapBaseName) {
+        cubeMap_ = std::make_shared<graphics::CubeMap>(cubeMapBaseName);
+    }
+
 
     const vector<shared_ptr<Model>>& Scene::getModels() const {
         return models_;
@@ -45,6 +56,16 @@ namespace pixelforge::scene::nodes {
             for (const auto& lightUnit : model->getLightUnits()) allLights.push_back(lightUnit);
         }
         return allLights;
+    }
+
+
+    const shared_ptr<graphics::CubeMap>& Scene::getCubeMap() const {
+        return cubeMap_;
+    }
+
+
+    bool Scene::hasCubeMap() const {
+        return cubeMap_ != nullptr;
     }
 
 } // namespace pixelforge::scene::nodes

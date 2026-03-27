@@ -14,6 +14,7 @@ namespace pixelforge::builders::specification {
 
         std::vector<LightUnitSpec> lightUnits; ///< Top-level light units in the scene.
         std::vector<ModelSpec> models; ///< Top-level models in the scene.
+        std::string cubeMapBaseName; ///< Optional cube map base name.
 
         /// Creates a Scene specification with a required name.
         /// @param name Name of the scene.

@@ -96,6 +96,7 @@ if(PIXELFORGE_BUILD_GL_TESTS)
             graphics/texturing/texture_tests.cpp
 
             integration/material_texture_pipeline_tests.cpp
+            integration/scene_cube_map_tests.cpp
 
             managers/texture_manager_tests.cpp
     )

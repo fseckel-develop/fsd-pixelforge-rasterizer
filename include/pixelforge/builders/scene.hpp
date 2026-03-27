@@ -74,6 +74,14 @@ namespace pixelforge::builders {
             return *this;
         }
 
+        /// Sets a cube map file set to be used for this scene.
+        /// @param baseName The base name of the cube map file set.
+        /// @return Reference to the current builder for fluent chaining.
+        auto& cubeMap(const std::string& baseName) {
+            spec_.cubeMapBaseName = baseName;
+            return *this;
+        }
+
         /// Finalizes the configuration and returns the scene specification.
         /// @return SceneSpec describing the configured scene.
         [[nodiscard]] specification::SceneSpec buildSpec() const {

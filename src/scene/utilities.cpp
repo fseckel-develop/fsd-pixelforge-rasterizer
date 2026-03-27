@@ -8,6 +8,8 @@
 #include <iostream>
 #include <string>
 
+#include "pixelforge/graphics/texturing/cube_map.hpp"
+
 
 namespace pixelforge::scene::utilities {
 
@@ -96,6 +98,11 @@ namespace pixelforge::scene::utilities {
         std::cout << "Scene: " << scene->getName() << "\n";
         std::cout << "Models: " << scene->getModels().size() << "\n";
         std::cout << "All LightUnits: " << scene->getAllLightUnits().size() << "\n";
+        if (scene->hasCubeMap() && scene->getCubeMap()) {
+            std::cout << "Sky box: " << scene->getCubeMap()->getFilePath() << "\n";
+        } else {
+            std::cout << "Sky box: <none>\n";
+        }
         for (const auto& model : scene->getModels()) {
             printModelSummary(model);
         }
