@@ -1,93 +1,78 @@
-#include <pixelforge/builders.hpp>
 #include <pixelforge/core/application.hpp>
-#include <pixelforge/geometry.hpp>
-#include <pixelforge/graphics.hpp>
-#include <pixelforge/scene/animation/animation.hpp>
-#include <pixelforge/scene/transform/scale.hpp>
 #include <pixelforge/scene/utilities.hpp>
+#include <demo_registry.hpp>
+#include <iostream>
+#include <string>
 
-using pixelforge::builders::AmbientLight;
-using pixelforge::builders::LightUnit;
-using pixelforge::builders::Model;
-using pixelforge::builders::Orbiting;
-using pixelforge::builders::PositionalLight;
-using pixelforge::builders::RenderUnit;
-using pixelforge::builders::Rotation;
-using pixelforge::builders::Scene;
 using pixelforge::core::Application;
 
 
-std::shared_ptr<pixelforge::scene::nodes::Scene> buildDemoScene() {
-    return Scene("Scene")
-        .lightUnit("Ambient", [](auto& lightUnit) {
-            lightUnit.light(
-                AmbientLight()
-                    .intensity(0.5f)
-            );
-        })
-        .model("Model", [](auto& model) {
-            model.lightUnit("Light", [](auto& lightUnit) {
-                lightUnit.light(
-                    PositionalLight()
-                );
-                lightUnit.animation(
-                    Orbiting(pixelforge::scene::animation::Animation::LOOP)
-                        .duration(3.0f)
-                        .radius(4.0f)
-                        .rotationAxis({0.0f, -1.0f, 0.0f})
-                );
-                lightUnit.nodeScale(0.15f);
-            });
-            model.renderUnit("Sphere", [](auto& renderUnit) {
-                renderUnit.mesh(pixelforge::geometry::Sphere());
-                renderUnit.material(pixelforge::graphics::Gold());
-                renderUnit.animation(
-                    Rotation(pixelforge::scene::animation::Animation::LOOP)
-                        .duration(5.0f)
-                        .rotationAxis({1.0f, 0.0f, 1.0f})
-                );
-                renderUnit.animation(
-                    Orbiting(pixelforge::scene::animation::Animation::LOOP)
-                        .duration(8.0f)
-                        .radius(2.0f)
-                        .rotationAxis({0.0f, 1.0f, 0.0f})
-                );
-            });
-            model.renderUnit("Cube", [](auto& renderUnit) {
-                renderUnit.parent("Sphere");
-                renderUnit.mesh("Cube.obj");
-                renderUnit.material(pixelforge::graphics::Silver());
-                renderUnit.transform(pixelforge::scene::transform::Scale(0.5f));
-                renderUnit.animation(
-                    Orbiting(pixelforge::scene::animation::Animation::LOOP)
-                        .duration(4.0f)
-                        .radius(2.0f)
-                        .rotationAxis({0.5f, 1.5f, -2.0f})
-                );
-            });
-            model.renderUnit("Cylinder", [](auto& renderUnit) {
-                renderUnit.parent("Cube");
-                renderUnit.mesh("Cylinder.obj");
-                renderUnit.material(pixelforge::graphics::Bronze());
-                renderUnit.nodeScale(0.5f);
-                renderUnit.animation(
-                    Orbiting(pixelforge::scene::animation::Animation::LOOP)
-                        .duration(6.0f)
-                        .radius(1.5f)
-                        .rotationAxis({0.5f, -1.5f, 2.0f})
-                );
-            });
-        })
-        .cubeMap("test")
-        .build();
-}
+namespace {
+
+    void printAvailableDemos() {
+        std::cout << "Available demos:\n";
+        for (const auto& entry : pixelforge::examples::demoRegistry()) {
+            std::cout << "  " << entry.key << " - " << entry.description << "\n";
+        }
+    }
+
+    std::string promptUserForDemo() {
+        const auto& registry = pixelforge::examples::demoRegistry();
+        std::cout << "\nSelect Demo:\n";
+        for (size_t i = 0; i < registry.size(); ++i) {
+            std::cout << "  [" << i << "] "
+                      << registry[i].key << " - "
+                      << registry[i].description << std::endl;
+        }
+        std::cout << "\nEnter number, name, or 'q' to quit: ";
+        std::string input;
+        std::getline(std::cin, input);
+        if (input == "q" || input == "quit" || input == "exit") {
+            return "";
+        }
+        try {
+            if (const size_t index = std::stoul(input); index < registry.size()) {
+                return registry[index].key;
+            }
+        } catch (...) { /* not a number → ignore */ }
+        return input;
+    }
+
+} // namespace
 
 
-int main() {
-    Application::run([] {
-        const auto scene = buildDemoScene();
+int main(const int argc, char** argv) {
+    std::string selectedDemo;
+    if (argc >= 2) {
+        const std::string argument = argv[1];
+        if (argument == "--list" || argument == "-l") {
+            printAvailableDemos();
+            return 0;
+        }
+        selectedDemo = argument;
+        // If invalid → fall back to prompt
+        if (!pixelforge::examples::findDemoFactory(selectedDemo)) {
+            std::cerr << "Unknown demo: " << selectedDemo << "\n";
+            selectedDemo = promptUserForDemo();
+        }
+    } else {
+        // No argument → interactive selection
+        selectedDemo = promptUserForDemo();
+    }
+    if (selectedDemo.empty()) {
+        std::cout << "Aborted.\n";
+        return 0;
+    }
+    const auto factory = pixelforge::examples::findDemoFactory(selectedDemo);
+    if (!factory) {
+        std::cerr << "Invalid demo: " << selectedDemo << "\n";
+        return 1;
+    }
+    Application::run([&factory] {
+        const auto scene = factory();
         pixelforge::scene::utilities::printSceneSummary(scene);
         pixelforge::scene::utilities::printSceneNodeTree(scene);
         return scene;
     });
+    return 0;
 }
