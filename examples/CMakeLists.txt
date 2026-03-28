@@ -3,6 +3,7 @@ add_executable(pixelforge-demo
         demo_registry.cpp
         scenes/basic_demo.cpp
         scenes/skybox_demo.cpp
+        scenes/solar_system_demo.cpp
 )
 
 target_include_directories(pixelforge-demo PRIVATE

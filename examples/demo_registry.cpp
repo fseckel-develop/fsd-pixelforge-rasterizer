@@ -17,6 +17,11 @@ namespace pixelforge::examples {
                 "skybox-demo",
                 "Skybox and cube map showcase",
                 buildSkyBoxDemo
+            },
+            {
+                "solar-system",
+                "Scaled solar system visualization",
+                buildSolarSystemDemo
             }
         };
         return registry;
