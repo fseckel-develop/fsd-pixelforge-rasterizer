@@ -25,6 +25,7 @@ set(PIXELFORGE_SOURCES
         geometry/curves/lagrange_curve.cpp
         geometry/curves/nurbs.cpp
 
+        geometry/meshes/annulus.cpp
         geometry/meshes/arrow.cpp
         geometry/meshes/cone.cpp
         geometry/meshes/cube.cpp

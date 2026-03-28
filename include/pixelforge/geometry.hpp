@@ -10,6 +10,7 @@
 #include <pixelforge/geometry/curves/nurbs.hpp>
 
 /// Meshes
+#include <pixelforge/geometry/meshes/annulus.hpp>
 #include <pixelforge/geometry/meshes/arrow.hpp>
 #include <pixelforge/geometry/meshes/cone.hpp>
 #include <pixelforge/geometry/meshes/cube.hpp>
@@ -27,3 +28,22 @@
 #include <pixelforge/geometry/meshes/sphere_wedge.hpp>
 #include <pixelforge/geometry/meshes/torus.hpp>
 #include <pixelforge/geometry/meshes/tube.hpp>
+
+using pixelforge::geometry::Annulus;
+using pixelforge::geometry::Arrow;
+using pixelforge::geometry::Cone;
+using pixelforge::geometry::Cube;
+using pixelforge::geometry::Cuboid;
+using pixelforge::geometry::Cylinder;
+using pixelforge::geometry::Frustum;
+using pixelforge::geometry::Mesh;
+using pixelforge::geometry::Points;
+using pixelforge::geometry::Polygon;
+using pixelforge::geometry::RoundedCube;
+using pixelforge::geometry::Shell;
+using pixelforge::geometry::Sphere;
+using pixelforge::geometry::SphereSector;
+using pixelforge::geometry::SphereSegment;
+using pixelforge::geometry::SphereWedge;
+using pixelforge::geometry::Torus;
+using pixelforge::geometry::Tube;
