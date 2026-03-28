@@ -26,7 +26,7 @@ namespace pixelforge::core {
         /// @param index The index of the array element.
         /// @param attribute The attribute name (if any).
         /// @return A string representing the array element.
-        const char* getUniformArray(const char* uniform, const size_t index, const char* attribute = nullptr) {
+        const char* getUniformArray(const char* uniform, const size_t index, const char* attribute = nullptr) { // NOLINT
             static char buffer[1024];
             if (attribute == nullptr) {
                 snprintf(buffer, sizeof(buffer), "%s[%lu]", uniform, index);
@@ -183,6 +183,19 @@ namespace pixelforge::core {
     }
 
 
+    void Renderer::setEmissiveUniforms(const shared_ptr<graphics::Material>& material) { // NOLINT
+        if (currentShader_ != shaders_.at("emissive")) setShader("emissive");
+        if (material->getEmissiveMap()) {
+            currentShader_->setUniform("useEmissiveMap", true);
+            currentShader_->setUniform("emissiveMap", material->getEmissiveMap()->bindTexture());
+        } else {
+            currentShader_->setUniform("useEmissiveMap", false);
+        }
+        currentShader_->setUniform("emissive.color", material->getEmissive());
+        currentShader_->setUniform("emissive.intensity", material->getEmissiveIntensity());
+    }
+
+
     void Renderer::drawMesh(const shared_ptr<geometry::Mesh>& mesh) { // NOLINT
         setShader("white");
         setCameraUniforms();
@@ -205,12 +218,22 @@ namespace pixelforge::core {
 
 
     void Renderer::drawRenderUnit(const shared_ptr<scene::nodes::RenderUnit>& renderUnit) { // NOLINT
-        setShader("lighting");
-        setCameraUniforms();
-        currentShader_->setUniform("modelMatrix", renderUnit->getModelMatrix());
-        if (useFallbackLights_) setLightingUniforms(fallbackLightUnits_);
-        setMaterialUniforms(renderUnit->getMaterial() ? renderUnit->getMaterial() : fallbackMaterial_);
+        const auto material = renderUnit->getMaterial() ? renderUnit->getMaterial() : fallbackMaterial_;
+        if (material->isEmissive()) {
+            setShader("emissive");
+            currentShader_->setUniform("modelMatrix", renderUnit->getModelMatrix());
+            currentShader_->setUniform("viewMatrix", Camera::getViewMatrix());
+            currentShader_->setUniform("projectionMatrix", Camera::getProjectionMatrix());
+            setEmissiveUniforms(material);
+        } else {
+            setShader("lighting");
+            setCameraUniforms();
+            currentShader_->setUniform("modelMatrix", renderUnit->getModelMatrix());
+            if (useFallbackLights_) setLightingUniforms(fallbackLightUnits_);
+            setMaterialUniforms(material);
+        }
         draw(renderUnit->getMesh());
+        material->unbindTextures();
     }
 
 

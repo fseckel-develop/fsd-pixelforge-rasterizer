@@ -82,6 +82,10 @@ namespace pixelforge::core {
         /// @param material The material whose properties should be passed to the shader.
         static void setMaterialUniforms(const std::shared_ptr<graphics::Material>& material);
 
+        /// Sets emissive material uniforms in the current shader.
+        /// @param material The emissive material whose properties should be passed to the shader.
+        static void setEmissiveUniforms(const std::shared_ptr<graphics::Material>& material);
+
         /// Renders a mesh using a flat white shader (unlit).
         /// @param mesh The mesh to render.
         static void drawMesh(const std::shared_ptr<geometry::Mesh>& mesh);

@@ -7,22 +7,27 @@ namespace pixelforge::graphics {
     using std::string;
     using std::make_shared;
     using std::shared_ptr;
+    using glm::vec3;
     using glm::vec4;
 
 
     Material::Material():
-        ambient_(vec4(0.0f)),
-        diffuse_(vec4(0.0f)),
-        specular_(vec4(0.0f)),
-        shininess_(0.0f) {
+        ambient_(vec4(1.0f)),
+        diffuse_(vec4(1.0f)),
+        specular_(vec4(0.2f)),
+        emissive_(vec3(0.0f)),
+        shininess_(8.0f),
+        emissiveIntensity_(0.0f) {
     }
 
 
     Material::Material(const string& path):
-        ambient_(vec4(0.0f)),
-        diffuse_(vec4(0.0f)),
-        specular_(vec4(0.0f)),
-        shininess_(0.0f) {
+        ambient_(vec4(1.0f)),
+        diffuse_(vec4(1.0f)),
+        specular_(vec4(0.2f)),
+        emissive_(vec3(0.0f)),
+        shininess_(8.0f),
+        emissiveIntensity_(0.0f) {
         this->diffuseMap_ = management::TextureManager::getOrCreate(make_shared<Texture>(path));
     }
 
@@ -34,6 +39,14 @@ namespace pixelforge::graphics {
 
     void Material::setSpecularMap(const shared_ptr<Texture>& specularMap) {
         this->specularMap_ = management::TextureManager::getOrCreate(specularMap);
+    }
+
+
+    void Material::setEmissiveMap(const std::shared_ptr<Texture> &emissiveMap) {
+        this->emissiveMap_ = management::TextureManager::getOrCreate(emissiveMap);
+        if (emissiveIntensity_ == 0.0f) {
+            emissiveIntensity_ = 1.0f;
+        }
     }
 
 
@@ -52,8 +65,21 @@ namespace pixelforge::graphics {
     }
 
 
+    void Material::setEmissiveColor(const vec3& emissiveColor) {
+        this->emissive_ = emissiveColor;
+        if (emissiveIntensity_ == 0.0f) {
+            emissiveIntensity_ = 1.0f;
+        }
+    }
+
+
     void Material::setShininess(const float shininess) {
         this->shininess_ = shininess;
+    }
+
+
+    void Material::setEmissiveIntensity(const float emissiveIntensity) {
+        this->emissiveIntensity_ = emissiveIntensity;
     }
 
 
@@ -64,6 +90,11 @@ namespace pixelforge::graphics {
 
     const shared_ptr<Texture>& Material::getSpecularMap() const {
         return this->specularMap_;
+    }
+
+
+    const shared_ptr<Texture>& Material::getEmissiveMap() const {
+        return this->emissiveMap_;
     }
 
 
@@ -82,14 +113,30 @@ namespace pixelforge::graphics {
     }
 
 
+    const vec3& Material::getEmissive() const {
+        return this->emissive_;
+    }
+
+
+    float Material::getEmissiveIntensity() const {
+        return this->emissiveIntensity_;
+    }
+
+
     float Material::getShininess() const {
         return this->shininess_;
+    }
+
+
+    bool Material::isEmissive() const {
+        return emissiveMap_ != nullptr || emissive_ != vec3(0.0f);
     }
 
 
     void Material::unbindTextures() const {
         if (diffuseMap_) diffuseMap_->unbindTexture();
         if (specularMap_) specularMap_->unbindTexture();
+        if (emissiveMap_) emissiveMap_->unbindTexture();
     }
 
 

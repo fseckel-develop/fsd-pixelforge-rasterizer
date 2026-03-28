@@ -24,6 +24,9 @@ namespace pixelforge::graphics {
         /// @param specularMap Shared pointer to a texture.
         void setSpecularMap(const std::shared_ptr<Texture>& specularMap);
 
+
+        void setEmissiveMap(const std::shared_ptr<Texture>& emissiveMap);
+
         /// Sets the ambient color component.
         /// @param ambientColor 4D color vector (RGBA).
         void setAmbientColor(const glm::vec4& ambientColor);
@@ -36,9 +39,17 @@ namespace pixelforge::graphics {
         /// @param specularColor 4D color vector (RGBA).
         void setSpecularColor(const glm::vec4& specularColor);
 
+        /// Sets the emissive color component.
+        /// @param emissiveColor 3D color vector (RGB).
+        void setEmissiveColor(const glm::vec3& emissiveColor);
+
         /// Sets the shininess factor used in specular lighting.
         /// @param shininess The shininess factor.
         void setShininess(float shininess);
+
+        /// Sets the intensity of material-based emission.
+        /// @param emissiveIntensity The intensity of emission.
+        void setEmissiveIntensity(float emissiveIntensity);
 
         /// Gets the diffuse texture map of the material.
         /// @return Shared pointer to the bound diffuse map.
@@ -47,6 +58,10 @@ namespace pixelforge::graphics {
         /// Gets the specular texture map of the material.
         /// @return Shared pointer to the bound specular map.
         [[nodiscard]] const std::shared_ptr<Texture>& getSpecularMap() const;
+
+        /// Gets the emissive texture map of the material.
+        /// @return Shared pointer to the bound emissive map.
+        [[nodiscard]] const std::shared_ptr<Texture>& getEmissiveMap() const;
 
         /// Gets the ambient color of the material.
         /// @return Reference to the 4D color vector (RGBA).
@@ -60,20 +75,34 @@ namespace pixelforge::graphics {
         /// @return Reference to the 4D color vector (RGBA).
         [[nodiscard]] const glm::vec4& getSpecular() const;
 
+        /// Gets the emissive color of the material.
+        /// @return Reference to the 3D color vector (RGB).
+        [[nodiscard]] const glm::vec3& getEmissive() const;
+
         /// Gets the shininess factor of the material.
         /// @return The shininess factor.
         [[nodiscard]] float getShininess() const;
 
+        /// Gets the intensity of material-based emission.
+        [[nodiscard]] float getEmissiveIntensity() const;
+
+        /// Checks whether the material has emissive properties.
+        [[nodiscard]] bool isEmissive() const;
+
         /// Unbinds any of the bound textures, if present.
         void unbindTextures() const;
+
 
     protected:
         std::shared_ptr<Texture> diffuseMap_;  ///< Diffuse texture map.
         std::shared_ptr<Texture> specularMap_; ///< Specular texture map.
+        std::shared_ptr<Texture> emissiveMap_; ///< Emissive texture map.
         glm::vec4 ambient_;  ///< Ambient color (RGBA).
         glm::vec4 diffuse_;  ///< Diffuse color (RGBA).
         glm::vec4 specular_; ///< Specular color (RGBA).
+        glm::vec3 emissive_; ///< Emissive color (RGBA).
         float shininess_;    ///< Shininess factor for specular highlights.
+        float emissiveIntensity_;  ///< Intensity of emission.
     };
 
 
