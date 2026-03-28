@@ -21,10 +21,13 @@ void main(void) {
     for (int i = 0; i < lightCount; i++) {
         lighting = Add(lighting, EvaluateLight(lights[i], fragmentPosition, fragmentNormal, viewDirection, material.shininess));
     }
-    vec4 materialDiffuse = material.useDiffuseMap ? vec4(texture(material.diffuseMap, textureCoordinate)) : material.diffuse;
-    vec4 materialSpecular = material.useSpecularMap ? vec4(texture(material.specularMap, textureCoordinate)) : material.specular;
-    vec4 ambientColor = vec4(lighting.ambient, 1.0f) * material.ambient;
-    vec4 diffuseColor = vec4(lighting.diffuse, 1.0f) * materialDiffuse;
+    vec4 textureColor = material.useDiffuseMap ? texture(material.diffuseMap, textureCoordinate) : material.diffuse;
+    if (textureColor.a < 0.1f) discard;
+    vec4 materialAmbient  = material.useDiffuseMap ? textureColor * 0.6f : material.ambient;
+    vec4 materialDiffuse  = textureColor;
+    vec4 materialSpecular = material.useSpecularMap ? texture(material.specularMap, textureCoordinate) : material.specular;
+    vec4 ambientColor  = vec4(lighting.ambient, 1.0f) * materialAmbient;
+    vec4 diffuseColor  = vec4(lighting.diffuse, 1.0f) * materialDiffuse;
     vec4 specularColor = vec4(lighting.specular, 1.0f) * materialSpecular;
     fragmentColor = vec4((ambientColor + diffuseColor + specularColor).rgb, 1.0f);
 }

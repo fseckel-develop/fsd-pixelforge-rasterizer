@@ -16,6 +16,7 @@ uniform mat4 projectionMatrix;
 void main(void) {
     fragmentPosition = (modelMatrix * vec4(vertexPosition, 1.0f)).xyz;
     textureCoordinate = vertexTextureCoordinate;
-    fragmentNormal = mat3(transpose(inverse(modelMatrix))) * vertexNormal;
+    mat3 normalMatrix = transpose(inverse(mat3(modelMatrix)));
+    fragmentNormal = normalize(normalMatrix * vertexNormal);
     gl_Position = projectionMatrix * viewMatrix * vec4(fragmentPosition, 1.0f);
 }
