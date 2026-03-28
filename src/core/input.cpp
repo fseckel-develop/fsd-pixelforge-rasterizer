@@ -13,6 +13,7 @@ namespace pixelforge::core {
     float Input::lastTime_ = 0.0f;
     float Input::currentTime_ = 0.0f;
     float Input::timeDelta_ = 0.0f;
+    bool Input::timeIsFrozen_ = false;
 
 
     void Input::enable() {
@@ -38,6 +39,7 @@ namespace pixelforge::core {
 
 
     float Input::getTimeDelta() {
+        if (timeIsFrozen_) return 0.0f;
         return timeDelta_;
     }
 
@@ -91,6 +93,9 @@ namespace pixelforge::core {
     void Input::keyCallback(GLFWwindow* window, const int key, int /*scancode*/, const int action, int /*mods*/) {
         if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
             glfwSetWindowShouldClose(window, GL_TRUE);
+        }
+        if (key == GLFW_KEY_P && action == GLFW_PRESS) {
+            timeIsFrozen_ = !timeIsFrozen_;
         }
         if (action == GLFW_PRESS) {
             keyStates_[key] = true;

@@ -51,6 +51,7 @@ namespace pixelforge::core {
         static float currentTime_;       ///< Current time in seconds since start.
         static float lastTime_;          ///< Time at the previous frame.
         static float timeDelta_;         ///< Time elapsed between the last two frames.
+        static bool timeIsFrozen_;       ///< Whether time progressing is frozen.
 
         /// GLFW callback: updates internal mouse position and its delta.
         /// @param window The GLFW window receiving the event.
