@@ -117,7 +117,15 @@ namespace pixelforge::scene::nodes {
                     baseTransform = transformNode->getGlobalTransform();
                     break;
                 }
-                transformChain.push_back(transformNode->getLocalTransform());
+                Transform effectiveLocal = transformNode->getLocalTransform();
+                const auto parent = transformNode->getParent();
+                if (const auto animationNode = std::dynamic_pointer_cast<AnimationNode>(parent)) {
+                    effectiveLocal = effectiveLocal * std::static_pointer_cast<TransformNode>(animationNode)->getLocalTransform();
+                    transformChain.push_back(effectiveLocal);
+                    current = findNextTransformAncestorFrom(animationNode);
+                    continue;
+                }
+                transformChain.push_back(effectiveLocal);
             }
             current = findNextTransformAncestorFrom(current);
         }

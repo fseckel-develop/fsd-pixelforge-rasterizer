@@ -26,6 +26,10 @@ namespace {
         }
     }
 
+    glm::vec3 composeTranslation(const Transform& parent, const Transform& child) {
+        return parent.getTranslation() + parent.getRotation() * (parent.getScale() * child.getTranslation());
+    }
+
 } // namespace
 
 
@@ -69,9 +73,8 @@ TEST_CASE("TransformNode combines parent and child transforms into global transf
 
     const Transform& childGlobal = child->getGlobalTransform();
 
-    // Current Transform::operator* behavior:
-    // translation adds, scale multiplies component-wise
-    checkVec3Approx(childGlobal.getTranslation(), glm::vec3(5.0f, 7.0f, 9.0f));
+    const glm::vec3 expectedTranslation = composeTranslation(parentLocal, childLocal);
+    checkVec3Approx(childGlobal.getTranslation(), expectedTranslation);
     checkVec3Approx(childGlobal.getScale(), glm::vec3(6.0f, 8.0f, 10.0f));
 
     CHECK_FALSE(child->isGlobalTransformDirty());
@@ -85,7 +88,6 @@ TEST_CASE("TransformNode markGlobalTransformDirty propagates to transform descen
     root->addChild(child);
     child->addChild(grandchild);
 
-    // Force computation once so flags become clean.
     static_cast<void>(root->getGlobalTransform());
     static_cast<void>(child->getGlobalTransform());
     static_cast<void>(grandchild->getGlobalTransform());

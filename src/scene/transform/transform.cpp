@@ -26,10 +26,10 @@ namespace pixelforge::scene::transform {
     }
 
 
-    Transform::Transform(const vec3& translation, const vec3& eulerAngles, const vec3& scaling):
+    Transform::Transform(const vec3& translation, const vec3& eulerAngles, const vec3& scale):
         translation_(translation),
-        rotation_(quat(eulerAngles)),
-        scale_(scaling) {
+        rotation_(quat(radians(eulerAngles))),
+        scale_(scale) {
     }
 
 
@@ -122,7 +122,7 @@ namespace pixelforge::scene::transform {
 
     Transform Transform::operator*(const Transform& other) const {
         Transform result;
-        result.translation_ = translation_ + other.translation_;
+        result.translation_ = translation_ + rotation_ * (scale_ * other.translation_);
         result.rotation_ = rotation_ * other.rotation_;
         result.scale_ = scale_ * other.scale_;
         return result;

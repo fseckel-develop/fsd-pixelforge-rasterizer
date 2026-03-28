@@ -2,13 +2,14 @@
 #include <pixelforge/scene/transform/transform.hpp>
 #include <GLM/glm.hpp>
 #include <GLM/gtc/matrix_transform.hpp>
+#include <GLM/gtc/quaternion.hpp>
 
 using pixelforge::scene::transform::Transform;
 
 
 namespace {
 
-constexpr float EPS = 1e-5f;
+    constexpr float EPS = 1e-5f;
 
     void checkVec3Approx(const glm::vec3& actual, const glm::vec3& expected, float eps = EPS) {
         CHECK(actual.x == doctest::Approx(expected.x).epsilon(eps));
@@ -29,6 +30,10 @@ constexpr float EPS = 1e-5f;
                 CHECK(actual[c][r] == doctest::Approx(expected[c][r]).epsilon(eps));
             }
         }
+    }
+
+    glm::vec3 composeTranslation(const Transform& parent, const Transform& child) {
+        return parent.getTranslation() + parent.getRotation() * (parent.getScale() * child.getTranslation());
     }
 
 } // namespace
@@ -76,10 +81,8 @@ TEST_CASE("Transform constructor from translation euler angles and scale stores 
     checkVec3Approx(transform.getTranslation(), glm::vec3(1.0f, 2.0f, 3.0f));
     checkVec3Approx(transform.getScale(), glm::vec3(2.0f, 3.0f, 4.0f));
 
-    // Note: this constructor currently uses quat(eulerAngles) directly,
-    // unlike setRotation(vec3), which uses radians(eulerAngles).
-    // So this test reflects current implementation behavior.
-    const glm::quat expectedRotation = glm::quat(glm::vec3(0.0f, 45.0f, 90.0f));
+    // Adjusted to match the corrected degree-based rotation semantics.
+    const glm::quat expectedRotation = glm::quat(glm::radians(glm::vec3(0.0f, 45.0f, 90.0f)));
     checkQuatApprox(transform.getRotation(), expectedRotation, 1e-4f);
 }
 
@@ -121,7 +124,7 @@ TEST_CASE("Transform matrix constructor composes from matrix") {
     checkVec3Approx(transform.getScale(), glm::vec3(1.5f, 2.5f, 3.5f), 1e-4f);
 }
 
-TEST_CASE("Transform operator multiplies components according to current implementation") {
+TEST_CASE("Transform operator composes hierarchical transforms correctly") {
     Transform a;
     a.setTranslation(1.0f, 2.0f, 3.0f);
     a.setRotation(0.0f, 90.0f, 0.0f);
@@ -134,7 +137,8 @@ TEST_CASE("Transform operator multiplies components according to current impleme
 
     const Transform c = a * b;
 
-    checkVec3Approx(c.getTranslation(), glm::vec3(5.0f, 7.0f, 9.0f));
+    const glm::vec3 expectedTranslation = composeTranslation(a, b);
+    checkVec3Approx(c.getTranslation(), expectedTranslation);
     checkVec3Approx(c.getScale(), glm::vec3(10.0f, 18.0f, 28.0f));
 
     const glm::quat expectedRotation = a.getRotation() * b.getRotation();
@@ -169,4 +173,19 @@ TEST_CASE("Transform toMatrix transforms a point as expected for rotation around
     const glm::vec4 transformed = transform.toMatrix() * point;
 
     checkVec3Approx(glm::vec3(transformed), glm::vec3(0.0f, 1.0f, 0.0f), 1e-4f);
+}
+
+TEST_CASE("Transform composition rotates child translation into parent space") {
+    Transform parent;
+    parent.setRotation(glm::vec3(0.0f, 90.0f, 0.0f));
+
+    Transform child;
+    child.setTranslation(glm::vec3(3.0f, 0.0f, 0.0f));
+
+    const Transform combined = parent * child;
+    const glm::vec3 t = combined.getTranslation();
+
+    CHECK(t.x == doctest::Approx(0.0f).epsilon(1e-4f));
+    CHECK(t.y == doctest::Approx(0.0f).epsilon(1e-4f));
+    CHECK(t.z == doctest::Approx(-3.0f).epsilon(1e-4f));
 }
