@@ -1,5 +1,6 @@
 #include <pixelforge/scene/nodes/light_unit.hpp>
 #include <pixelforge/scene/transform/translate.hpp>
+#include <pixelforge/geometry/meshes/sphere.hpp>
 #include "managers/mesh_manager.hpp"
 #include "managers/light_manager.hpp"
 
@@ -31,7 +32,7 @@ namespace pixelforge::scene::nodes {
 
     void LightUnit::setLight(const shared_ptr<Light>& light) {
         this->light_ = management::LightManager::getOrCreate(light);
-        setDefaultMesh();
+        // setDefaultMesh();
     }
 
 
@@ -89,7 +90,7 @@ namespace pixelforge::scene::nodes {
                 mesh_ = management::MeshManager::getOrCreate(make_shared<Mesh>("Arrow.obj")); break;
             }
             case Light::POSITIONAL: {
-                mesh_ =management::MeshManager::getOrCreate(make_shared<Mesh>("Sphere.obj")); break;
+                mesh_ = management::MeshManager::getOrCreate(make_shared<geometry::Sphere>()); break;
             }
             case Light::SPOT: {
                 mesh_ = management::MeshManager::getOrCreate(make_shared<Mesh>("Cone.obj")); break;

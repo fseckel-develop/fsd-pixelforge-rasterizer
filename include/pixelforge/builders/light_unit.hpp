@@ -80,11 +80,30 @@ namespace pixelforge::builders {
             return *this;
         }
 
-        /// Sets the mesh used to visualize this light unit.
+        /// Sets the mesh from a shared mesh instance.
         /// @param mesh The mesh to assign.
         /// @return Reference to the current builder for fluent chaining.
         auto& mesh(const std::shared_ptr<geometry::Mesh>& mesh) {
             spec_.mesh = mesh;
+            spec_.meshFileName.clear();
+            return *this;
+        }
+
+        /// Sets the mesh from a mesh value.
+        /// @param mesh The mesh to copy.
+        /// @return Reference to the current builder for fluent chaining.
+        auto& mesh(const geometry::Mesh& mesh) {
+            spec_.mesh = std::make_shared<geometry::Mesh>(mesh);
+            spec_.meshFileName.clear();
+            return *this;
+        }
+
+        /// Sets the mesh from a file name.
+        /// @param fileName The .obj file name.
+        /// @return Reference to the current builder for fluent chaining.
+        auto& mesh(const std::string& fileName) {
+            spec_.mesh = nullptr;
+            spec_.meshFileName = fileName;
             return *this;
         }
 

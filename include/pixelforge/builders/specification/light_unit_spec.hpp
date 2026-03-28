@@ -18,6 +18,7 @@ namespace pixelforge::builders::specification {
 
         std::optional<LightSpec> light; ///< Optional light assigned to the light unit.
         std::shared_ptr<geometry::Mesh> mesh = nullptr; ///< Optional mesh used to visualize the light.
+        std::string meshFileName; ///< Optional .obj mesh file name.
 
         std::optional<scene::transform::Transform> transform; ///< Optional transform.
         std::optional<float> uniformNodeScale; ///< Optional uniform node scale.

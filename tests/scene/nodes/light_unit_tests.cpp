@@ -6,6 +6,7 @@
 #include <pixelforge/scene/transform/scale.hpp>
 #include <pixelforge/scene/transform/transform.hpp>
 #include <pixelforge/scene/transform/translate.hpp>
+#include <pixelforge/geometry/meshes/sphere.hpp>
 #include <managers/light_manager.hpp>
 #include <managers/mesh_manager.hpp>
 #include <GLM/glm.hpp>
@@ -20,6 +21,7 @@ using pixelforge::scene::nodes::TransformNode;
 using pixelforge::scene::transform::Scale;
 using pixelforge::scene::transform::Transform;
 using pixelforge::scene::transform::Translate;
+using pixelforge::geometry::Sphere;
 
 
 namespace {
@@ -64,7 +66,7 @@ TEST_CASE("LightUnit default constructor starts with default light and without m
     CHECK(unit.getMesh() == nullptr);
 }
 
-TEST_CASE("LightUnit constructor with light stores light and assigns default mesh") {
+TEST_CASE("LightUnit constructor with light stores light and leaves mesh unset") {
     LightUnitManagersGuard guard;
 
     const auto light = std::make_shared<DirectionalLight>();
@@ -73,10 +75,10 @@ TEST_CASE("LightUnit constructor with light stores light and assigns default mes
 
     REQUIRE(unit.getLight() != nullptr);
     CHECK(unit.getLight()->getType() == Light::DIRECTIONAL);
-    CHECK(unit.getMesh() != nullptr);
+    CHECK(unit.getMesh() == nullptr);
 }
 
-TEST_CASE("LightUnit setLight replaces light and assigns default mesh") {
+TEST_CASE("LightUnit setLight replaces light without assigning mesh") {
     LightUnitManagersGuard guard;
 
     LightUnit unit("LightUnit");
@@ -86,13 +88,24 @@ TEST_CASE("LightUnit setLight replaces light and assigns default mesh") {
 
     REQUIRE(unit.getLight() != nullptr);
     CHECK(unit.getLight()->getType() == Light::POSITIONAL);
-    CHECK(unit.getMesh() != nullptr);
+    CHECK(unit.getMesh() == nullptr);
 
     const auto spot = std::make_shared<SpotLight>(glm::vec3(0.0f), glm::vec3(0.0f, -1.0f, 0.0f));
     unit.setLight(spot);
 
     REQUIRE(unit.getLight() != nullptr);
     CHECK(unit.getLight()->getType() == Light::SPOT);
+    CHECK(unit.getMesh() == nullptr);
+}
+
+TEST_CASE("LightUnit setMesh stores explicitly assigned mesh") {
+    LightUnitManagersGuard guard;
+
+    LightUnit unit("LightUnit");
+    CHECK(unit.getMesh() == nullptr);
+
+    unit.setMesh(std::make_shared<Sphere>());
+
     CHECK(unit.getMesh() != nullptr);
 }
 
@@ -102,6 +115,7 @@ TEST_CASE("LightUnit setMesh nullptr clears mesh") {
     const auto light = std::make_shared<DirectionalLight>();
     LightUnit unit("LightUnit", light);
 
+    unit.setMesh(std::make_shared<Sphere>());
     REQUIRE(unit.getMesh() != nullptr);
 
     unit.setMesh(nullptr);

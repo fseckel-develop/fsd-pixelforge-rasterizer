@@ -15,6 +15,9 @@ namespace pixelforge::scene::builders::compiler {
         }
         if (spec.light) lightUnit->setLight(buildLight(*spec.light));
         if (spec.mesh) lightUnit->setMesh(spec.mesh);
+        else if (!spec.meshFileName.empty()) {
+            lightUnit->setMesh(std::make_shared<geometry::Mesh>(spec.meshFileName));
+        }
         applyTransformNodeSpec(lightUnit, spec);
         return lightUnit;
     }
