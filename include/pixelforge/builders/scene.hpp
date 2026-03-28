@@ -79,6 +79,16 @@ namespace pixelforge::builders {
         /// @return Reference to the current builder for fluent chaining.
         auto& cubeMap(const std::string& baseName) {
             spec_.cubeMapBaseName = baseName;
+            spec_.skySphereTextureFileName.clear();
+            return *this;
+        }
+
+        /// Sets a sky sphere texture file to be used for this scene.
+        /// @param fileName The file name of the sky sphere texture.
+        /// @return Reference to the current builder for fluent chaining.
+        auto& skySphere(const std::string& fileName) {
+            spec_.skySphereTextureFileName = fileName;
+            spec_.cubeMapBaseName.clear();
             return *this;
         }
 

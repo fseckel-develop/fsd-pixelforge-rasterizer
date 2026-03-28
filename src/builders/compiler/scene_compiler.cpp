@@ -22,6 +22,9 @@ namespace pixelforge::scene::builders::compiler {
         if (!spec.cubeMapBaseName.empty()) {
             scene->setCubeMap(spec.cubeMapBaseName);
         }
+        else if (!spec.skySphereTextureFileName.empty()) {
+            scene->setSkySphereTexture(spec.skySphereTextureFileName);
+        }
         return scene;
     }
 

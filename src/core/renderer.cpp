@@ -1,6 +1,7 @@
 #include <pixelforge/core/camera.hpp>
 #include <pixelforge/geometry/meshes/mesh.hpp>
 #include <pixelforge/geometry/meshes/cube.hpp>
+#include <pixelforge/geometry/meshes/sphere.hpp>
 #include <pixelforge/graphics/texturing/material.hpp>
 #include <pixelforge/graphics/texturing/cube_map.hpp>
 #include <pixelforge/scene/nodes/scene.hpp>
@@ -52,6 +53,7 @@ namespace pixelforge::core {
     shared_ptr<graphics::Material> Renderer::fallbackMaterial_ = nullptr;
     vector<shared_ptr<scene::nodes::LightUnit>> Renderer::fallbackLightUnits_;
     shared_ptr<geometry::Mesh> Renderer::skyBoxMesh_ = nullptr;
+    shared_ptr<geometry::Mesh> Renderer::skySphereMesh_ = nullptr;
     bool Renderer::useFallbackLights_ = true;
 
 
@@ -60,9 +62,11 @@ namespace pixelforge::core {
         initializeShader("emissive");
         initializeShader("lighting");
         initializeShader("skybox");
+        initializeShader("skysphere");
 
         fallbackMaterial_ = make_shared<graphics::Material>(graphics::WhiteRubber());
         skyBoxMesh_ = make_shared<geometry::Cube>();
+        skySphereMesh_ = make_shared<geometry::Sphere>();
 
         auto ambientUnit = make_shared<scene::nodes::LightUnit>("FallBack1");
         ambientUnit->setLight(make_shared<AmbientLight>());
@@ -234,9 +238,30 @@ namespace pixelforge::core {
                 drawRenderUnit(renderUnit);
             }
         }
-        if (scene->hasCubeMap()) {
+        if (scene->hasSkySphereTexture()) {
+            drawSkySphere(scene->getSkySphereTexture());
+        } else if (scene->hasCubeMap()) {
             drawSkyBox(scene->getCubeMap());
         }
+    }
+
+
+    void Renderer::drawSkySphere(const shared_ptr<graphics::Texture>& texture) { // NOLINT
+        if (!texture || !skySphereMesh_) return;
+        setShader("skysphere");
+        scene::transform::Transform transform;
+        transform.setTranslation(Camera::getPosition());
+        transform.setScale(500.0f);
+        currentShader_->setUniform("modelMatrix", transform.toMatrix());
+        currentShader_->setUniform("viewMatrix", Camera::getViewMatrix());
+        currentShader_->setUniform("projectionMatrix", Camera::getProjectionMatrix());
+        currentShader_->setUniform("skyTexture", texture->bindTexture());
+        glDepthFunc(GL_LEQUAL);
+        glCullFace(GL_FRONT);
+        draw(skySphereMesh_);
+        glCullFace(GL_BACK);
+        glDepthFunc(GL_LESS);
+        texture->unbindTexture();
     }
 
 

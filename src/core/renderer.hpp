@@ -6,7 +6,7 @@
 #include "input.hpp"
 
 namespace pixelforge::geometry { class Mesh; }
-namespace pixelforge::graphics { class Material; class Shader; class CubeMap; }
+namespace pixelforge::graphics { class Material; class Shader; class Texture; class CubeMap; }
 namespace pixelforge::scene::nodes { class Scene; class LightUnit; class RenderUnit; class Model; }
 
 namespace pixelforge::core {
@@ -54,7 +54,8 @@ namespace pixelforge::core {
         static std::shared_ptr<graphics::Shader> currentShader_;  ///< The currently active shader.
         static std::shared_ptr<graphics::Material> fallbackMaterial_;  ///< A default material used when none is specified.
         static std::vector<std::shared_ptr<scene::nodes::LightUnit>> fallbackLightUnits_;  ///< Light units used as fallback when scene has no lights.
-        static std::shared_ptr<geometry::Mesh> skyBoxMesh_; ///< Cube mesh used for rendering scene skyboxes.
+        static std::shared_ptr<geometry::Mesh> skyBoxMesh_;    ///< Cube mesh used for rendering scene sky boxes.
+        static std::shared_ptr<geometry::Mesh> skySphereMesh_; ///< Sphere mesh used for rendering scene sky spheres.
         static bool useFallbackLights_;  ///< Whether to use fallback lighting instead of scene-defined lights.
 
         /// Initializes a specific shader by name.
@@ -104,6 +105,10 @@ namespace pixelforge::core {
         /// Renders the scene skybox using the provided cube map.
         /// @param cubeMap The cube map to render as a skybox.
         static void drawSkyBox(const std::shared_ptr<graphics::CubeMap>& cubeMap);
+
+        /// Renders the scene sky sphere using the provided texture.
+        /// @param texture The texture to render as a sky sphere.
+        static void drawSkySphere(const std::shared_ptr<graphics::Texture>& texture);
 
         /// @brief Issues the OpenGL draw call for a mesh using its VAO.
         /// @param mesh The mesh to render.

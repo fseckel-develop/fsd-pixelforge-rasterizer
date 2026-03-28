@@ -2,7 +2,7 @@
 #include <pixelforge/scene/nodes/group.hpp>
 #include <vector>
 
-namespace  pixelforge::graphics { class CubeMap; }
+namespace  pixelforge::graphics { class Texture; class CubeMap; }
 
 namespace pixelforge::scene::nodes {
 
@@ -29,8 +29,16 @@ namespace pixelforge::scene::nodes {
         void setCubeMap(const std::shared_ptr<graphics::CubeMap>& cubeMap);
 
         /// Assigns a cube map to the scene for optional skybox/environment rendering.
-        /// @param baseName base name of the cube map file set.
+        /// @param baseName Base name of the cube map file set.
         void setCubeMap(const std::string& baseName);
+
+        /// Assigns a texture to the scene for optional sky sphere rendering.
+        /// @param texture Shared pointer to the texture. May be nullptr to clear it.
+        void setSkySphereTexture(const std::shared_ptr<graphics::Texture>& texture);
+
+        /// Assigns a texture to the scene for optional sky sphere rendering.
+        /// @param fileName File name of the texture.
+        void setSkySphereTexture(const std::string& fileName);
 
         /// Gets a vector of all models in the scene.
         /// @return Reference to the vector of models.
@@ -52,10 +60,19 @@ namespace pixelforge::scene::nodes {
         /// @return True if a cube map is assigned, false otherwise.
         [[nodiscard]] bool hasCubeMap() const;
 
+        /// Gets the scene texture used for optional sky sphere rendering.
+        /// @return Shared pointer to the assigned cube map, or nullptr if none is set.
+        [[nodiscard]] const std::shared_ptr<graphics::Texture>& getSkySphereTexture() const;
+
+        /// Checks whether the scene currently has a sky sphere texture assigned.
+        /// @return True if a sky sphere texture is assigned, false otherwise.
+        [[nodiscard]] bool hasSkySphereTexture() const;
+
     private:
         std::vector<std::shared_ptr<Model>> models_; ///< Models contained in the scene.
         std::vector<std::shared_ptr<LightUnit>> globalLightUnits_; ///< Global light units not part of any specific model.
         std::shared_ptr<graphics::CubeMap> cubeMap_ = nullptr; ///< Optional scene-wide cube map for skybox/environment rendering.
+        std::shared_ptr<graphics::Texture> skySphereTexture_ = nullptr; ///< Optional texture for sky sphere rendering.
     };
 
 } // namespace pixelforge::scene::nodes

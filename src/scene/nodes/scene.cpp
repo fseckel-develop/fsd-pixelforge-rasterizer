@@ -1,7 +1,9 @@
 #include <pixelforge/scene/nodes/scene.hpp>
 #include <pixelforge/scene/nodes/model.hpp>
 #include <pixelforge/scene/nodes/light_unit.hpp>
+#include <pixelforge/graphics/texturing/texture.hpp>
 #include <pixelforge/graphics/texturing/cube_map.hpp>
+#include "managers/texture_manager.hpp"
 
 
 namespace pixelforge::scene::nodes {
@@ -32,11 +34,23 @@ namespace pixelforge::scene::nodes {
     // TODO: Add instance management for cube maps
     void Scene::setCubeMap(const shared_ptr<graphics::CubeMap>& cubeMap) {
         cubeMap_ = cubeMap;
+        skySphereTexture_ = nullptr;
     }
 
-    // TODO: Add instance management for cube maps
-    void Scene::setCubeMap(const string& cubeMapBaseName) {
-        cubeMap_ = std::make_shared<graphics::CubeMap>(cubeMapBaseName);
+
+    void Scene::setCubeMap(const string& baseName) {
+        setCubeMap(std::make_shared<graphics::CubeMap>(baseName));
+    }
+
+
+    void Scene::setSkySphereTexture(const std::shared_ptr<graphics::Texture>& texture) {
+        skySphereTexture_ = management::TextureManager::getOrCreate(texture);
+        cubeMap_ = nullptr;
+    }
+
+
+    void Scene::setSkySphereTexture(const std::string& fileName) {
+        setSkySphereTexture(std::make_shared<graphics::Texture>(fileName));
     }
 
 
@@ -67,5 +81,16 @@ namespace pixelforge::scene::nodes {
     bool Scene::hasCubeMap() const {
         return cubeMap_ != nullptr;
     }
+
+
+    const std::shared_ptr<graphics::Texture>& Scene::getSkySphereTexture() const {
+        return skySphereTexture_;
+    }
+
+
+    bool Scene::hasSkySphereTexture() const {
+        return skySphereTexture_ != nullptr;
+    }
+
 
 } // namespace pixelforge::scene::nodes
