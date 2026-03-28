@@ -4,6 +4,7 @@
 #include <builders/compiler/animation_compiler.hpp>
 #include <pixelforge/geometry/curves/bezier_curve.hpp>
 #include <pixelforge/scene/animation/curve_animation.hpp>
+#include <pixelforge/scene/animation/elliptic_orbiting.hpp>
 #include <pixelforge/scene/animation/keyframe_animation.hpp>
 #include <pixelforge/scene/animation/orbiting.hpp>
 #include <pixelforge/scene/animation/rotation.hpp>
@@ -15,6 +16,7 @@
 #include <vector>
 
 using pixelforge::builders::CurveAnimation;
+using pixelforge::builders::EllipticOrbiting;
 using pixelforge::builders::KeyframeAnimation;
 using pixelforge::builders::Orbiting;
 using pixelforge::builders::Rotation;
@@ -22,6 +24,7 @@ using pixelforge::builders::Scaling;
 using pixelforge::builders::Translation;
 using pixelforge::builders::specification::AnimationSpec;
 using pixelforge::builders::specification::CurveAnimationSpec;
+using pixelforge::builders::specification::EllipticOrbitingAnimationSpec;
 using pixelforge::builders::specification::KeyframeAnimationSpec;
 using pixelforge::builders::specification::OrbitingAnimationSpec;
 using pixelforge::builders::specification::RotationAnimationSpec;
@@ -108,6 +111,49 @@ TEST_CASE("Orbiting builder builds orbiting spec with configured values") {
     CHECK(*data.radius == doctest::Approx(5.0f));
     checkVec3Approx(*data.rotationAxis, glm::vec3(0.0f, 1.0f, 0.0f));
     CHECK(*data.totalAngle == doctest::Approx(270.0f));
+}
+
+TEST_CASE("EllipticOrbiting builder builds elliptic orbiting spec with configured values") {
+    const AnimationSpec spec = EllipticOrbiting(Animation::BOUNCE)
+        .duration(3.5f)
+        .semiMajorAxis(8.0f)
+        .semiMinorAxis(5.0f)
+        .rotationAxis(glm::vec3(0.0f, 2.0f, 0.0f))
+        .totalAngle(270.0f)
+        .useFocusOrigin(true)
+        .buildSpec();
+
+    REQUIRE(std::holds_alternative<EllipticOrbitingAnimationSpec>(spec.data));
+    const auto& data = std::get<EllipticOrbitingAnimationSpec>(spec.data);
+
+    CHECK(data.mode == Animation::BOUNCE);
+    REQUIRE(data.duration.has_value());
+    REQUIRE(data.semiMajorAxis.has_value());
+    REQUIRE(data.semiMinorAxis.has_value());
+    REQUIRE(data.rotationAxis.has_value());
+    REQUIRE(data.totalAngle.has_value());
+    REQUIRE(data.useFocusOrigin.has_value());
+
+    CHECK(*data.duration == doctest::Approx(3.5f));
+    CHECK(*data.semiMajorAxis == doctest::Approx(8.0f));
+    CHECK(*data.semiMinorAxis == doctest::Approx(5.0f));
+    checkVec3Approx(*data.rotationAxis, glm::vec3(0.0f, 2.0f, 0.0f));
+    CHECK(*data.totalAngle == doctest::Approx(270.0f));
+    CHECK(*data.useFocusOrigin);
+}
+
+TEST_CASE("EllipticOrbiting builder axes helper sets both ellipse axes") {
+    const AnimationSpec spec = EllipticOrbiting(Animation::LOOP)
+        .axes(10.0f, 6.0f)
+        .buildSpec();
+
+    REQUIRE(std::holds_alternative<EllipticOrbitingAnimationSpec>(spec.data));
+    const auto& data = std::get<EllipticOrbitingAnimationSpec>(spec.data);
+
+    REQUIRE(data.semiMajorAxis.has_value());
+    REQUIRE(data.semiMinorAxis.has_value());
+    CHECK(*data.semiMajorAxis == doctest::Approx(10.0f));
+    CHECK(*data.semiMinorAxis == doctest::Approx(6.0f));
 }
 
 TEST_CASE("Scaling builder supports scalar and vector target scale") {
@@ -242,6 +288,32 @@ TEST_CASE("Animation compiler builds Orbiting animation from spec") {
     CHECK(orbiting->getTotalAngle() == doctest::Approx(270.0f));
 }
 
+TEST_CASE("Animation compiler builds EllipticOrbiting animation from spec") {
+    const auto spec = EllipticOrbiting(Animation::ONCE)
+        .duration(4.0f)
+        .semiMajorAxis(9.0f)
+        .semiMinorAxis(4.5f)
+        .rotationAxis(glm::vec3(0.0f, 3.0f, 0.0f))
+        .totalAngle(300.0f)
+        .useFocusOrigin(true)
+        .buildSpec();
+
+    const auto animation = buildAnimation(spec);
+    REQUIRE(animation != nullptr);
+
+    const auto ellipticOrbiting =
+        std::dynamic_pointer_cast<pixelforge::scene::animation::EllipticOrbiting>(animation);
+    REQUIRE(ellipticOrbiting != nullptr);
+
+    CHECK(ellipticOrbiting->getMode() == Animation::ONCE);
+    CHECK(ellipticOrbiting->getDuration() == doctest::Approx(4.0f));
+    CHECK(ellipticOrbiting->getSemiMajorAxis() == doctest::Approx(9.0f));
+    CHECK(ellipticOrbiting->getSemiMinorAxis() == doctest::Approx(4.5f));
+    checkVec3Approx(ellipticOrbiting->getRotationAxis(), glm::vec3(0.0f, 1.0f, 0.0f));
+    CHECK(ellipticOrbiting->getTotalAngle() == doctest::Approx(300.0f));
+    CHECK(ellipticOrbiting->getUseFocusOrigin());
+}
+
 TEST_CASE("Animation compiler builds Scaling animation from spec") {
     const auto spec = Scaling(Animation::BOUNCE)
         .duration(4.0f)
@@ -348,6 +420,22 @@ TEST_CASE("Animation compiler leaves unspecified values at runtime defaults") {
         CHECK(orbiting->getRadius() == doctest::Approx(0.0f));
         checkVec3Approx(orbiting->getRotationAxis(), glm::vec3(0.0f, 1.0f, 0.0f));
         CHECK(orbiting->getTotalAngle() == doctest::Approx(360.0f));
+    }
+
+    SUBCASE("elliptic orbiting defaults") {
+        const AnimationSpec spec = EllipticOrbiting(Animation::LOOP).buildSpec();
+        const auto animation = buildAnimation(spec);
+        const auto ellipticOrbiting =
+            std::dynamic_pointer_cast<pixelforge::scene::animation::EllipticOrbiting>(animation);
+        REQUIRE(ellipticOrbiting != nullptr);
+
+        CHECK(ellipticOrbiting->getMode() == Animation::LOOP);
+        CHECK(ellipticOrbiting->getDuration() == doctest::Approx(1.0f));
+        CHECK(ellipticOrbiting->getSemiMajorAxis() == doctest::Approx(1.0f));
+        CHECK(ellipticOrbiting->getSemiMinorAxis() == doctest::Approx(0.5f));
+        checkVec3Approx(ellipticOrbiting->getRotationAxis(), glm::vec3(0.0f, 1.0f, 0.0f));
+        CHECK(ellipticOrbiting->getTotalAngle() == doctest::Approx(360.0f));
+        CHECK_FALSE(ellipticOrbiting->getUseFocusOrigin());
     }
 
     SUBCASE("scaling defaults") {

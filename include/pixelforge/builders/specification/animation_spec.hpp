@@ -26,6 +26,17 @@ namespace pixelforge::builders::specification {
         std::optional<float> totalAngle; ///< Optional total revolution angle in degrees.
     };
 
+    /// Declarative specification for constructing an elliptic orbiting animation.
+    struct EllipticOrbitingAnimationSpec {
+        scene::animation::Animation::Mode mode; ///< Playback mode.
+        std::optional<float> duration; ///< Optional duration in seconds.
+        std::optional<float> semiMajorAxis; ///< Optional semi-major axis length.
+        std::optional<float> semiMinorAxis; ///< Optional semi-minor axis length.
+        std::optional<glm::vec3> rotationAxis; ///< Optional orbit axis.
+        std::optional<float> totalAngle; ///< Optional total revolution angle in degrees.
+        std::optional<bool> useFocusOrigin; ///< Optional flag for placing the orbit origin at a focus.
+    };
+
     /// Declarative specification for constructing a scaling animation.
     struct ScalingAnimationSpec {
         scene::animation::Animation::Mode mode; ///< Playback mode.
@@ -60,6 +71,7 @@ namespace pixelforge::builders::specification {
         using Data = std::variant<
             RotationAnimationSpec,
             OrbitingAnimationSpec,
+            EllipticOrbitingAnimationSpec,
             ScalingAnimationSpec,
             TranslationAnimationSpec,
             KeyframeAnimationSpec,

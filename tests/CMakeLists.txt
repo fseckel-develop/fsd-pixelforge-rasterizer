@@ -34,6 +34,7 @@ set(PIXELFORGE_TEST_COMMON_SOURCES
 
         scene/animation/animation_tests.cpp
         scene/animation/curve_animation_tests.cpp
+        scene/animation/elliptic_orbiting_tests.cpp
         scene/animation/keyframe_animation_tests.cpp
         scene/animation/orbiting_tests.cpp
         scene/animation/rotation_tests.cpp

@@ -2,6 +2,7 @@
 #include <managers/animation_manager.hpp>
 #include <pixelforge/geometry/curves/bezier_curve.hpp>
 #include <pixelforge/scene/animation/curve_animation.hpp>
+#include <pixelforge/scene/animation/elliptic_orbiting.hpp>
 #include <pixelforge/scene/animation/keyframe_animation.hpp>
 #include <pixelforge/scene/animation/orbiting.hpp>
 #include <pixelforge/scene/animation/rotation.hpp>
@@ -16,6 +17,7 @@ using pixelforge::geometry::BezierCurve;
 using pixelforge::management::AnimationManager;
 using pixelforge::scene::animation::Animation;
 using pixelforge::scene::animation::CurveAnimation;
+using pixelforge::scene::animation::EllipticOrbiting;
 using pixelforge::scene::animation::KeyframeAnimation;
 using pixelforge::scene::animation::Orbiting;
 using pixelforge::scene::animation::Rotation;
@@ -379,4 +381,116 @@ TEST_CASE("AnimationManager distinguishes animations with different duration") {
     const auto managedB = AnimationManager::getOrCreate(animationB);
 
     CHECK(managedA != managedB);
+}
+
+TEST_CASE("AnimationManager canonicalizes equivalent EllipticOrbiting animations") {
+    AnimationManagerGuard guard;
+
+    const auto animationA = std::make_shared<EllipticOrbiting>(
+        Animation::LOOP, 2.0f, 8.0f, 5.0f, glm::vec3(0.0f, 2.0f, 0.0f), 180.0f, true
+    );
+    const auto animationB = std::make_shared<EllipticOrbiting>(
+        Animation::LOOP, 2.0f, 8.0f, 5.0f, glm::vec3(0.0f, 1.0f, 0.0f), 180.0f, true
+    );
+
+    const auto managedA = AnimationManager::getOrCreate(animationA);
+    const auto managedB = AnimationManager::getOrCreate(animationB);
+
+    CHECK(managedA == managedB);
+}
+
+TEST_CASE("AnimationManager distinguishes EllipticOrbiting animations with different semi-major axis") {
+    AnimationManagerGuard guard;
+
+    const auto animationA = std::make_shared<EllipticOrbiting>(
+        Animation::LOOP, 2.0f, 8.0f, 5.0f, glm::vec3(0.0f, 1.0f, 0.0f), 180.0f, true
+    );
+    const auto animationB = std::make_shared<EllipticOrbiting>(
+        Animation::LOOP, 2.0f, 9.0f, 5.0f, glm::vec3(0.0f, 1.0f, 0.0f), 180.0f, true
+    );
+
+    const auto managedA = AnimationManager::getOrCreate(animationA);
+    const auto managedB = AnimationManager::getOrCreate(animationB);
+
+    CHECK(managedA != managedB);
+}
+
+TEST_CASE("AnimationManager distinguishes EllipticOrbiting animations with different semi-minor axis") {
+    AnimationManagerGuard guard;
+
+    const auto animationA = std::make_shared<EllipticOrbiting>(
+        Animation::LOOP, 2.0f, 8.0f, 5.0f, glm::vec3(0.0f, 1.0f, 0.0f), 180.0f, true
+    );
+    const auto animationB = std::make_shared<EllipticOrbiting>(
+        Animation::LOOP, 2.0f, 8.0f, 6.0f, glm::vec3(0.0f, 1.0f, 0.0f), 180.0f, true
+    );
+
+    const auto managedA = AnimationManager::getOrCreate(animationA);
+    const auto managedB = AnimationManager::getOrCreate(animationB);
+
+    CHECK(managedA != managedB);
+}
+
+TEST_CASE("AnimationManager distinguishes EllipticOrbiting animations with different axis") {
+    AnimationManagerGuard guard;
+
+    const auto animationA = std::make_shared<EllipticOrbiting>(
+        Animation::LOOP, 2.0f, 8.0f, 5.0f, glm::vec3(0.0f, 1.0f, 0.0f), 180.0f, true
+    );
+    const auto animationB = std::make_shared<EllipticOrbiting>(
+        Animation::LOOP, 2.0f, 8.0f, 5.0f, glm::vec3(1.0f, 0.0f, 0.0f), 180.0f, true
+    );
+
+    const auto managedA = AnimationManager::getOrCreate(animationA);
+    const auto managedB = AnimationManager::getOrCreate(animationB);
+
+    CHECK(managedA != managedB);
+}
+
+TEST_CASE("AnimationManager distinguishes EllipticOrbiting animations with different angle") {
+    AnimationManagerGuard guard;
+
+    const auto animationA = std::make_shared<EllipticOrbiting>(
+        Animation::LOOP, 2.0f, 8.0f, 5.0f, glm::vec3(0.0f, 1.0f, 0.0f), 180.0f, true
+    );
+    const auto animationB = std::make_shared<EllipticOrbiting>(
+        Animation::LOOP, 2.0f, 8.0f, 5.0f, glm::vec3(0.0f, 1.0f, 0.0f), 90.0f, true
+    );
+
+    const auto managedA = AnimationManager::getOrCreate(animationA);
+    const auto managedB = AnimationManager::getOrCreate(animationB);
+
+    CHECK(managedA != managedB);
+}
+
+TEST_CASE("AnimationManager distinguishes EllipticOrbiting animations with different focus-origin mode") {
+    AnimationManagerGuard guard;
+
+    const auto animationA = std::make_shared<EllipticOrbiting>(
+        Animation::LOOP, 2.0f, 8.0f, 5.0f, glm::vec3(0.0f, 1.0f, 0.0f), 180.0f, true
+    );
+    const auto animationB = std::make_shared<EllipticOrbiting>(
+        Animation::LOOP, 2.0f, 8.0f, 5.0f, glm::vec3(0.0f, 1.0f, 0.0f), 180.0f, false
+    );
+
+    const auto managedA = AnimationManager::getOrCreate(animationA);
+    const auto managedB = AnimationManager::getOrCreate(animationB);
+
+    CHECK(managedA != managedB);
+}
+
+TEST_CASE("AnimationManager distinguishes EllipticOrbiting from Orbiting") {
+    AnimationManagerGuard guard;
+
+    const auto ellipticOrbiting = std::make_shared<EllipticOrbiting>(
+        Animation::ONCE, 2.0f, 5.0f, 5.0f, glm::vec3(0.0f, 1.0f, 0.0f), 90.0f, false
+    );
+    const auto orbiting = std::make_shared<Orbiting>(
+        Animation::ONCE, 2.0f, 5.0f, glm::vec3(0.0f, 1.0f, 0.0f), 90.0f
+    );
+
+    const auto managedEllipticOrbiting = AnimationManager::getOrCreate(ellipticOrbiting);
+    const auto managedOrbiting = AnimationManager::getOrCreate(orbiting);
+
+    CHECK(managedEllipticOrbiting != managedOrbiting);
 }

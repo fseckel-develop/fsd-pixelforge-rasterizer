@@ -1,5 +1,6 @@
 #pragma once
 #include <pixelforge/scene/animation/curve_animation.hpp>
+#include <pixelforge/scene/animation/elliptic_orbiting.hpp>
 #include <pixelforge/scene/animation/keyframe_animation.hpp>
 #include <pixelforge/scene/animation/orbiting.hpp>
 #include <pixelforge/scene/animation/rotation.hpp>
@@ -28,6 +29,8 @@ namespace pixelforge::management {
                 combineHashes(seed, hashAnimation(*keyframeAnimation));
             } else if (auto* orbiting = dynamic_cast<const scene::animation::Orbiting*>(&animation)) {
                 combineHashes(seed, hashAnimation(*orbiting));
+            } else if (auto* ellipticOrbiting = dynamic_cast<const scene::animation::EllipticOrbiting*>(&animation)) {
+                combineHashes(seed, hashAnimation(*ellipticOrbiting));
             } else if (auto* rotation = dynamic_cast<const scene::animation::Rotation*>(&animation)) {
                 combineHashes(seed, hashAnimation(*rotation));
             } else if (auto* scaling = dynamic_cast<const scene::animation::Scaling*>(&animation)) {
@@ -62,6 +65,15 @@ namespace pixelforge::management {
                 return leftOrbiting->getTotalAngle() == rightOrbiting->getTotalAngle() &&
                        leftOrbiting->getRotationAxis() == rightOrbiting->getRotationAxis() &&
                        leftOrbiting->getRadius() == rightOrbiting->getRadius();
+            }
+            if (auto* leftEllipticOrbiting = dynamic_cast<const scene::animation::EllipticOrbiting*>(&left)) {
+                auto* rightEllipticOrbiting = dynamic_cast<const scene::animation::EllipticOrbiting*>(&right);
+                if (!rightEllipticOrbiting) return false;
+                return leftEllipticOrbiting->getTotalAngle() == rightEllipticOrbiting->getTotalAngle() &&
+                       leftEllipticOrbiting->getRotationAxis() == rightEllipticOrbiting->getRotationAxis() &&
+                       leftEllipticOrbiting->getSemiMajorAxis() == rightEllipticOrbiting->getSemiMajorAxis() &&
+                       leftEllipticOrbiting->getSemiMinorAxis() == rightEllipticOrbiting->getSemiMinorAxis() &&
+                       leftEllipticOrbiting->getUseFocusOrigin() == rightEllipticOrbiting->getUseFocusOrigin();
             }
             if (auto* leftRotation = dynamic_cast<const scene::animation::Rotation*>(&left)) {
                 auto* rightRotation = dynamic_cast<const scene::animation::Rotation*>(&right);
@@ -115,6 +127,19 @@ namespace pixelforge::management {
             combineHashes(seed, std::hash<float>()(animation.getTotalAngle()));
             combineHashes(seed, std::hash<glm::vec3>()(animation.getRotationAxis()));
             combineHashes(seed, std::hash<float>()(animation.getRadius()));
+            return seed;
+        }
+
+        /// Computes the hash for an elliptic orbiting animation instance.
+        /// @param animation Elliptic orbiting animation instance to hash.
+        /// @return The computed hash value for the elliptic orbiting animation instance.
+        static size_t hashAnimation(const scene::animation::EllipticOrbiting& animation) {
+            size_t seed = 0;
+            combineHashes(seed, std::hash<float>()(animation.getTotalAngle()));
+            combineHashes(seed, std::hash<glm::vec3>()(animation.getRotationAxis()));
+            combineHashes(seed, std::hash<float>()(animation.getSemiMajorAxis()));
+            combineHashes(seed, std::hash<float>()(animation.getSemiMinorAxis()));
+            combineHashes(seed, std::hash<bool>()(animation.getUseFocusOrigin()));
             return seed;
         }
 

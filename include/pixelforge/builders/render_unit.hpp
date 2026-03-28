@@ -142,6 +142,14 @@ namespace pixelforge::builders {
             return *this;
         }
 
+        /// Adds an elliptic orbiting animation using a builder.
+        /// @param builder The animation builder.
+        /// @return Reference to the current builder for fluent chaining.
+        auto& animation(const EllipticOrbiting& builder) {
+            spec_.animations.push_back(builder.buildSpec());
+            return *this;
+        }
+
         /// Adds a scaling animation using a builder.
         /// @param builder The animation builder.
         /// @return Reference to the current builder for fluent chaining.

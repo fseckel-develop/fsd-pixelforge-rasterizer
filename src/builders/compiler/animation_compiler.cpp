@@ -1,5 +1,6 @@
 #include "builders/compiler/animation_compiler.hpp"
 #include <pixelforge/scene/animation/curve_animation.hpp>
+#include <pixelforge/scene/animation/elliptic_orbiting.hpp>
 #include <pixelforge/scene/animation/keyframe_animation.hpp>
 #include <pixelforge/scene/animation/orbiting.hpp>
 #include <pixelforge/scene/animation/rotation.hpp>
@@ -32,6 +33,16 @@ namespace pixelforge::scene::builders::compiler {
                 if (data.radius) animation->setRadius(*data.radius);
                 if (data.rotationAxis) animation->setRotationAxis(*data.rotationAxis);
                 if (data.totalAngle) animation->setTotalAngle(*data.totalAngle);
+                return animation;
+            }
+            else if constexpr (std::is_same_v<T, pixelforge::builders::specification::EllipticOrbitingAnimationSpec>) {
+                auto animation = std::make_shared<animation::EllipticOrbiting>(data.mode);
+                if (data.duration) animation->setDuration(*data.duration);
+                if (data.semiMajorAxis) animation->setSemiMajorAxis(*data.semiMajorAxis);
+                if (data.semiMinorAxis) animation->setSemiMinorAxis(*data.semiMinorAxis);
+                if (data.rotationAxis) animation->setRotationAxis(*data.rotationAxis);
+                if (data.totalAngle) animation->setTotalAngle(*data.totalAngle);
+                if (data.useFocusOrigin) animation->setUseFocusOrigin(*data.useFocusOrigin);
                 return animation;
             }
             else if constexpr (std::is_same_v<T, pixelforge::builders::specification::ScalingAnimationSpec>) {

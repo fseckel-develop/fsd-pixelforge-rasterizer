@@ -111,6 +111,77 @@ namespace pixelforge::builders {
     };
 
 
+    /// Fluent builder for constructing an elliptic orbiting animation specification.
+    class EllipticOrbiting final : public AnimationBuilderBase {
+    public:
+        /// Starts the building process for an elliptic orbiting animation.
+        /// @param mode The playback mode (ONCE, LOOP, BOUNCE).
+        explicit EllipticOrbiting(const scene::animation::Animation::Mode mode) {
+            specification::EllipticOrbitingAnimationSpec data{};
+            data.mode = mode;
+            spec_.data = data;
+        }
+
+        /// Sets the duration of the elliptic orbiting animation being built.
+        /// @param duration The duration in seconds.
+        /// @return Reference to this builder for method chaining.
+        auto& duration(const float duration) {
+            return setDuration<specification::EllipticOrbitingAnimationSpec, EllipticOrbiting>(duration);
+        }
+
+        /// Sets the semi-major axis of the elliptic orbit being built.
+        /// @param semiMajorAxis The semi-major axis length.
+        /// @return Reference to this builder for method chaining.
+        auto& semiMajorAxis(const float semiMajorAxis) {
+            std::get<specification::EllipticOrbitingAnimationSpec>(spec_.data).semiMajorAxis = semiMajorAxis;
+            return *this;
+        }
+
+        /// Sets the semi-minor axis of the elliptic orbit being built.
+        /// @param semiMinorAxis The semi-minor axis length.
+        /// @return Reference to this builder for method chaining.
+        auto& semiMinorAxis(const float semiMinorAxis) {
+            std::get<specification::EllipticOrbitingAnimationSpec>(spec_.data).semiMinorAxis = semiMinorAxis;
+            return *this;
+        }
+
+        /// Sets both ellipse axes of the elliptic orbit being built.
+        /// @param semiMajorAxis The semi-major axis length.
+        /// @param semiMinorAxis The semi-minor axis length.
+        /// @return Reference to this builder for method chaining.
+        auto& axes(const float semiMajorAxis, const float semiMinorAxis) {
+            auto& data = std::get<specification::EllipticOrbitingAnimationSpec>(spec_.data);
+            data.semiMajorAxis = semiMajorAxis;
+            data.semiMinorAxis = semiMinorAxis;
+            return *this;
+        }
+
+        /// Sets the rotation axis of the elliptic orbiting animation being built.
+        /// @param rotationAxis The rotation axis vector.
+        /// @return Reference to this builder for method chaining.
+        auto& rotationAxis(const glm::vec3& rotationAxis) {
+            std::get<specification::EllipticOrbitingAnimationSpec>(spec_.data).rotationAxis = rotationAxis;
+            return *this;
+        }
+
+        /// Sets the total revolution angle of the elliptic orbiting animation being built.
+        /// @param totalAngle The total angle in degrees.
+        /// @return Reference to this builder for method chaining.
+        auto& totalAngle(const float totalAngle) {
+            std::get<specification::EllipticOrbitingAnimationSpec>(spec_.data).totalAngle = totalAngle;
+            return *this;
+        }
+
+        /// Sets whether the orbit origin should lie at a focus instead of the ellipse center.
+        /// @param useFocusOrigin True to use a focus-based origin, false for a centered ellipse.
+        /// @return Reference to this builder for method chaining.
+        auto& useFocusOrigin(const bool useFocusOrigin) {
+            std::get<specification::EllipticOrbitingAnimationSpec>(spec_.data).useFocusOrigin = useFocusOrigin;
+            return *this;
+        }
+    };
+
+
     /// Fluent builder for constructing a scaling animation specification.
     class Scaling final : public AnimationBuilderBase {
     public:

@@ -62,6 +62,7 @@ set(PIXELFORGE_SOURCES
         # Scene Module
         scene/animation/animation.cpp
         scene/animation/curve_animation.cpp
+        scene/animation/elliptic_orbiting.cpp
         scene/animation/keyframe_animation.cpp
         scene/animation/orbiting.cpp
         scene/animation/rotation.cpp
