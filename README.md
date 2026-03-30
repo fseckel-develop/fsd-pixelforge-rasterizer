@@ -1,6 +1,6 @@
 # 🎨 PixelForge - Modular OpenGL Rendering Framework
 
-![Language](https://img.shields.io/badge/Language-C++20-orange) ![Build](https://img.shields.io/badge/Build-CMake%203.25+-blue) ![Tests](https://img.shields.io/badge/Tests-doctest-green) ![Graphics](https://img.shields.io/badge/Graphics%20Pipeline-OpenGL-purple) ![Focus](https://img.shields.io/badge/Focus-Rendering%20Architecture-lightgrey) ![CI](https://img.shields.io/badge/CI-GitHub%20Actions-yellow)
+![Language](https://img.shields.io/badge/Language-C++20-orange) ![Build](https://img.shields.io/badge/Build-CMake%203.25+-blue) ![Tests](https://img.shields.io/badge/Tests-doctest-green) ![Graphics](https://img.shields.io/badge/Graphics%20Pipeline-OpenGL-purple) ![Focus](https://img.shields.io/badge/Focus-Rendering%20Architecture-yellow) [![CI](https://github.com/fseckel-develop/fsd-pixelforge-rasterizer/actions/workflows/ci.yml/badge.svg)](https://github.com/fseckel-develop/fsd-pixelforge-rasterizer/actions/workflows/ci.yml)
 
 **PixelForge** is a modular **OpenGL-based rendering framework** that provides a clean and extensible abstraction over the graphics pipeline. It enables structured scene construction, animation, lighting, and procedural geometry generation through a well-organised architecture.
 

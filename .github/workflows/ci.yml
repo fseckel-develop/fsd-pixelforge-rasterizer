@@ -1,0 +1,128 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  build:
+    name: Build (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-22.04]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew update
+          brew install glew glfw
+
+      - name: Install dependencies (Ubuntu)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libglew-dev \
+            libglfw3-dev \
+            libopengl-dev \
+            libglu1-mesa-dev
+
+      - name: Configure build
+        run: |
+          cmake -S . -B build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DPIXELFORGE_BUILD_EXAMPLES=ON \
+            -DPIXELFORGE_BUILD_TESTS=OFF \
+            -DPIXELFORGE_BUILD_GL_TESTS=OFF
+
+      - name: Build project
+        run: cmake --build build --config Release --parallel
+
+      - name: Smoke test demo list
+        if: runner.os == 'Linux'
+        run: ./build/examples/pixelforge-demo --list
+
+  core-tests:
+    name: Core tests (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    needs: build
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-22.04]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew update
+          brew install glew glfw
+
+      - name: Install dependencies (Ubuntu)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libglew-dev \
+            libglfw3-dev \
+            libopengl-dev \
+            libglu1-mesa-dev
+
+      - name: Configure core tests
+        run: |
+          cmake -S . -B build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DPIXELFORGE_BUILD_EXAMPLES=OFF \
+            -DPIXELFORGE_BUILD_TESTS=ON \
+            -DPIXELFORGE_BUILD_GL_TESTS=OFF
+
+      - name: Build core tests
+        run: cmake --build build --config Release --parallel
+
+      - name: Run core tests
+        run: ctest --test-dir build --output-on-failure --build-config Release
+
+  gl-tests:
+    name: GL tests (Ubuntu + Xvfb)
+    runs-on: ubuntu-22.04
+    needs: build
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libglew-dev \
+            libglfw3-dev \
+            libopengl-dev \
+            libglu1-mesa-dev \
+            xvfb
+
+      - name: Configure GL tests
+        run: |
+          cmake -S . -B build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DPIXELFORGE_BUILD_EXAMPLES=OFF \
+            -DPIXELFORGE_BUILD_TESTS=ON \
+            -DPIXELFORGE_BUILD_GL_TESTS=ON
+
+      - name: Build GL tests
+        run: cmake --build build --config Release --parallel
+
+      - name: Run GL tests under Xvfb
+        run: xvfb-run -s "-screen 0 1280x1024x24" ctest --test-dir build --output-on-failure --build-config Release -R pixelforge-tests-gl
