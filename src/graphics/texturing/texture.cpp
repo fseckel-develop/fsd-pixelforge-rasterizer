@@ -1,5 +1,6 @@
+#define STB_IMAGE_IMPLEMENTATION
 #include <pixelforge/graphics/texturing/texture.hpp>
-#include <SOIL2/SOIL2.h>
+#include <stb_image.h>
 #include <fstream>
 #include <iostream>
 #include "managers/texture_manager.hpp"
@@ -28,11 +29,12 @@ namespace pixelforge::graphics {
         this->textureUnit_ = management::TextureManager::noUnit();
         glGenTextures(1, &textureID_);
         glBindTexture(textureType_, textureID_);
-        int width, height;
-        if (unsigned char* data = SOIL_load_image(filePath_.c_str(), &width, &height, nullptr, SOIL_LOAD_RGBA)) {
-            glTexImage2D(textureType_, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+        int width, height, channels;
+        stbi_set_flip_vertically_on_load(true);
+        if (unsigned char* data = stbi_load(filePath_.c_str(), &width, &height, &channels, STBI_rgb_alpha)) {
+            glTexImage2D(textureType_, 0, format, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
             glGenerateMipmap(textureType_);
-            SOIL_free_image_data(data);
+            stbi_image_free(data);
         } else {
 #ifndef NDEBUG
             cerr << "Failed to load texture: " << filePath_ << ". Using fallback" << endl;

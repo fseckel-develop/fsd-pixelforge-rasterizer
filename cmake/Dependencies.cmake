@@ -2,38 +2,14 @@
 add_library(glm INTERFACE)
 add_library(glm::glm ALIAS glm)
 target_include_directories(glm INTERFACE
-        ${PROJECT_SOURCE_DIR}/external/GLM/include
+        ${PROJECT_SOURCE_DIR}/external/glm/include
 )
 
 # Header-only: Eigen
 add_library(eigen INTERFACE)
 add_library(eigen::eigen ALIAS eigen)
 target_include_directories(eigen INTERFACE
-        ${PROJECT_SOURCE_DIR}/external/EIGEN/include
-)
-
-# Prebuilt: GLEW
-add_library(glew STATIC IMPORTED)
-add_library(glew::glew ALIAS glew)
-set_target_properties(glew PROPERTIES
-        IMPORTED_LOCATION "${PROJECT_SOURCE_DIR}/external/GLEW/lib/libGLEW.a"
-        INTERFACE_INCLUDE_DIRECTORIES "${PROJECT_SOURCE_DIR}/external/GLEW/include"
-)
-
-# Prebuilt: GLFW
-add_library(glfw STATIC IMPORTED)
-add_library(glfw::glfw ALIAS glfw)
-set_target_properties(glfw PROPERTIES
-        IMPORTED_LOCATION "${PROJECT_SOURCE_DIR}/external/GLFW/lib/libglfw3.a"
-        INTERFACE_INCLUDE_DIRECTORIES "${PROJECT_SOURCE_DIR}/external/GLFW/include"
-)
-
-# Prebuilt: SOIL2
-add_library(soil2 STATIC IMPORTED)
-add_library(soil2::soil2 ALIAS soil2)
-set_target_properties(soil2 PROPERTIES
-        IMPORTED_LOCATION "${PROJECT_SOURCE_DIR}/external/SOIL2/lib/libsoil2.a"
-        INTERFACE_INCLUDE_DIRECTORIES "${PROJECT_SOURCE_DIR}/external/SOIL2/include"
+        ${PROJECT_SOURCE_DIR}/external/eigen/include
 )
 
 # Header-only: doctest
@@ -42,7 +18,16 @@ target_include_directories(doctest INTERFACE
         ${PROJECT_SOURCE_DIR}/external/doctest
 )
 
+# Header-only: stb_image
+add_library(stb_image INTERFACE)
+add_library(stb::stb ALIAS stb_image)
+target_include_directories(stb_image INTERFACE
+        ${PROJECT_SOURCE_DIR}/external/stb_image
+)
+
 find_package(OpenGL REQUIRED)
+find_package(GLEW REQUIRED)
+find_package(glfw3 REQUIRED)
 
 if(APPLE)
     find_library(COCOA_FRAMEWORK Cocoa REQUIRED)

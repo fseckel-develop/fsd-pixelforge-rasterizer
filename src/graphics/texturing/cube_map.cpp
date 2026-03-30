@@ -1,5 +1,5 @@
 #include <pixelforge/graphics/texturing/cube_map.hpp>
-#include <SOIL2/SOIL2.h>
+#include <stb_image.h>
 #include <fstream>
 #include <iostream>
 #include "managers/texture_manager.hpp"
@@ -36,14 +36,16 @@ namespace pixelforge::graphics {
         const std::vector<std::string> extensions = {".jpg", ".png", ".tga"};
         for (const auto& [fileName, target] : faces) {
             unsigned char* data = nullptr;
+            int channels = 0;
+            stbi_set_flip_vertically_on_load(false);
             for (const auto& ext : extensions) {
                 path fullPath = baseDirectory / (fileName + ext);
-                data = SOIL_load_image(fullPath.c_str(), &width, &height, nullptr, SOIL_LOAD_RGBA);
+                data = stbi_load(fullPath.string().c_str(), &width, &height, &channels, STBI_rgb_alpha);
                 if (data) break;
             }
             if (data) {
                 glTexImage2D(target, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-                SOIL_free_image_data(data);
+                stbi_image_free(data);
             } else {
                 hadMissingFace = true;
                 constexpr unsigned char fallback[] = {255, 0, 255, 255}; // magenta

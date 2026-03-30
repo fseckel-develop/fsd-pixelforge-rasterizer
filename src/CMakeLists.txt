@@ -112,11 +112,11 @@ target_link_libraries(pixelforge
         PUBLIC
         OpenGL::GL
         glm::glm
-        glew::glew
+        GLEW::GLEW
         PRIVATE
         eigen::eigen
-        glfw::glfw
-        soil2::soil2
+        glfw
+        stb::stb
 )
 
 if(APPLE)

@@ -1,6 +1,6 @@
 # 🎨 PixelForge - Modular OpenGL Rendering Framework
 
-![Language](https://img.shields.io/badge/Language-C++20-orange) ![Build](https://img.shields.io/badge/Build-CMake%203.10+-blue) ![Tests](https://img.shields.io/badge/Tests-doctest-green) ![Graphics](https://img.shields.io/badge/Graphics%20Pipeline-OpenGL-purple) ![Focus](https://img.shields.io/badge/Focus-Rendering%20Architecture-lightgrey) ![CI](https://img.shields.io/badge/CI-GitHub%20Actions-yellow)
+![Language](https://img.shields.io/badge/Language-C++20-orange) ![Build](https://img.shields.io/badge/Build-CMake%203.25+-blue) ![Tests](https://img.shields.io/badge/Tests-doctest-green) ![Graphics](https://img.shields.io/badge/Graphics%20Pipeline-OpenGL-purple) ![Focus](https://img.shields.io/badge/Focus-Rendering%20Architecture-lightgrey) ![CI](https://img.shields.io/badge/CI-GitHub%20Actions-yellow)
 
 **PixelForge** is a modular **OpenGL-based rendering framework** that provides a clean and extensible abstraction over the graphics pipeline. It enables structured scene construction, animation, lighting, and procedural geometry generation through a well-organised architecture.
 
@@ -51,7 +51,7 @@ The framework focuses on:
 - GLFW
 - GLEW
 - GLM & Eigen
-- SOIL2
+- stb_image
 - doctest
 - Git & GitHub
 - GitHub Actions
@@ -72,9 +72,30 @@ The framework focuses on:
 ## 🚀 Running the Examples
 
 #### Requirements:
-- C++20 compatible compiler
-- CMake ≥ 3.10
-- OpenGL environment
+- C++20-compatible compiler
+- CMake ≥ 3.25
+- OpenGL-capable environment
+- GLEW (OpenGL extension loading)
+- GLFW (windowing and input handling)
+
+#### Install Dependencies:
+
+- On macOS (Homebrew):
+```shell
+brew install cmake glew glfw
+```
+
+- On Ubuntu / Debian:
+```shell
+sudo apt-get update
+sudo apt-get install -y \
+  build-essential \
+  cmake \
+  libglew-dev \
+  libglfw3-dev \
+  libopengl-dev \
+  libglu1-mesa-dev
+```
 
 #### Build:
 ```shell
@@ -235,11 +256,9 @@ This avoids duplication and enforces clear lifecycle management.
 │   └── textures/           → demo textures, skyboxes, solar system assets
 │
 ├── external/             # bundled third-party dependencies
-│   ├── EIGEN/              → linear algebra library (matrices, vectors)
-│   ├── GLEW/               → OpenGL extension loading
-│   ├── GLFW/               → windowing and input handling
-│   ├── GLM/                → OpenGL-focused math library
-│   ├── SOIL2/              → image loading for textures
+│   ├── eigen/              → linear algebra library (matrices, vectors)
+│   ├── glm/                → OpenGL-focused math library
+│   ├── stb_image/          → image loading for textures
 │   └── doctest/            → lightweight C++ testing framework
 │
 ├── include/pixelforge/   # Public API exposing:

@@ -27,6 +27,12 @@ namespace {
         CHECK(actual.w == doctest::Approx(expected.w).epsilon(EPS));
     }
 
+    void checkVec3Approx(const glm::vec3& actual, const glm::vec3& expected) {
+        CHECK(actual.x == doctest::Approx(expected.x).epsilon(EPS));
+        CHECK(actual.y == doctest::Approx(expected.y).epsilon(EPS));
+        CHECK(actual.z == doctest::Approx(expected.z).epsilon(EPS));
+    }
+
     struct MaterialManagersGuard {
         MaterialManagersGuard() {
             MaterialManager::clear();
@@ -49,10 +55,13 @@ TEST_CASE("Material default constructor initializes empty maps and zero values")
 
     CHECK(material.getDiffuseMap() == nullptr);
     CHECK(material.getSpecularMap() == nullptr);
-    checkVec4Approx(material.getAmbient(), glm::vec4(0.0f));
-    checkVec4Approx(material.getDiffuse(), glm::vec4(0.0f));
-    checkVec4Approx(material.getSpecular(), glm::vec4(0.0f));
-    CHECK(material.getShininess() == doctest::Approx(0.0f));
+    CHECK(material.getEmissiveMap() == nullptr);
+    checkVec4Approx(material.getAmbient(), glm::vec4(1.0f));
+    checkVec4Approx(material.getDiffuse(), glm::vec4(1.0f));
+    checkVec4Approx(material.getSpecular(), glm::vec4(0.2f));
+    checkVec3Approx(material.getEmissive(), glm::vec4(0.0f));
+    CHECK(material.getShininess() == doctest::Approx(8.0f));
+    CHECK(material.getEmissiveIntensity() == doctest::Approx(0.0f));
 }
 
 TEST_CASE("Material texture-path constructor creates diffuse map") {
