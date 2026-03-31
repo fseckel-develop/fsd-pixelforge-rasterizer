@@ -1,6 +1,7 @@
 #include <pixelforge/scene/nodes/transform_node.hpp>
 #include <pixelforge/scene/nodes/animation_node.hpp>
 #include <ranges>
+#include <queue>
 #include "managers/scene_node_manager.hpp"
 
 

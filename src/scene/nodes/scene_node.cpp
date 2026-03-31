@@ -1,4 +1,9 @@
 #include <pixelforge/scene/nodes/scene_node.hpp>
+#include <algorithm>
+#include <memory>
+#include <stack>
+#include <string>
+#include <vector>
 #include <ranges>
 
 

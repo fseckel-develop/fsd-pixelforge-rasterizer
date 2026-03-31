@@ -1,6 +1,7 @@
 #pragma once
 #include <pixelforge/scene/animation/animation.hpp>
 #include <pixelforge/scene/transform/transform.hpp>
+#include <algorithm>
 #include <vector>
 
 

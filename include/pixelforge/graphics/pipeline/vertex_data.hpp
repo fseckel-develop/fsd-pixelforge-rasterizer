@@ -2,6 +2,8 @@
 #include <GL/glew.h>
 #include <GLM/glm.hpp>
 #include <map>
+#include <variant>
+#include <vector>
 
 
 namespace pixelforge::graphics {

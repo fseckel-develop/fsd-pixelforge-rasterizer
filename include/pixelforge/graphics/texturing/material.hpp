@@ -1,6 +1,7 @@
 #pragma once
 #include <pixelforge/graphics/texturing/texture.hpp>
 #include <GLM/glm.hpp>
+#include <memory>
 
 
 namespace pixelforge::graphics {

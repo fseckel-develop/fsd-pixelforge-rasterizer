@@ -1,6 +1,7 @@
 #include <pixelforge/geometry/meshes/mesh.hpp>
 #include <fstream>
 #include <sstream>
+#include <filesystem>
 #include "graphics/pipeline/vertex_array.hpp"
 #include "graphics/pipeline/vertex_buffer.hpp"
 #include "graphics/pipeline/index_buffer.hpp"

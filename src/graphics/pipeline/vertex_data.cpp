@@ -1,5 +1,6 @@
 #include <pixelforge/graphics/pipeline/vertex_data.hpp>
 #include <iostream>
+#include <cstring>
 
 
 namespace pixelforge::graphics {

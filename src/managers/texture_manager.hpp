@@ -1,5 +1,6 @@
 #pragma once
 #include <pixelforge/graphics/texturing/texture.hpp>
+#include <vector>
 #include "managers/instance_manager.hpp"
 
 

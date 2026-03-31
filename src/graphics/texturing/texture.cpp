@@ -3,6 +3,7 @@
 #include <stb_image.h>
 #include <fstream>
 #include <iostream>
+#include <filesystem>
 #include "managers/texture_manager.hpp"
 
 

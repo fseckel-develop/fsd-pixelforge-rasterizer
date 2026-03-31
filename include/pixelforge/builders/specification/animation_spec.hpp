@@ -5,6 +5,7 @@
 #include <optional>
 #include <variant>
 #include <vector>
+#include <memory>
 
 
 namespace pixelforge::builders::specification {

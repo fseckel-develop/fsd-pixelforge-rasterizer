@@ -1,4 +1,5 @@
 #include "graphics/pipeline/vertex_buffer_layout.hpp"
+#include <algorithm>
 
 
 namespace pixelforge::graphics {

@@ -2,6 +2,8 @@
 #include <pixelforge/graphics/pipeline/vertex_data.hpp>
 #include <GL/glew.h>
 #include <vector>
+#include <string>
+#include <memory>
 
 namespace pixelforge::graphics { class VertexArray; class VertexData; }
 

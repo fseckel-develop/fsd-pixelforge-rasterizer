@@ -2,6 +2,7 @@
 #include <GLM/glm.hpp>
 #include <GLM/gtc/quaternion.hpp>
 #include <unordered_set>
+#include <memory>
 
 
 namespace pixelforge::management {
@@ -76,47 +77,47 @@ inline void combineHashes(size_t& seed, const size_t value) { //
 namespace std {
 
     /// Specialization of `std::hash` for `glm::vec3`.
-    template <> struct std::hash<glm::vec3> {
+    template <> struct hash<glm::vec3> {
         /// Computes the hash value for a 3D vector.
         /// @param vec The 3D vector to hash.
         /// @return The computed hash value.
         size_t operator()(const glm::vec3& vec) const noexcept {
             size_t seed = 0;
-            combineHashes(seed, std::hash<float>()(vec.x));
-            combineHashes(seed, std::hash<float>()(vec.y));
-            combineHashes(seed, std::hash<float>()(vec.z));
+            combineHashes(seed, hash<float>()(vec.x));
+            combineHashes(seed, hash<float>()(vec.y));
+            combineHashes(seed, hash<float>()(vec.z));
             return seed;
         }
     };
 
 
     /// Specialization of `std::hash` for `glm::vec4`.
-    template <> struct std::hash<glm::vec4> {
+    template <> struct hash<glm::vec4> {
         /// Computes the hash value for a 4D vector.
         /// @param vec The 4D vector to hash.
         /// @return The computed hash value.
         size_t operator()(const glm::vec4& vec) const noexcept {
             size_t seed = 0;
-            combineHashes(seed, std::hash<float>()(vec.x));
-            combineHashes(seed, std::hash<float>()(vec.y));
-            combineHashes(seed, std::hash<float>()(vec.z));
-            combineHashes(seed, std::hash<float>()(vec.w));
+            combineHashes(seed, hash<float>()(vec.x));
+            combineHashes(seed, hash<float>()(vec.y));
+            combineHashes(seed, hash<float>()(vec.z));
+            combineHashes(seed, hash<float>()(vec.w));
             return seed;
         }
     };
 
 
     /// Specialization of `std::hash` for `glm::quat`.
-    template <> struct std::hash<glm::quat> {
+    template <> struct hash<glm::quat> {
         /// Computes the hash value for a quaternion.
         /// @param quat The quaternion to hash.
         /// @return The computed hash value.
         size_t operator()(const glm::quat& quat) const noexcept {
             size_t seed = 0;
-            combineHashes(seed, std::hash<float>()(quat.x));
-            combineHashes(seed, std::hash<float>()(quat.y));
-            combineHashes(seed, std::hash<float>()(quat.z));
-            combineHashes(seed, std::hash<float>()(quat.w));
+            combineHashes(seed, hash<float>()(quat.x));
+            combineHashes(seed, hash<float>()(quat.y));
+            combineHashes(seed, hash<float>()(quat.z));
+            combineHashes(seed, hash<float>()(quat.w));
             return seed;
         }
     };

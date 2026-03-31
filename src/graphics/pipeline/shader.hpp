@@ -2,6 +2,8 @@
 #include <GL/glew.h>
 #include <GLM/gtc/type_ptr.hpp>
 #include <unordered_set>
+#include <unordered_map>
+#include <string>
 
 namespace pixelforge::graphics { class Material; }
 namespace pixelforge::scene::lighting { class Light; }
